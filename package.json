@@ -9,6 +9,7 @@
     "db:create:migration": "npx sequelize migration:generate --name ",
     "db:migrate": "npx sequelize db:migrate",
     "db:rollback": "npx sequelize db:migrate:undo",
+    "db:heroku:test": "node ./db/heroku-test",
     "postinstall": "sequelize db:migrate"
   },
   "dependencies": {
