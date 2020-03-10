@@ -2,20 +2,16 @@ const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const table = 'quotes_table';
 
-let table = 'quotes_table';
-
-router.get("/quotes", (req, res) => {
+router.get("/", (req, res) => {
   db.any(`SELECT * FROM ${table}`)
     .then( results => { 
-      res.json( results )
+      res.render('quotes', { quotes: results, title: 'Quotes by Kanye' });
     })
     .catch( error => {
       console.log( error )
-      res.json({ error })
+      res.render('error', { error: '500 Server Internal Error' });
     })
 });
 
