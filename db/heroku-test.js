@@ -1,13 +1,13 @@
-const pgp = require('pg-promise')();
+const pgp = require("pg-promise")();
 
 require("dotenv").config();
 
 const db = pgp({
-  connectionString: process.env.DATABASE_URL_HEROKU, 
-  ssl:true
+  connectionString: process.env.DATABASE_URL_HEROKU,
+  ssl: true,
 });
 
-const table = 'quotes_table';
+const table = "quotes_table";
 
 let insertQuotes = () => {
   let quotes = [
@@ -20,28 +20,30 @@ let insertQuotes = () => {
     `Id like to meet with Tim Cook. I got some ideas.`,
     `Man... whatever happened to my antique fish tank?`,
     `Have you ever thought you were in love with someone but then realized you were just staring in a mirror for 20 minutes?`,
-    `One day Im gona marry a porn star.`
+    `One day Im gona marry a porn star.`,
   ];
-  let author = 'Kanye West';
+  let author = "Kanye West";
 
-  quotes.forEach(quote => {
-    console.log(quote)
-    db.any(`INSERT INTO ${table} ("text", "author") VALUES ('${quote}', '${author}');`)
-      .then( result => { 
-        console.log( result );
+  quotes.forEach((quote) => {
+    console.log(quote);
+    db.any(
+      `INSERT INTO ${table} ("text", "author") VALUES ('${quote}', '${author}');`
+    )
+      .then((result) => {
+        console.log(result);
       })
-      .catch( error => {
-        console.log( error );
+      .catch((error) => {
+        console.log(error);
       });
-    });  
+  });
 };
 
 let getQuotes = () => {
   db.any(`SELECT * FROM ${table};`)
-    .then( result => { 
-      console.log( result );
+    .then((result) => {
+      console.log(result);
     })
-    .catch( error => {
-      console.log( error );
+    .catch((error) => {
+      console.log(error);
     });
 };

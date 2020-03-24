@@ -1,17 +1,17 @@
-const express = require('express');
-const db = require('../db');
+const express = require("express");
+const db = require("../db");
 const router = express.Router();
 
-const table = 'quotes_table';
+const table = "quotes_table";
 
 router.get("/quotes", (req, res) => {
   db.any(`SELECT * FROM ${table}`)
-    .then( results => { 
+    .then((results) => {
       res.json([...results]);
     })
-    .catch( error => {
+    .catch((error) => {
       res.json({
-        error
+        error,
       });
     });
 });

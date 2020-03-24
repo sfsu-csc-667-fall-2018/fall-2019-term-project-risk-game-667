@@ -12,7 +12,8 @@
     "db:migrate": "npx sequelize db:migrate",
     "db:rollback": "npx sequelize db:migrate:undo",
     "db:heroku:test": "node ./db/heroku-test",
-    "postinstall": "sequelize db:migrate"
+    "postinstall": "sequelize db:migrate",
+    "format": "prettier --write app.js bin/www */*.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.2",
+    "prettier": "2.0.2",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11"
   }
