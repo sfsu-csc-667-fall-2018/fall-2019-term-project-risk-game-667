@@ -1,6 +1,5 @@
 const express = require("express");
-const crypto = require('crypto');
-const { registerUser } = require('./helpers');
+const { registerUser } = require('../../db/user');
 const router = express.Router();
 
 router.get("/signin", (req, res) => {
@@ -12,12 +11,7 @@ router.get("/signup", (req, res) => {
 });
 
 router.post("/signup", async (req, res) => {
-  let user = {
-    id: crypto.createHash('sha256').update(req.body.username).digest('hex'),
-    username: req.body.username,
-    password: crypto.createHash('sha256').update(req.body.password).digest('hex')
-  };
-  let result = await registerUser(user);
+  let result = await registerUser(req.body.username, req.body.password);
   if(result.error) {
     res.redirect('signup');
   }
