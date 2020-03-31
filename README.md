@@ -2,15 +2,42 @@
 
 Project description goes here
 
-## Development
+## Requrements
 
-1. Create .env file that looks the following way
+- Node & npm or yarn
+- Postgres Server
+
+## Installation
+
+1. Generate secure and random server seed, for example: 
+
+```bash
+openssl rand -hex 32
+```
+
+Have your seed, and postgres connection string handy. Your are going to use it in next step.
+
+2. Create .env file that looks the following way:
 
 ```
 DATABASE_URL=postgres://<db_user>:<db_password>@<db_host>:<db_port>/<db_name>
+SECRET=<your_secret>
 ```
 
-2. In first terminal window, start Webpack in watch mode
+3. Please complete step 1-2, before proceeding otherwise your post-install script will fail! 
+
+Install dependencies:
+
+```bash
+npm i
+```
+
+This will also run database migrations.
+
+
+## Development
+
+1. In first terminal window, start Webpack in watch mode
 
 ```
 npm run build:watch 
