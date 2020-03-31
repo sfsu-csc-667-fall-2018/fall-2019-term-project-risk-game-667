@@ -3,9 +3,12 @@ extends ../layout
 block content
   div(class='container-fliud m-5')
     h3(class='display-4')=title
+    if error
+      p=error
     form(action='/signup', method='POST')
       p Username 
         input(name='username', value='', type='text')
       p Password 
         input(name='password', value='', type='password')
       input(value='Submit', type='submit')
+    a(href="/") Back

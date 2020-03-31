@@ -14,7 +14,7 @@ function registerUser(username, password) {
       resolve({});
     })
     .catch((error) => {
-      resolve({ error: 'Error registering user!' });
+      resolve({ error: 'Username already exists!' }); //TOFIX it could be some different error! Remove comment after implementing validation on client!
     });    
   });
 }
