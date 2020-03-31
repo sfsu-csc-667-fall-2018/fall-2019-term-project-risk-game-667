@@ -8,7 +8,7 @@ router.get("/signin", (req, res) => {
 });
 
 router.post('/signin',
-  passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login', failureFlash: true })
+  passport.authenticate('local', { successRedirect: '/', failureRedirect: '/signin' })
 );
 
 router.get("/signup", (req, res) => {
@@ -20,7 +20,7 @@ router.post("/signup", async (req, res) => {
   if(result.error) {
     res.redirect('signup');
   }
-  res.redirect('/');
+  res.redirect(307, '/signin');
 });
 
 router.get('/signout', (req, res) => {

@@ -12,5 +12,4 @@ router.get("/game",
       res.render("game", { title: "Game" });
   });
 
-
 module.exports = router;
