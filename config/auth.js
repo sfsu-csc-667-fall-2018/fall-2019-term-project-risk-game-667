@@ -17,7 +17,8 @@ module.exports = passport.use(new Strategy(
     if (result.error) { 
       return next(result); 
     }
-    if (validatePassword(result.password, password)) {
+    if (!validatePassword(result.password, password)) {
+      console.log('Invalid password!')
       return next(null, false, { message: 'Incorrect password.' });
     }
     return next(null, result);

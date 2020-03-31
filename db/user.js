@@ -35,7 +35,7 @@ function findUser(attribute, value) {
 }
 
 function validatePassword(hash, password) {
-  return bcrypt.compareSync(hash, password);
+  return bcrypt.compareSync(password, hash);
 }
 
 module.exports = {
