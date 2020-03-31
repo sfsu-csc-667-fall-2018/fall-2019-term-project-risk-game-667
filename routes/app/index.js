@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 router.get("/", (req, res) => {
-  res.render("lobby", { title: "Lobby" });
+  res.render("lobby", { title: "Lobby", user: req.user });
 });
 
 router.get("/game", (req, res) => {
