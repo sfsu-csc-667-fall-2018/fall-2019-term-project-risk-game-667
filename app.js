@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({ 
-  secret: 'e93259e3e7d30df0f2a11fb9f32b41a2a9bb6fa39c5bcfc031200c8e32de68a3', //TODO replace with environmental variable
+  secret: process.env.SECRET,
   resave: true,
   saveUninitialized: true
 })); 
