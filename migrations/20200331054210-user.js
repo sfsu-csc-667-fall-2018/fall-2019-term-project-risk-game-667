@@ -1,26 +1,26 @@
-"use strict";
+'use strict';
 
-const tableName = "quotes_table";
+const tableName = "user_table";
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(tableName, {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         primaryKey: true,
-        autoIncrement: true,
       },
-      inserted: {
+      username: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      registered: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("NOW()"),
-        allowNull: false,
-      },
-      text: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      author: {
-        type: Sequelize.STRING,
         allowNull: false,
       },
     });
