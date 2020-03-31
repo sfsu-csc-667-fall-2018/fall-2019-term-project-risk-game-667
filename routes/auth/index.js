@@ -7,11 +7,12 @@ const { ensureLoggedIn, ensureLoggedOut } = require('connect-ensure-login');
 router.get("/signin", 
   ensureLoggedOut('/'),
   (req, res) => {
-    res.render("signin", { title: "Sign In" });
+    let error = req.session.messages ? req.session.messages[0] : null; // TOFIX seems a bit hack and not consistent with signup
+    res.render("signin", { title: "Sign In", error });
   });
 
 router.post('/signin',
-  passport.authenticate('local', { successRedirect: '/', failureRedirect: '/signin' })
+  passport.authenticate('local', { successRedirect: '/', failureRedirect: '/signin', failureMessage: 'Wrong username or password!' })
 );
 
 router.get("/signup", 
@@ -23,7 +24,7 @@ router.get("/signup",
 router.post("/signup", async (req, res) => {
   let result = await registerUser(req.body.username, req.body.password);
   if(result.error) {
-    res.redirect('signup');
+    res.render("signup", { title: "Sign Up", error: result.error });
   }
   res.redirect(307, '/signin');
 });

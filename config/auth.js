@@ -13,13 +13,11 @@ passport.deserializeUser(function(user, done) {
 module.exports = passport.use(new Strategy(
   async function(username, password, next) {
     let result = await findUser('username', username); 
-    console.log(result); //TODO remove debugging
     if (result.error) { 
-      return next(result); 
+      return next(null, false); 
     }
     if (!validatePassword(result.password, password)) {
-      console.log('Invalid password!')
-      return next(null, false, { message: 'Incorrect password.' });
+      return next(null, false);
     }
     return next(null, result);
   }
