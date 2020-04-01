@@ -4,7 +4,6 @@ import htm from './htm';
 const html = htm.bind(h);
 
 class App extends Component {
-  
   constructor(props) {
     super(props);
     this.state = {
@@ -12,32 +11,24 @@ class App extends Component {
       messages: []
     };
     this.socket = new WebSocket('ws://localhost:5000');
-
-    this.socket.addEventListener('open', function (event) {
-      console.log('Connection with chat server opened!');
-    });
-
-    this.socket.addEventListener('message', function (event) {
-      let messages = JSON.parse(event.data);
-      console.log(messages)
-      // context.setState({ messages });
-    });
-  
-    this.socket.addEventListener('close', function (event) {
-      console.log('Connection with chat server closed!');
-    });
-  
   }
 
   componentDidMount() {
-    this.loadTestMessages();
+    this.socket.onopen = event => {
+      console.log('Connection with chat server opened!');
+    }
+
+    this.socket.onmessage = event => {
+      let messages = JSON.parse(event.data);
+      console.log(messages)
+      this.setState({ messages });
+    };
+  
+    this.socket.onclose = event => {
+      console.log('Connection with chat server closed!');
+    };
   }
 
-  loadTestMessages() {
-    this.setState({
-      messages: []
-    });
-  }
 
   sendMessage() {
     let data = JSON.stringify({
