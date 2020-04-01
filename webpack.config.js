@@ -1,9 +1,12 @@
 const path = require('path');
 
 module.exports = {
-  entry: './public/javascripts/index.js',
+  entry: {
+    game: './public/javascripts/index.js',
+    chat: './public/javascripts/chat.js'
+  },
   output: {
     path: path.resolve(__dirname, 'public/javascripts'),
-    filename: 'bundle.js'
+    filename: '[name].bundle.js'
   }
 };
