@@ -12,8 +12,7 @@ module.exports = {
       },
       body: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        allowNull: false
       },
       sent: {
         type: Sequelize.DATE,
