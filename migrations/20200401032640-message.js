@@ -20,11 +20,11 @@ module.exports = {
         defaultValue: Sequelize.literal("NOW()"),
         allowNull: false,
       },
-      senderId: {
+      sender_id: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      chatId: {
+      chat_id: {
         type: Sequelize.STRING,
         allowNull: false,
       },

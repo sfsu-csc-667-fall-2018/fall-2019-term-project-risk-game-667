@@ -14,14 +14,17 @@ class App extends Component {
     this.socket = new WebSocket('ws://localhost:5000');
 
     this.socket.addEventListener('open', function (event) {
-      console.log('Connection with server opened!');
+      console.log('Connection with chat server opened!');
     });
+
     this.socket.addEventListener('message', function (event) {
-      console.log('Message from server ', event.data);
+      let messages = JSON.parse(event.data);
+      console.log(messages)
+      // context.setState({ messages });
     });
   
     this.socket.addEventListener('close', function (event) {
-      console.log('Connection with server closed!');
+      console.log('Connection with chat server closed!');
     });
   
   }
@@ -32,16 +35,17 @@ class App extends Component {
 
   loadTestMessages() {
     this.setState({
-      messages: [
-        { sender: 'artem', body: 'Hello Chat' },
-        { sender: 'artem', body:'I like htm and preact' },
-        { sender: 'artem', body:`I don't like hamburgers, and designing ui` },
-      ]
+      messages: []
     });
   }
 
   sendMessage() {
-    this.socket.send({ body: this.state.textAreaValue });
+    let data = JSON.stringify({
+      body: this.state.textAreaValue,
+      senderId: 'artem',
+      chatId: 'lobby'
+    });
+    this.socket.send(data);
     this.setState({ textAreaValue: '' });
   }
 
@@ -59,7 +63,7 @@ class App extends Component {
               <li class="list-group-item">${message.sender} said ${message.body}</li>
             `)}
             </ul>
-            <div class="form-group m-4">
+            <div class="form-group my-3">
               <label>Enter your message</label>
               <textarea value=${this.state.textAreaValue} onChange=${(e) => this.handleTextAreaChange(e)} class="form-control" rows="2"></textarea>
               <button type="button" onClick=${() => this.sendMessage()} class="m-3 btn btn-primary">Send</button>
