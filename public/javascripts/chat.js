@@ -33,7 +33,7 @@ class App extends Component {
   sendMessage() {
     let data = JSON.stringify({
       body: this.state.textAreaValue,
-      senderId: 'artem',
+      senderId: 'guest',
       chatId: 'lobby'
     });
     this.socket.send(data);
@@ -51,7 +51,7 @@ class App extends Component {
           <div class="card-body">
             <ul class="list-group">
             ${this.state.messages.map((message) => html`
-              <li class="list-group-item">${message.sender} said ${message.body}</li>
+              <li class="list-group-item">${message.sender_id} said ${message.body}</li>
             `)}
             </ul>
             <div class="form-group my-3">
