@@ -1,5 +1,6 @@
 import { h, Component, render } from './preact';
 import htm from './htm';
+import ReconnectingWebSocket from './ws';
 
 const html = htm.bind(h);
 
@@ -10,7 +11,7 @@ class App extends Component {
       textAreaValue: '',
       messages: []
     };
-    this.socket = new WebSocket(location.origin.replace(/^http/, 'ws'));
+    this.socket = new ReconnectingWebSocket(location.origin.replace(/^http/, 'ws'));
   }
 
   componentDidMount() {
@@ -20,8 +21,8 @@ class App extends Component {
 
     this.socket.onmessage = event => {
       let messages = JSON.parse(event.data);
-      console.log(messages)
-      this.setState({ messages });
+      // console.log(messages) //TODO remove debugging
+      this.setState({ messages: messages });
     };
   
     this.socket.onclose = event => {
