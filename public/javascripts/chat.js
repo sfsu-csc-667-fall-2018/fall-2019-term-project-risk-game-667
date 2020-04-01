@@ -10,7 +10,7 @@ class App extends Component {
       textAreaValue: '',
       messages: []
     };
-    this.socket = new WebSocket('ws://localhost:5000');
+    this.socket = new WebSocket(location.origin.replace(/^http/, 'ws'));
   }
 
   componentDidMount() {

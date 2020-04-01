@@ -1,9 +1,6 @@
-const WebSocket = require('ws');
 const chat = require('../db/chat');
 
-const wss = new WebSocket.Server({ port: 5000 });
-
-wss.on('connection', async function connection(ws) {
+let wsHandler = async function connection(ws) {
   let currentMessages = await chat.getMessages('chat_id', 'lobby', 0, 200);
   ws.send(JSON.stringify(currentMessages));
 
@@ -19,6 +16,8 @@ wss.on('connection', async function connection(ws) {
     //   error: null
     // })); 
   });
-});
+}
 
-module.exports = wss;
+module.exports = {
+  wsHandler
+}

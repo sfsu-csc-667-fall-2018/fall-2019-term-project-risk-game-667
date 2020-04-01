@@ -10,7 +10,6 @@ const authRouter = require("./routes/auth");
 const appRouter = require("./routes/app");
 
 const app = express();
-const wss = require("./config/ws");
 
 app.set("views", [ path.join(__dirname, "views"), path.join(__dirname, "views", "pages"), path.join(__dirname, "views", "auth")]);
 app.set("view engine", "pug");
