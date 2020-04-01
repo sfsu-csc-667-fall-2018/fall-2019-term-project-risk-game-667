@@ -1,14 +1,12 @@
 extends ../layout
 
 block content
-  div(class='container-fliud m-5')
-    h3(class='display-4')=title
-    if error
-      p=error
-    form(action='/signin', method='POST')
-      p Username 
-        input(name='username', value='', type='text')
-      p Password 
-        input(name='password', value='', type='password')
-      input(value='Submit', type='submit')
-    a(href="/") Back
+  div(class='container-fliud text-center my-5 py-5')
+    form(class='form-auth' action='/signin', method='POST')
+      h3(class='h2 mb-3 font-weight-normal') Please sign in
+      if error
+        div(class='alert alert-warning')=error
+      input(class='form-control' name='username', value='', type='text' placeholder='Email')
+      input(class='form-control' name='password', value='', type='password' placeholder='Password')
+      button(class='btn btn-lg btn-primary btn-block', type='submit') Sign In
+      a(class='btn btn-lg btn-link btn-block', href="/") Back
