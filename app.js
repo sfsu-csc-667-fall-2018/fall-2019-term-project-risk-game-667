@@ -36,9 +36,9 @@ app.use(function (req, res, next) {
 
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {}; //TODO fix the way errors are displayed in production
+  res.locals.error = `${err.status} ${err.message}`;
   res.status(err.status || 500);
-  res.render("error");
+  res.render("error", { title: err.status });
 });
 
 module.exports = app;
