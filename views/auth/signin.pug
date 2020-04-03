@@ -2,13 +2,13 @@ extends ../layout
 
 block content
   div(class='container-fliud text-center my-5 py-5')
-    form(class='form-auth' action='/signin' id='form-signin' method='POST')
+    form(class='form-auth' action='/signin' id='form-auth' method='POST')
       h3(class='h2 mb-3 font-weight-normal') Please sign in
       if error
-        div(class='alert alert-danger')=error
+        div(class='alert alert-danger' id='validation-error')=error
       div(class='alert alert-warning' id='validation-alert')
       input(id='input-username' class='form-control' name='username' value='' type='text' placeholder='Username')
-      input(id='input-password' class='form-control' name='password' value='' type='password' placeholder='Password')
+      input(id='input-password' class='form-control mb-3' name='password' value='' type='password' placeholder='Password')
       button(class='btn btn-lg btn-primary btn-block' type='submit') Sign In
       a(class='btn btn-lg btn-link btn-block' href="/") Back
   script(src='/javascripts/validators.js')

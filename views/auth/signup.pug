@@ -2,11 +2,14 @@ extends ../layout
 
 block content
   div(class='container-fliud text-center my-5 py-5')
-    form(class='form-auth' action='/signup' method='POST')
+    form(class='form-auth' action='/signup' id='form-auth' method='POST')
       h3(class='h2 mb-3 font-weight-normal') Please sign up
       if error
-        div(class='alert alert-warning')=error
-      input(class='form-control' name='username' value='' type='text' placeholder='Username')
-      input(class='form-control' name='password' value='' type='password' placeholder='Password')
+        div(class='alert alert-danger' id='validation-error')=error
+      div(class='alert alert-warning' id='validation-alert')
+      input(id='input-username' class='form-control' name='username' value='' type='text' placeholder='Username')
+      input(id='input-password' class='form-control' name='password' value='' type='password' placeholder='Password')
+      input(id='input-password-match' class='form-control mb-3' value='' type='password' placeholder='Repeat your password')
       button(class='btn btn-lg btn-primary btn-block' type='submit') Sign Up
       a(class='btn btn-lg btn-link btn-block' href="/") Back
+  script(src='/javascripts/validators.js')
