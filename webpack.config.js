@@ -6,6 +6,7 @@ module.exports = {
     chat: './public/javascripts/chat.js',
     landing: './public/javascripts/landing.js',
     navbar: './public/javascripts/navbar.js',
+    validators: './public/javascripts/validators.js',
   },
   output: {
     path: path.resolve(__dirname, 'public/javascripts/bundles'),
