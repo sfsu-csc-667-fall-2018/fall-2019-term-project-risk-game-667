@@ -17,7 +17,7 @@ router.post('/signin', function (req, res, next) {
       if (err) {
         return next(err)
       }
-      return res.redirect('/')
+      return res.redirect('/lobby')
     })
   })(req, res, next)
 })
@@ -36,7 +36,7 @@ router.post('/signup', async (req, res) => {
 
 router.get('/signout', ensureLoggedIn('/signin'), (req, res) => {
   req.logout()
-  res.redirect('/')
+  res.redirect('/lobby')
 })
 
 module.exports = router

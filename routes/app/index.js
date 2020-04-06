@@ -2,11 +2,11 @@ const express = require('express')
 const router = express.Router()
 const { ensureLoggedIn } = require('connect-ensure-login')
 
-router.get('/', (req, res) => {
+router.get('/lobby', (req, res) => {
   res.render('lobby', { title: 'Lobby', user: req.user })
 })
 
-router.get('/test', (req, res) => {
+router.get('/', (req, res) => {
   res.render('landing', { title: 'Lobby', user: req.user })
 })
 

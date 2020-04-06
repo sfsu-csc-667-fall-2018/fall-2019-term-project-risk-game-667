@@ -1,14 +1,13 @@
 extends ../layout
 block content
-  link(href='/vendor/bootstrap/css/bootstrap.min.css' rel='stylesheet')
   link(href='/vendor/icofont/icofont.min.css' rel='stylesheet')
   link(href='/vendor/boxicons/css/boxicons.min.css' rel='stylesheet')
   link(href='/vendor/venobox/venobox.css' rel='stylesheet')
   link(href='/vendor/owl.carousel/assets/owl.carousel.min.css' rel='stylesheet')
   link(href='/vendor/aos/aos.css' rel='stylesheet')
 
-  // Template Main CSS File
   link(href='/stylesheets/landing.css' rel='stylesheet')
+  link(href='/stylesheets/navbar.css' rel='stylesheet')
   // ======= Header =======
   header#header.fixed-top
     .container.d-flex
@@ -17,8 +16,6 @@ block content
           img.img-fluid(src='/img/logo.png' width='160px' alt='')
       nav.nav-menu.d-none.d-lg-block
         ul
-          li.active
-            a(href='/') Home
           li.drop-down
             a(href='') About
             ul
@@ -29,7 +26,7 @@ block content
           li
             a(href='#contact') Contact
           li.get-started
-            a(href='#getStarted') Get Started
+            a(href='/lobby') Get Started
       // .nav-menu
       //
         <div class="header-social-links">
@@ -52,7 +49,7 @@ block content
               |  - Developed by: 
               strong
                 span Risky Savages
-            a.btn-get-started.scrollto(href='#getStarted') Get Started
+            a.btn-get-started.scrollto(href='/lobby') Get Started
         .col-lg-6.order-1.order-lg-2.hero-img(data-aos='fade-left')
           img.img-fluid(src='/img/continents.png' alt='')
   // End Hero
@@ -135,77 +132,77 @@ block content
                 span Back-end Developer
     // End Team Section
     // ======= Register/Login =======
-    section#getStarted.team
-      .container.register
-        .section-title(data-aos='fade-up')
-          h2 Get Started!
-          p Below you can Login or Register an account if you do not have one yet!
-          hr
-        .row
-          .col-md-12.register-right
-            ul#myTab.nav.nav-tabs.nav-justified(role='tablist')
-              li.nav-item
-                a#home-tab.nav-link.active(data-toggle='tab' href='#home' role='tab' aria-controls='home' aria-selected='true') Sign up
-              li.nav-item
-                a#profile-tab.nav-link(data-toggle='tab' href='#profile' role='tab' aria-controls='profile' aria-selected='false') Login
-              li.nav-item
-                a#reset-tab.nav-link(data-toggle='tab' href='#reset' role='tab' aria-controls='reset' aria-selected='false') Reset
-            #myTabContent.tab-content
-              #home.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='home-tab')
-                h3.register-heading New User Form
-                .row.register-form
-                  .col-md-6
-                    .form-group
-                      input.form-control(type='text' placeholder='First Name *' value='')
-                    .form-group
-                      input.form-control(type='text' placeholder='Last Name *' value='')
-                    .form-group
-                      input.form-control(type='password' placeholder='Password *' value='')
-                    .form-group
-                      input.form-control(type='password' placeholder='Confirm Password *' value='')
-                    .form-group
-                      .maxl
-                        label.radio.inline
-                          input(type='radio' name='gender' value='male' checked='')
-                          span  Male 
-                        label.radio.inline
-                          input(type='radio' name='gender' value='female')
-                          span Female 
-                  .col-md-6
-                    .form-group
-                      input.form-control(type='email' placeholder='Your Email *' value='')
-                    .form-group
-                      input.form-control(type='text' placeholder='Username *' value='')
-                    .form-group
-                      select.form-control
-                        option.hidden(selected='' disabled='') Please select your Sequrity Question
-                        option What is your Birthdate?
-                        option What is Your old Phone Number
-                        option What is your Pet Name?
-                    .form-group
-                      input.form-control(type='text' placeholder='Enter Your Answer *' value='')
-                    input.btnRegister(type='submit' value='Sign up')
-              #profile.tab-pane.fade.show(role='tabpanel' aria-labelledby='profile-tab')
-                h3.register-heading Welcome back!
-                .row.register-form
-                  .col-md-6
-                    .form-group
-                      input.form-control(type='email' placeholder='Email *' value='')
-                  .col-md-6
-                    .form-group
-                      input.form-control(type='password' placeholder='Password *' value='')
-                    a(href='#reset') Forgot my password
-                    input.btnRegister(type='submit' value='Login')
-              #reset.tab-pane.fade.show(role='tabpanel' aria-labelledby='reset-tab')
-                h3.register-heading Reset Password?
-                .row.register-form
-                  .col-md-12
-                    .form-group.text-center
-                      .input-group
-                        span.input-group-addon
-                          i.glyphicon.glyphicon-envelope.color-blue
-                        input#emailInput.form-control(placeholder='email address' type='email' oninvalid="setCustomValidity('Please enter a valid email address!')" onchange="try{setCustomValidity('')}catch(e){}" required='')
-                    input.btnRegister(value='Send My Password' type='submit')
+    //- section#getStarted.team
+    //-   .container.register
+    //-     .section-title(data-aos='fade-up')
+    //-       h2 Get Started!
+    //-       p Below you can Login or Register an account if you do not have one yet!
+    //-       hr
+    //-     .row
+    //-       .col-md-12.register-right
+    //-         ul#myTab.nav.nav-tabs.nav-justified(role='tablist')
+    //-           li.nav-item
+    //-             a#home-tab.nav-link.active(data-toggle='tab' href='#home' role='tab' aria-controls='home' aria-selected='true') Sign up
+    //-           li.nav-item
+    //-             a#profile-tab.nav-link(data-toggle='tab' href='#profile' role='tab' aria-controls='profile' aria-selected='false') Login
+    //-           li.nav-item
+    //-             a#reset-tab.nav-link(data-toggle='tab' href='#reset' role='tab' aria-controls='reset' aria-selected='false') Reset
+    //-         #myTabContent.tab-content
+    //-           #home.tab-pane.fade.show.active(role='tabpanel' aria-labelledby='home-tab')
+    //-             h3.register-heading New User Form
+    //-             .row.register-form
+    //-               .col-md-6
+    //-                 .form-group
+    //-                   input.form-control(type='text' placeholder='First Name *' value='')
+    //-                 .form-group
+    //-                   input.form-control(type='text' placeholder='Last Name *' value='')
+    //-                 .form-group
+    //-                   input.form-control(type='password' placeholder='Password *' value='')
+    //-                 .form-group
+    //-                   input.form-control(type='password' placeholder='Confirm Password *' value='')
+    //-                 .form-group
+    //-                   .maxl
+    //-                     label.radio.inline
+    //-                       input(type='radio' name='gender' value='male' checked='')
+    //-                       span  Male 
+    //-                     label.radio.inline
+    //-                       input(type='radio' name='gender' value='female')
+    //-                       span Female 
+    //-               .col-md-6
+    //-                 .form-group
+    //-                   input.form-control(type='email' placeholder='Your Email *' value='')
+    //-                 .form-group
+    //-                   input.form-control(type='text' placeholder='Username *' value='')
+    //-                 .form-group
+    //-                   select.form-control
+    //-                     option.hidden(selected='' disabled='') Please select your Sequrity Question
+    //-                     option What is your Birthdate?
+    //-                     option What is Your old Phone Number
+    //-                     option What is your Pet Name?
+    //-                 .form-group
+    //-                   input.form-control(type='text' placeholder='Enter Your Answer *' value='')
+    //-                 input.btnRegister(type='submit' value='Sign up')
+    //-           #profile.tab-pane.fade.show(role='tabpanel' aria-labelledby='profile-tab')
+    //-             h3.register-heading Welcome back!
+    //-             .row.register-form
+    //-               .col-md-6
+    //-                 .form-group
+    //-                   input.form-control(type='email' placeholder='Email *' value='')
+    //-               .col-md-6
+    //-                 .form-group
+    //-                   input.form-control(type='password' placeholder='Password *' value='')
+    //-                 a(href='#reset') Forgot my password
+    //-                 input.btnRegister(type='submit' value='Login')
+    //-           #reset.tab-pane.fade.show(role='tabpanel' aria-labelledby='reset-tab')
+    //-             h3.register-heading Reset Password?
+    //-             .row.register-form
+    //-               .col-md-12
+    //-                 .form-group.text-center
+    //-                   .input-group
+    //-                     span.input-group-addon
+    //-                       i.glyphicon.glyphicon-envelope.color-blue
+    //-                     input#emailInput.form-control(placeholder='email address' type='email' oninvalid="setCustomValidity('Please enter a valid email address!')" onchange="try{setCustomValidity('')}catch(e){}" required='')
+    //-                 input.btnRegister(value='Send My Password' type='submit')
     // Register/Login
     // ======= Contact Section =======
     section#contact.contact.section-bg
@@ -253,12 +250,10 @@ block content
   a.back-to-top(href='#')
     i.bx.bxs-up-arrow-alt
   // Vendor JS Files
-  script(src='/vendor/jquery/jquery.min.js')
-  script(src='/vendor/bootstrap/js/bootstrap.bundle.min.js')
-  script(src='/vendor/jquery.easing/jquery.easing.min.js')
   script(src='/vendor/php-email-form/validate.js')
   script(src='/vendor/isotope-layout/isotope.pkgd.min.js')
   script(src='/vendor/venobox/venobox.min.js')
   script(src='/vendor/owl.carousel/owl.carousel.min.js')
   script(src='/vendor/aos/aos.js')
-  script(src='/javascripts/landing.bundle.js')
+  script(src='/javascripts/bundles/landing.bundle.js')
+  script(src='/javascripts/bundles/navbar.bundle.js')

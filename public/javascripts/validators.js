@@ -1,3 +1,5 @@
+"use strict";
+
 const formAuth = document.getElementById('form-auth')
 const validationAlert = document.getElementById('validation-alert')
 const validationError = document.getElementById('validation-error')

@@ -1,6 +1,6 @@
-import { h, Component, render } from './vendor/preact'
-import htm from './vendor/htm'
-import ReconnectingWebSocket from './vendor/ws'
+import { h, Component, render } from '../vendor/preact'
+import htm from '../vendor/htm'
+import ReconnectingWebSocket from '../vendor/ws'
 
 const html = htm.bind(h)
 
