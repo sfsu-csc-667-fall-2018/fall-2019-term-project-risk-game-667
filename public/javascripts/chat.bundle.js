@@ -3,14 +3,27 @@
         <div class="card">
           <div class="card-body">
             <ul class="list-group">
-            ${this.state.messages.map(e=>u`
-              <li class="list-group-item">${e.sender_id} said ${e.body}</li>
-            `)}
+              ${this.state.messages.map(e=>u`
+                  <li class="list-group-item">
+                    ${e.sender_id} said ${e.body}
+                  </li>
+                `)}
             </ul>
             <div class="form-group my-3">
               <label>Enter your message</label>
-              <textarea value=${this.state.textAreaValue} onChange=${e=>this.handleTextAreaChange(e)} class="form-control" rows="2"></textarea>
-              <button type="button" onClick=${()=>this.sendMessage()} class="m-3 btn btn-primary">Send</button>
+              <textarea
+                value=${this.state.textAreaValue}
+                onChange=${e=>this.handleTextAreaChange(e)}
+                class="form-control"
+                rows="2"
+              ></textarea>
+              <button
+                type="button"
+                onClick=${()=>this.sendMessage()}
+                class="m-3 btn btn-primary"
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>

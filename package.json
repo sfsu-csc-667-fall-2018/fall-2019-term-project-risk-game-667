@@ -7,13 +7,13 @@
     "start:dev": "NODE_ENV=development DEBUG=APP_NAME:* nodemon ./bin/www",
     "start:win": "SET \"NODE_ENV=development\" SET DEBUG=myapp:* & nodemon ./bin/www",
     "build": "webpack --config webpack.config.js",
-    "build:watch": "webpack --config webpack.config.js -w",
+    "build:dev": "webpack --config webpack.config.js -w",
     "db:create:migration": "npx sequelize migration:generate --name ",
     "db:migrate": "npx sequelize db:migrate",
     "db:rollback": "npx sequelize db:migrate:undo",
     "db:heroku:test": "node ./db/heroku-test",
     "postinstall": "sequelize db:migrate",
-    "format": "prettier --write app.js bin/www */*.js"
+    "format": "prettier --write bin/www '**/*.js'"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

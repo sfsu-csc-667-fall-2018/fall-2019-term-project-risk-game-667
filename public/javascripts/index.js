@@ -1,7 +1,7 @@
-import { h, Component, render } from './preact';
-import htm from './htm';
+import { h, Component, render } from './preact'
+import htm from './htm'
 
-const html = htm.bind(h);
+const html = htm.bind(h)
 
 class App extends Component {
   render() {
@@ -10,8 +10,8 @@ class App extends Component {
         <h3 class="display-4">Welcome to Risk Game!</h3>
         <a href="/">Back to lobby</a>
       </div>
-    `;
+    `
   }
 }
 
-render(html`<${App} />`, document.getElementById('app'));
+render(html`<${App} />`, document.getElementById('app'))

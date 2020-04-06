@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const tableName = "user_table";
+const tableName = 'user_table'
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -12,7 +12,7 @@ module.exports = {
       username: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
       },
       password: {
         type: Sequelize.STRING,
@@ -20,12 +20,12 @@ module.exports = {
       },
       registered: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal("NOW()"),
+        defaultValue: Sequelize.literal('NOW()'),
         allowNull: false,
       },
-    });
+    })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable(tableName);
+    return queryInterface.dropTable(tableName)
   },
-};
+}

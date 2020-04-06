@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const tableName = "message_table";
+const tableName = 'message_table'
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -8,15 +8,15 @@ module.exports = {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
       },
       body: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       sent: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal("NOW()"),
+        defaultValue: Sequelize.literal('NOW()'),
         allowNull: false,
       },
       sender_id: {
@@ -27,9 +27,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-    });
+    })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable(tableName);
+    return queryInterface.dropTable(tableName)
   },
-};
+}
