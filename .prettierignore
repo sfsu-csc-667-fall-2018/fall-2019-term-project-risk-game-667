@@ -1,2 +1,3 @@
 *bundle.js
-public/javascripts/vendor/*
+*.min.*
+public/vendor/*
