@@ -2,6 +2,7 @@ import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import io from 'socket.io-client';
 import { LOBBY, USER_JOINED, MESSAGE_SEND } from "../../config/events"
+import axios from 'axios'
 
 const html = htm.bind(h)
 
@@ -9,7 +10,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      textAreaValue: '',
+      text: '',
       messages: [],
     }
     this.socket = io()
@@ -29,7 +30,19 @@ class App extends Component {
   }
 
   handleTextAreaChange(event) {
-    this.setState({ textAreaValue: event.target.value })
+    this.setState({ text: event.target.value })
+  }
+
+  sendMessage() {
+    axios.post('/chat/lobby/new', {
+      text: this.state.text
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
   render() {
@@ -49,7 +62,7 @@ class App extends Component {
             <div class="form-group my-3">
               <label>Enter your message</label>
               <textarea
-                value=${this.state.textAreaValue}
+                value=${this.state.text}
                 onChange=${(e) => this.handleTextAreaChange(e)}
                 class="form-control"
                 rows="2"

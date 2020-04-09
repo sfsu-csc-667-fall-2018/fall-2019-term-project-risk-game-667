@@ -1,6 +1,6 @@
 const db = require('.')
 
-function sendMessage(body, senderId, chatId) {
+function newMessage({ body, senderId, chatId }) {
   return new Promise((resolve) => {
     db.any(
       `INSERT INTO message_table ("body", "sender_id", "chat_id") VALUES ('${body}', '${senderId}', '${chatId}');`
@@ -30,6 +30,6 @@ function getMessages(attribute, value, offset, limit) {
 }
 
 module.exports = {
+  newMessage,
   getMessages,
-  sendMessage,
 }
