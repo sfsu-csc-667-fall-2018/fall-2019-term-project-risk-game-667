@@ -1,6 +1,7 @@
 import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
-import ReconnectingWebSocket from '../vendor/ws'
+import io from 'socket.io-client';
+import { LOBBY, USER_JOINED, MESSAGE_SEND } from "../../config/events"
 
 const html = htm.bind(h)
 
@@ -11,35 +12,20 @@ class App extends Component {
       textAreaValue: '',
       messages: [],
     }
-    this.socket = new ReconnectingWebSocket(
-      location.origin.replace(/^http/, 'ws')
-    )
+    this.socket = io()
   }
 
   componentDidMount() {
-    this.socket.onopen = (event) => {
-      console.log('Connection with chat server opened!')
-    }
-
-    this.socket.onmessage = (event) => {
-      let messages = JSON.parse(event.data)
-      // console.log(messages) //TODO remove debugging
-      this.setState({ messages: messages })
-    }
-
-    this.socket.onclose = (event) => {
-      console.log('Connection with chat server closed!')
-    }
+    this.socket.on( USER_JOINED, this.userJoined )
+    this.socket.on( MESSAGE_SEND, this.messageReceived )
   }
 
-  sendMessage() {
-    let data = JSON.stringify({
-      body: this.state.textAreaValue,
-      senderId: 'guest',
-      chatId: 'lobby',
-    })
-    this.socket.send(data)
-    this.setState({ textAreaValue: '' })
+  userJoined (data){
+    console.log(data) 
+  }
+
+  messageReceived (data) {
+    console.log(data)
   }
 
   handleTextAreaChange(event) {
