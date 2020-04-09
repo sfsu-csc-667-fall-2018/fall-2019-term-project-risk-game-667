@@ -5,7 +5,7 @@ const { NEW_MESSAGE } = require('../../config/events')
 const router = express.Router()
 
 router.get('/:room', async (req, res) => {
-  let getResult = await chat.getMessages("chat_id", req.params.room, 0, 200)
+  let getResult = await chat.getMessages("chat_id", req.params.room, 0, 20)
   
   res.send({
     messages: getResult
