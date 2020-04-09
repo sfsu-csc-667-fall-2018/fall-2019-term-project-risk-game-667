@@ -1,6 +1,6 @@
 const db = require('.')
 
-function sendMessage(body, senderId, chatId) {
+function newMessage({ body, senderId, chatId }) {
   return new Promise((resolve) => {
     db.any(
       `INSERT INTO message_table ("body", "sender_id", "chat_id") VALUES ('${body}', '${senderId}', '${chatId}');`
@@ -17,10 +17,18 @@ function sendMessage(body, senderId, chatId) {
 function getMessages(attribute, value, offset, limit) {
   return new Promise((resolve) => {
     db.any(
-      `SELECT * FROM message_table WHERE ${attribute} = '${value}' OFFSET ${offset} LIMIT ${limit}`
+      `SELECT * FROM message_table WHERE ${attribute} = '${value}' ORDER BY id DESC OFFSET ${offset} LIMIT ${limit}`
     )
       .then((results) => {
-        resolve(results)
+        resolve(results.map(message => {
+          // TOFIX ugly serialization
+          return {
+            id: message.id,
+            body: message.body,
+            senderId: message.sender_id,
+            chatId: message.chat_id,
+          }
+        }))
       })
       .catch((error) => {
         console.log(error)
@@ -30,6 +38,6 @@ function getMessages(attribute, value, offset, limit) {
 }
 
 module.exports = {
+  newMessage,
   getMessages,
-  sendMessage,
 }

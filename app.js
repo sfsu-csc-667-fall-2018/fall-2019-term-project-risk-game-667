@@ -8,6 +8,7 @@ const passport = require('./config/auth')
 
 const authRouter = require('./routes/auth')
 const appRouter = require('./routes/app')
+const chatRouter = require('./routes/chat')
 
 const app = express()
 
@@ -20,7 +21,7 @@ app.set('view engine', 'pug')
 
 app.use(logger('dev'))
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(
@@ -32,10 +33,9 @@ app.use(
 )
 app.use(passport.initialize())
 app.use(passport.session())
-
 app.use('/', appRouter)
 app.use('/', authRouter)
-
+app.use('/chat/', chatRouter)
 app.use(function (req, res, next) {
   next(createError(404))
 })

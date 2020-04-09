@@ -2,9 +2,18 @@
   padding: 2rem 1rem;
 }
 
+.chat-messages{
+  height: 200px;
+  overflow: auto;
+}
+
 @media (min-width: 576px) {
   .lobby-container {
     padding: 4rem 2rem;
+  }
+  .chat-messages{
+    height: 300px;
+    overflow: auto;
   }
 }
 

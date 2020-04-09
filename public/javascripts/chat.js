@@ -1,6 +1,8 @@
 import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
-import ReconnectingWebSocket from '../vendor/ws'
+import io from 'socket.io-client';
+import { USER_JOINED, NEW_MESSAGE } from "../../config/events"
+import axios from 'axios'
 
 const html = htm.bind(h)
 
@@ -8,42 +10,62 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      textAreaValue: '',
+      text: '',
       messages: [],
+      warning: ''
     }
-    this.socket = new ReconnectingWebSocket(
-      location.origin.replace(/^http/, 'ws')
-    )
+    this.socket = io()
+    // this.messageReceived = this.messageReceived.bind(this)
   }
 
   componentDidMount() {
-    this.socket.onopen = (event) => {
-      console.log('Connection with chat server opened!')
-    }
+    this.getMessages()
+    this.socket.on( USER_JOINED, this.userJoined )
 
-    this.socket.onmessage = (event) => {
-      let messages = JSON.parse(event.data)
-      // console.log(messages) //TODO remove debugging
-      this.setState({ messages: messages })
-    }
-
-    this.socket.onclose = (event) => {
-      console.log('Connection with chat server closed!')
-    }
+    this.socket.on( NEW_MESSAGE,  (data) => {
+      this.setState({
+        messages: [...this.state.messages, data]
+      }, () => {
+        scrollMessages()
+      })
+    })
   }
 
-  sendMessage() {
-    let data = JSON.stringify({
-      body: this.state.textAreaValue,
-      senderId: 'guest',
-      chatId: 'lobby',
-    })
-    this.socket.send(data)
-    this.setState({ textAreaValue: '' })
+  async getMessages() {
+    let response = await axios.get(`/chat/lobby`)
+    this.setState({
+      messages: response.data.messages.reverse()
+    }, () => scrollMessages());
+  }
+
+  userJoined (data){
+    console.log(data) 
   }
 
   handleTextAreaChange(event) {
-    this.setState({ textAreaValue: event.target.value })
+    this.setState({ text: event.target.value })
+  }
+
+  sendMessage() {
+    if (this.state.text.length !== 0) {
+      axios.post(`/chat/lobby/new`, {
+        text: this.state.text
+      })
+      .then((response) => {
+        // console.log(this.state)
+        if(!response.data.error) {
+          this.setState({
+            text: ''
+          })
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    } else {
+      this.setState({ warning: 'Your message is too short!' })
+      setTimeout(() => this.setState({ warning: ''}), 2000)
+    }
   }
 
   render() {
@@ -51,19 +73,19 @@ class App extends Component {
       <div class="container-fliud m-3">
         <div class="card">
           <div class="card-body">
-            <ul class="list-group">
+            <ul class="list-group chat-messages">
               ${this.state.messages.map(
                 (message) => html`
                   <li class="list-group-item">
-                    ${message.sender_id} said ${message.body}
+                    ${message.senderId} said ${message.body}
                   </li>
                 `
               )}
             </ul>
             <div class="form-group my-3">
-              <label>Enter your message</label>
+              <label>Enter your message ${this.state.warning}</label>
               <textarea
-                value=${this.state.textAreaValue}
+                value=${this.state.text}
                 onChange=${(e) => this.handleTextAreaChange(e)}
                 class="form-control"
                 rows="2"
@@ -81,6 +103,12 @@ class App extends Component {
       </div>
     `
   }
+}
+
+// TODO cleanup with preact
+function scrollMessages(id){
+  var element = document.querySelector('.chat-messages');
+  element.scrollTop = element.scrollHeight - element.clientHeight;
 }
 
 render(html`<${App} />`, document.getElementById('chat'))
