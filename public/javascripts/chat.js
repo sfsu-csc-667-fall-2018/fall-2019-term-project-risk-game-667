@@ -17,8 +17,16 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.getMessages()
     this.socket.on( USER_JOINED, this.userJoined )
     this.socket.on( MESSAGE_SEND, this.messageReceived )
+  }
+
+  async getMessages() {
+    let response = await axios.get(`/chat/lobby`)
+    this.setState({
+      messages: response.data.messages
+    });
   }
 
   userJoined (data){
@@ -34,7 +42,7 @@ class App extends Component {
   }
 
   sendMessage() {
-    axios.post('/chat/lobby/new', {
+    axios.post(`/chat/lobby/new`, {
       text: this.state.text
     })
     .then(function (response) {

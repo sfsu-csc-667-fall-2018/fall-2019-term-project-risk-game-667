@@ -17,7 +17,7 @@ function newMessage({ body, senderId, chatId }) {
 function getMessages(attribute, value, offset, limit) {
   return new Promise((resolve) => {
     db.any(
-      `SELECT * FROM message_table WHERE ${attribute} = '${value}' OFFSET ${offset} LIMIT ${limit}`
+      `SELECT * FROM message_table WHERE ${attribute} = '${value}' ORDER BY id ASC OFFSET ${offset} LIMIT ${limit}`
     )
       .then((results) => {
         resolve(results)

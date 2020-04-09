@@ -33,11 +33,9 @@ app.use(
 )
 app.use(passport.initialize())
 app.use(passport.session())
-
 app.use('/', appRouter)
 app.use('/', authRouter)
 app.use('/chat/', chatRouter)
-
 app.use(function (req, res, next) {
   next(createError(404))
 })
