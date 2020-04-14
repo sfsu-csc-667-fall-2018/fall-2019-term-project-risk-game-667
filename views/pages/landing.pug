@@ -17,7 +17,7 @@ block content
       nav.nav-menu.d-none.d-lg-block
         ul
           li.active
-            a(href='#') Home
+            a(href='#hero') Home
           li.drop-down
             a(href='#about') About
             ul
@@ -27,8 +27,12 @@ block content
                 a(href='#team') Team
           li
             a(href='#contact') Contact
-          li.get-started
-            a(href='/lobby') Get Started
+          if user
+            li
+              a(href='/signout') Sign Out
+          else
+            li.get-started
+              a(href='/lobby') Get Started
       // .nav-menu
       //
         <div class="header-social-links">
