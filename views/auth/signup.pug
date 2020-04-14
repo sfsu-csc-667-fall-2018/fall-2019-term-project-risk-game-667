@@ -1,6 +1,27 @@
 extends ../layout
 
 block content
+link(href='/stylesheets/navbar.css' rel='stylesheet')
+  link(href='/vendor/icofont/icofont.min.css' rel='stylesheet')
+  header#header.fixed-top
+    .container.d-flex
+      .logo.mr-auto
+        a(href='/')
+          img.img-fluid(src='/img/logo.png' width='160px' alt='')
+      nav.nav-menu.d-none.d-lg-block
+        ul
+          li
+            a(href='/') Home
+          li.active
+            a(href='/lobby') Lobby
+          if user
+            li
+              a(href='/signout') Sign Out
+          else
+            li
+              a(href='/signin') Sign In
+            li
+              a(href='/signup') Sign Up
   link(href='/stylesheets/landing.css' rel='stylesheet')
   section#getStarted.team
     .container.register
