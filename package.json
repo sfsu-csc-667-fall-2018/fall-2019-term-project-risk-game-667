@@ -12,7 +12,7 @@
     "db:migrate": "npx sequelize db:migrate",
     "db:rollback": "npx sequelize db:migrate:undo",
     "db:heroku:test": "node ./db/heroku-test",
-    "postinstall": "sequelize db:rollback && sequelize db:rollback && sequelize db:migrate",
+    "postinstall": "sequelize db:rollback",
     "format": "prettier --write bin/www '**/*.js'"
   },
   "dependencies": {
