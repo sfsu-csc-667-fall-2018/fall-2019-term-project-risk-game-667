@@ -12,13 +12,13 @@ block content
         ul
           li
             a(href='/') Home
-          li.active
+          li
             a(href='/lobby') Lobby
           if user
-            li
+            li.active
               a(href='/signout') Sign Out
           else
-            li
+            li.active
               a(href='/signin') Sign In
             li
               a(href='/signup') Sign Up

@@ -1,7 +1,7 @@
 extends ../layout
-
 block content
-link(href='/stylesheets/navbar.css' rel='stylesheet')
+  link(href='/stylesheets/landing.css' rel='stylesheet')
+  link(href='/stylesheets/navbar.css' rel='stylesheet')
   link(href='/vendor/icofont/icofont.min.css' rel='stylesheet')
   header#header.fixed-top
     .container.d-flex
@@ -12,7 +12,7 @@ link(href='/stylesheets/navbar.css' rel='stylesheet')
         ul
           li
             a(href='/') Home
-          li.active
+          li
             a(href='/lobby') Lobby
           if user
             li
@@ -20,9 +20,8 @@ link(href='/stylesheets/navbar.css' rel='stylesheet')
           else
             li
               a(href='/signin') Sign In
-            li
+            li.active
               a(href='/signup') Sign Up
-  link(href='/stylesheets/landing.css' rel='stylesheet')
   section#getStarted.team
     .container.register
       .section-title(data-aos='fade-up')
