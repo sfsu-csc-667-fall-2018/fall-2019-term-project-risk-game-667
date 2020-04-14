@@ -12,7 +12,7 @@ var r=n(48),o=n(49),i=n(50);function s(){return c.TYPED_ARRAY_SUPPORT?2147483647
             <ul class="list-group chat-messages">
               ${this.state.messages.map(t=>f`
                   <li class="list-group-item">
-                    ${t.senderId} said ${t.body}
+                    ${t.sender.username} said ${t.body}
                   </li>
                 `)}
             </ul>

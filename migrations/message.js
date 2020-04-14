@@ -23,6 +23,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      sender_username: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       chat_id: {
         type: Sequelize.STRING,
         allowNull: false,

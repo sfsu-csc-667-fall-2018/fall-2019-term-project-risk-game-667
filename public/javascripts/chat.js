@@ -1,7 +1,7 @@
 import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
-import io from 'socket.io-client';
-import { USER_JOINED, NEW_MESSAGE } from "../../config/events"
+import io from 'socket.io-client'
+import { USER_JOINED, NEW_MESSAGE } from '../../config/events'
 import axios from 'axios'
 
 const html = htm.bind(h)
@@ -12,34 +12,39 @@ class App extends Component {
     this.state = {
       text: '',
       messages: [],
-      warning: ''
+      warning: '',
     }
     this.socket = io()
-    // this.messageReceived = this.messageReceived.bind(this)
   }
 
   componentDidMount() {
     this.getMessages()
-    this.socket.on( USER_JOINED, this.userJoined )
+    this.socket.on(USER_JOINED, this.userJoined)
 
-    this.socket.on( NEW_MESSAGE,  (data) => {
-      this.setState({
-        messages: [...this.state.messages, data]
-      }, () => {
-        scrollMessages()
-      })
+    this.socket.on(NEW_MESSAGE, (data) => {
+      this.setState(
+        {
+          messages: [...this.state.messages, data],
+        },
+        () => {
+          scrollMessages()
+        }
+      )
     })
   }
 
   async getMessages() {
     let response = await axios.get(`/chat/lobby`)
-    this.setState({
-      messages: response.data.messages.reverse()
-    }, () => scrollMessages());
+    this.setState(
+      {
+        messages: response.data.messages.reverse(),
+      },
+      () => scrollMessages()
+    )
   }
 
-  userJoined (data){
-    console.log(data) 
+  userJoined(data) {
+    console.log(data)
   }
 
   handleTextAreaChange(event) {
@@ -48,23 +53,23 @@ class App extends Component {
 
   sendMessage() {
     if (this.state.text.length !== 0) {
-      axios.post(`/chat/lobby/new`, {
-        text: this.state.text
-      })
-      .then((response) => {
-        // console.log(this.state)
-        if(!response.data.error) {
-          this.setState({
-            text: ''
-          })
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      axios
+        .post(`/chat/lobby/new`, {
+          text: this.state.text,
+        })
+        .then((response) => {
+          if (!response.data.error) {
+            this.setState({
+              text: '',
+            })
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     } else {
       this.setState({ warning: 'Your message is too short!' })
-      setTimeout(() => this.setState({ warning: ''}), 2000)
+      setTimeout(() => this.setState({ warning: '' }), 2000)
     }
   }
 
@@ -77,7 +82,7 @@ class App extends Component {
               ${this.state.messages.map(
                 (message) => html`
                   <li class="list-group-item">
-                    ${message.senderId} said ${message.body}
+                    ${message.sender.username} said ${message.body}
                   </li>
                 `
               )}
@@ -106,9 +111,9 @@ class App extends Component {
 }
 
 // TODO cleanup with preact
-function scrollMessages(id){
-  var element = document.querySelector('.chat-messages');
-  element.scrollTop = element.scrollHeight - element.clientHeight;
+function scrollMessages(id) {
+  var element = document.querySelector('.chat-messages')
+  element.scrollTop = element.scrollHeight - element.clientHeight
 }
 
 render(html`<${App} />`, document.getElementById('chat'))
