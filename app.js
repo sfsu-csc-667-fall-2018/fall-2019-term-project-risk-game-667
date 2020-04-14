@@ -9,6 +9,7 @@ const passport = require('./config/auth')
 const authRouter = require('./routes/auth')
 const appRouter = require('./routes/app')
 const chatRouter = require('./routes/chat')
+const gameRouter = require('./routes/game')
 
 const app = express()
 
@@ -36,6 +37,8 @@ app.use(passport.session())
 app.use('/', appRouter)
 app.use('/', authRouter)
 app.use('/chat/', chatRouter)
+app.use('/game/', gameRouter)
+
 app.use(function (req, res, next) {
   next(createError(404))
 })
