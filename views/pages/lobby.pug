@@ -20,23 +20,34 @@ block content
               a(href='/signin') Sign In
             li
               a(href='/signup') Sign Up
-  //- nav(class='navbar navbar-expand navbar-dark bg-dark fixed-top justify-content-between')
-  //-   a(class='navbar-brand') Risk Game
-  //-   div(class='navbar-nav')
-  //-     if user
-  //-       a(href='/signout', class='nav-item nav-link') Sign Out
-  //-     else
-  //-       a(href='/signin', class='nav-item nav-link') Sign In
-  //-       a(href='/signup', class='nav-item nav-link') Sign Up
 
   div(class='lobby-container container-fliud my-5')
     h3(class='display-4')=title
     if user
       h2(class='display-5')='Welcome ' + user.username +'!'
       p
-        a(href='/game') Start a New Game!
+        a(href='/game') Start a new game!
     else
-      p Please authenticate to start playing!
-  div(id='chat')
+      h2(class='display-5') Please authenticate to start playing!
+    .row.my-3
+      .col-md-4.order-md-2.mb-4
+        div(id='chat')
+      .col-md-8.order-md-1
+        h4.mb-3 Games in progress
+        .table-responsive-md
+          table.table
+            thead
+              tr
+                th(scope='col') Room id
+                th(scope='col') Status
+                th(scope='col') Link
+            tbody
+              tr
+                th(scope='row') 1
+                td playing
+                td Join
+
+        
+
   script(src='/javascripts/bundles/chat.bundle.js')
   script(src='/javascripts/bundles/navbar.bundle.js')
