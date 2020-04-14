@@ -2,8 +2,14 @@ extends ../layout
 
 block content
   link(href='/vendor/icofont/icofont.min.css' rel='stylesheet')
-  link(href='/stylesheets/navbar.css' rel='stylesheet')
+  link(href='/vendor/boxicons/css/boxicons.min.css' rel='stylesheet')
+  link(href='/vendor/venobox/venobox.css' rel='stylesheet')
+  link(href='/vendor/owl.carousel/assets/owl.carousel.min.css' rel='stylesheet')
+  link(href='/vendor/aos/aos.css' rel='stylesheet')
   link(href='/vendor/icofont/icofont.min.css' rel='stylesheet')
+  link(href='/stylesheets/landing.css' rel='stylesheet')
+  link(href='/stylesheets/navbar.css' rel='stylesheet')
+  
   header#header.fixed-top
     .container.d-flex
       .logo.mr-auto
@@ -64,7 +70,12 @@ block content
   // End Footer
   a.back-to-top(href='#')
     i.bx.bxs-up-arrow-alt
+  // Vendor JS Files
   script(src='/javascripts/bundles/chat.bundle.js')
   script(src='/javascripts/bundles/navbar.bundle.js')
+  script(src='/vendor/isotope-layout/isotope.pkgd.min.js')
+  script(src='/vendor/venobox/venobox.min.js')
+  script(src='/vendor/owl.carousel/owl.carousel.min.js')
+  script(src='/vendor/aos/aos.js')
   script(src='/javascripts/bundles/landing.bundle.js')
   script(src='/javascripts/bundles/navbar.bundle.js')
