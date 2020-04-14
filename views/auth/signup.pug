@@ -1,4 +1,5 @@
 extends ../layout
+
 block content
   link(href='/stylesheets/landing.css' rel='stylesheet')
   link(href='/stylesheets/navbar.css' rel='stylesheet')
@@ -15,7 +16,7 @@ block content
           li
             a(href='/lobby') Lobby
           if user
-            li
+            li.active
               a(href='/signout') Sign Out
           else
             li
@@ -42,7 +43,7 @@ block content
                     div(class='alert alert-danger' id='validation-error')=error
                   div(class='alert alert-warning' id='validation-alert')
                   input.btn.btnRegister(type='submit' value='Sign Up')
-                     a.btnRegister.btn(href='/lobby') Back
+                  a.btnRegister.btn(href='/lobby') Back
 
 
   script(src='/javascripts/bundles/validators.bundle.js')
