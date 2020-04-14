@@ -31,6 +31,8 @@ block content
         a(href='/game') Start a new game!
     else
       h2(class='display-5') Please authenticate to start playing!
+      a.btnRegister.btn(href='/signin') Sign In
+         a.btnRegister.btn(href='/signup') Sign Up
     .row.my-3
       .col-md-4.order-md-2.mb-4
         div(id='chat')
@@ -50,7 +52,16 @@ block content
                 td Join
 
         
-    a.back-to-top(href='#')
+   // ======= Footer =======
+  footer#footer
+    .container
+      .copyright
+        | &copy; Copyright
+        strong
+          span Risky Savages
+        | . All Rights Reserved
+  // End Footer
+  a.back-to-top(href='#')
     i.bx.bxs-up-arrow-alt
   script(src='/javascripts/bundles/chat.bundle.js')
   script(src='/javascripts/bundles/navbar.bundle.js')

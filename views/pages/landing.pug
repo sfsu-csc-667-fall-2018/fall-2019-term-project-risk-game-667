@@ -28,8 +28,8 @@ block content
           li
             a(href='#contact') Contact
           if user
-            li
-              a(href='/signout') Sign Out
+            li.get-started
+              a(href='/lobby') Lobby
           else
             li.get-started
               a(href='/lobby') Get Started
@@ -55,7 +55,7 @@ block content
               |  - Developed by:
               strong
                 span Risky Savages
-            a.btn-get-started.scrollto(href='/lobby') Get Started
+            a.btn-get-started.scrollto(href='/lobby') Go to Lobby
         .col-lg-6.order-1.order-lg-2.hero-img(data-aos='fade-left')
           img.img-fluid(src='/img/continents.png' alt='')
   // End Hero
@@ -97,7 +97,7 @@ block content
             p
               | Talk to people interested in the same game you are, battle and see who can risk it all.
           .col-lg-3.cta-btn-container.text-center
-            a.cta-btn.align-middle(href='#') Lets Chat!
+            a.cta-btn.align-middle(href='/lobby') Lets Chat!
     // End Cta Section
     // ======= Team Section =======
     section#team.team
