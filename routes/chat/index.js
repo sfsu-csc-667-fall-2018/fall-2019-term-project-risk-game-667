@@ -29,7 +29,7 @@ router.post('/:room/new', async (req, res) => {
   let sendResult = await chat.newMessage(message)
 
   let io = req.app.get('io')
-  io.emit(NEW_MESSAGE, message)
+  io.emit(NEW_MESSAGE(message.chatId), message)
 
   res.send({
     error: null,

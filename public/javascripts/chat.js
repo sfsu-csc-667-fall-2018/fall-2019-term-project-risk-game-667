@@ -1,10 +1,15 @@
 import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import io from 'socket.io-client'
-import { USER_JOINED, NEW_MESSAGE } from '../../config/events'
+import { NEW_MESSAGE } from '../../config/events'
 import axios from 'axios'
 
 const html = htm.bind(h)
+
+const getRoom = () => {
+  let url = window.location.pathname.split('/') 
+  return  url[url.length-1]
+}
 
 class App extends Component {
   constructor(props) {
@@ -15,13 +20,13 @@ class App extends Component {
       warning: '',
     }
     this.socket = io()
+    this.chatId = getRoom()
   }
 
   componentDidMount() {
     this.getMessages()
-    this.socket.on(USER_JOINED, this.userJoined)
 
-    this.socket.on(NEW_MESSAGE, (data) => {
+    this.socket.on(NEW_MESSAGE(this.chatId), (data) => {
       this.setState(
         {
           messages: [...this.state.messages, data],
@@ -34,7 +39,7 @@ class App extends Component {
   }
 
   async getMessages() {
-    let response = await axios.get(`/chat/lobby`)
+    let response = await axios.get(`/chat/${this.chatId}`)
     this.setState(
       {
         messages: response.data.messages.reverse(),
@@ -54,7 +59,7 @@ class App extends Component {
   sendMessage() {
     if (this.state.text.length !== 0) {
       axios
-        .post(`/chat/lobby/new`, {
+        .post(`/chat/${this.chatId}/new`, {
           text: this.state.text,
         })
         .then((response) => {
