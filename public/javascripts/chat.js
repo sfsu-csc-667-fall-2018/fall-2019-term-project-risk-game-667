@@ -1,7 +1,7 @@
 import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import io from 'socket.io-client'
-import { NEW_MESSAGE } from '../../config/events'
+import { emitNewMessage } from '../../config/events'
 import axios from 'axios'
 
 const html = htm.bind(h)
@@ -26,7 +26,7 @@ class App extends Component {
   componentDidMount() {
     this.getMessages()
 
-    this.socket.on(NEW_MESSAGE(this.chatId), (data) => {
+    this.socket.on(emitNewMessage(this.chatId), (data) => {
       this.setState(
         {
           messages: [...this.state.messages, data],

@@ -1,6 +1,8 @@
 import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import axios from 'axios'
+import io from 'socket.io-client'
+import { emitNewGame } from '../../config/events'
 
 const html = htm.bind(h)
 
@@ -10,10 +12,15 @@ class App extends Component {
     this.state = {
       games: []
     }
+    this.socket = io()
   }
 
   componentDidMount() {
     this.getGames()
+
+    this.socket.on(emitNewGame(), (data) => {
+      this.getGames()
+    })  
   }
 
   async getGames() {

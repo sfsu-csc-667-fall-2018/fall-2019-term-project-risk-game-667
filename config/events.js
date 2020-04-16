@@ -1,3 +1,4 @@
-const NEW_MESSAGE = (chatId) => `NEW MESSAGE ${chatId}`
+const emitNewMessage = (chatId) => `NEW MESSAGE ${chatId}`
+const emitNewGame = () => `NEW GAME`
 
-module.exports = { NEW_MESSAGE }
+module.exports = { emitNewMessage, emitNewGame }

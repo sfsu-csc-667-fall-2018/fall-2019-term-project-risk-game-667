@@ -1,6 +1,7 @@
 const express = require('express')
 const game = require('../../db/game')
 const { ensureLoggedIn } = require('connect-ensure-login')
+const { emitNewGame } = require('../../config/events')
 
 const router = express.Router()
 
@@ -12,6 +13,10 @@ router.get('/all', async (req, res) => {
 
 router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   let newGameResult = await game.newGame(req.user)
+
+  let io = req.app.get('io')
+  io.emit(emitNewGame(), '')
+
   res.send({
     error: null,
   })
