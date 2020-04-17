@@ -1,5 +1,6 @@
 const db = require('.')
 const crypto = require('crypto')
+const { playingGame } = require('./user')
 
 function newGame(host, status = 'CREATED') {
   return new Promise((resolve) => {
@@ -53,10 +54,28 @@ function getGame(id) {
   })
 }
 
-
+function joinGame(playerId, gameId) {
+  return new Promise(async (resolve) => {
+    let isPlaying = await playingGame(playerId, gameId);
+    if(isPlaying.result) {
+      resolve({ error: `You have already joined the game with id ${gameId}` })
+    }
+    db.any(
+      `INSERT INTO playing_table ("player_id", "game_id") VALUES ('${playerId}', '${gameId}');`
+    )
+      .then((results) => {
+        resolve()
+      })
+      .catch((error) => {
+        console.log(error)
+        resolve({ error: `Error joining a game with id ${gameId}` })
+      })
+  })
+}
 
 module.exports = {
   newGame,
   getGamesAll,
-  getGame
+  getGame,
+  joinGame
 }

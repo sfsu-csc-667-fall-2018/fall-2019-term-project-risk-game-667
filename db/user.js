@@ -40,8 +40,28 @@ function validatePassword(hash, password) {
   return bcrypt.compareSync(password, hash)
 }
 
+function playingGame(playerId, gameId) {
+  return new Promise((resolve) => {
+    db.any(
+      `SELECT * FROM playing_table WHERE player_id = '${playerId}' AND game_id = '${gameId};`
+    )
+      .then((results) => {
+        if (results.length > 0) {
+          resolve({ error: undefined, result: true })
+        }
+        resolve({ error: undefined, result: false })
+      })
+      .catch((error) => {
+        console.log(error)
+        resolve({ error: `Error finding a game with player_id ${playerId}, and game_id ${gameId}` })
+      })
+  })
+}
+
+
 module.exports = {
   registerUser,
   findUser,
   validatePassword,
+  playingGame
 }
