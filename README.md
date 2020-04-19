@@ -58,3 +58,9 @@ On Windows
 ```
 npm run start:win 
 ```
+
+
+## Room join flow diagram
+
+![Room join flow](https://i.ibb.co/F5Y05Kq/userflow.png)
+
