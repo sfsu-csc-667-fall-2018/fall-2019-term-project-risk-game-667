@@ -22,7 +22,10 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   })
 })
 
-router.get('/:room', ensureLoggedIn('/signin'), (req, res) => {
+router.get('/:room', ensureLoggedIn('/signin'), async (req, res) => {
+  let joinGameResult = await game.joinGame(req.user.id, req.params.room)
+  console.log(joinGameResult)
+
   res.render('game', { title: 'Game' })
 })
 

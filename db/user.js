@@ -43,7 +43,7 @@ function validatePassword(hash, password) {
 function playingGame(playerId, gameId) {
   return new Promise((resolve) => {
     db.any(
-      `SELECT * FROM playing_table WHERE player_id = '${playerId}' AND game_id = '${gameId};`
+      `SELECT * FROM playing_table WHERE player_id = '${playerId}' AND game_id = '${gameId}';`
     )
       .then((results) => {
         if (results.length > 0) {
