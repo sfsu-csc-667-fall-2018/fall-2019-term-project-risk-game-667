@@ -1,4 +1,4 @@
 const emitNewMessage = (chatId) => `NEW MESSAGE ${chatId}`
-const emitNewGame = () => `NEW GAME`
+const emitGameEvent = () => `GAME EVENT`
 
-module.exports = { emitNewMessage, emitNewGame }
+module.exports = { emitNewMessage, emitGameEvent }
