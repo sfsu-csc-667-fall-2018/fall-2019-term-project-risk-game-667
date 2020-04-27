@@ -59,12 +59,28 @@ function joinGame(playerId, gameId) {
     let isPlaying = await playingGame(playerId, gameId);
     if(isPlaying.result) {
       resolve({ error: `You have already joined the game with id ${gameId}` })
-    }
+    } else {
+      db.any(
+        `INSERT INTO playing_table ("player_id", "game_id") VALUES ('${playerId}', '${gameId}');`
+      )
+        .then((results) => {
+          resolve()
+        })
+        .catch((error) => {
+          console.log(error)
+          resolve({ error: `Error joining a game with id ${gameId}` })
+        })  
+      }
+    })
+}
+
+function getPlayers (gameId) {
+  return new Promise(async (resolve) => {
     db.any(
-      `INSERT INTO playing_table ("player_id", "game_id") VALUES ('${playerId}', '${gameId}');`
+      `SELECT * FROM playing_table WHERE "game_id" = '${gameId}';`
     )
       .then((results) => {
-        resolve()
+        resolve(results)
       })
       .catch((error) => {
         console.log(error)
@@ -73,9 +89,24 @@ function joinGame(playerId, gameId) {
   })
 }
 
+function toggleStatus(id, status) {
+  return new Promise(resolve => {
+    db.any(`UPDATE game_table SET "status" = '${status}' WHERE id = '${id}';`)
+    .then((results) => {
+      resolve();
+    })
+    .catch((error) => {
+      console.log(error)
+      resolve({ error: `Error updating game status for a game ${id}!` });
+    });    
+  });
+}
+
 module.exports = {
   newGame,
   getGamesAll,
   getGame,
-  joinGame
+  joinGame,
+  getPlayers,
+  toggleStatus
 }

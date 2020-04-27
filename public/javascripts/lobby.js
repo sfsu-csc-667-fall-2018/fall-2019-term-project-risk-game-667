@@ -67,7 +67,7 @@ class App extends Component {
             (game, index) => html`
               <tbody>
                 <tr>
-                  <th scope="row">${index}</th>
+                  <th scope="row">${game.id}</th>
                   <td>${game.status}</td>
                   <td><a href="/game/${game.id}">Join</a></td>
                 </tr>

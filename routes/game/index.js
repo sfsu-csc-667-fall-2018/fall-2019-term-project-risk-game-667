@@ -2,6 +2,7 @@ const express = require('express')
 const game = require('../../db/game')
 const { ensureLoggedIn } = require('connect-ensure-login')
 const { emitNewGame } = require('../../config/events')
+const { ROOM_LIMIT } = require('../../config/const')
 
 const router = express.Router()
 
@@ -25,8 +26,20 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
 router.get('/:room', ensureLoggedIn('/signin'), async (req, res) => {
   let joinGameResult = await game.joinGame(req.user.id, req.params.room)
   console.log(joinGameResult)
+  let players = await game.getPlayers(req.params.room)
+  console.log(players)
 
-  res.render('game', { title: 'Game' })
+
+  if(players.length > ROOM_LIMIT) {
+    // TODO remove if never occured
+    console.log('Room capacity exceeded bug!')
+  } else if(players.length === ROOM_LIMIT) {
+    let toggleResult = await game.toggleStatus(req.params.room, 'STARTED')
+    let io = req.app.get('io')
+    io.emit(emitNewGame(), '')
+  }
+
+  res.render('game', { title: 'Game', players })
 })
 
 module.exports = router
