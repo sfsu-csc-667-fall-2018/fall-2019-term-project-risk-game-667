@@ -15,7 +15,6 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      text: '',
       messages: [],
       warning: '',
     }
@@ -25,6 +24,7 @@ class App extends Component {
 
   componentDidMount() {
     this.getMessages()
+    this.textArea = document.querySelector('#text-area')
 
     this.socket.on(emitNewMessage(this.chatId), (data) => {
       this.setState(
@@ -55,18 +55,21 @@ class App extends Component {
   handleTextAreaChange(event) {
     this.setState({ text: event.target.value })
   }
-
-  sendMessage() {
-    if (this.state.text.length !== 0) {
+  handleKeypress(event) {
+    if(event.charCode === 13) {
+      this.sendMessage(event.target.value)
+      event.preventDefault()
+    }
+  }
+  sendMessage(message) {
+    if (message.length !== 0) {
       axios
         .post(`/chat/${this.chatId}/new`, {
-          text: this.state.text,
+          text: message,
         })
         .then((response) => {
           if (!response.data.error) {
-            this.setState({
-              text: '',
-            })
+            this.textArea.value = ''
           }
         })
         .catch((error) => {
@@ -95,14 +98,15 @@ class App extends Component {
             <div class="form-group my-3">
               <label>Enter your message ${this.state.warning}</label>
               <textarea
+                id="text-area"
+                onKeyPress=${(e) => this.handleKeypress(e)}
                 value=${this.state.text}
-                onChange=${(e) => this.handleTextAreaChange(e)}
                 class="form-control"
                 rows="2"
               ></textarea>
               <button
                 type="button"
-                onClick=${() => this.sendMessage()}
+                onClick=${() => this.sendMessage(this.textArea.value)}
                 class="m-3 btn btn-primary"
               >
                 Send
