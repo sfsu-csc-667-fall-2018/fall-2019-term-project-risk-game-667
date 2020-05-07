@@ -2,6 +2,7 @@ import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import io from 'socket.io-client'
 import { emitGameEvent } from '../../config/events'
+import axios from 'axios'
 
 const html = htm.bind(h)
 
@@ -14,24 +15,26 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      messages: [],
-      warning: '',
+      expireTime:0
     }
+    this.expireTime = 0
     this.socket = io()
     this.gameId = getRoom()
   }
   componentDidMount() {
+    this.getGameState()
     this.socket.on(emitGameEvent(this.gameId), (data) => {
-      console.log('starting timer')
-      this.handleTimerEvent()
+      this.handleTimerEvent(parseInt(data))
     })
   }
-  handleTimerEvent() {
-    var countDownDate = new Date().getTime()+30000;
+  async getGameState(){
+    let response = await axios.get(`/game/${this.gameId}`)
+  }
+  handleTimerEvent(time) {
     var x = setInterval(function() {
       var now = new Date().getTime();
-      var distance = countDownDate - now;
-      document.getElementById("timer").innerHTML = parseInt((countDownDate - now)/1000) + 's';
+      var distance = time - now;
+      document.getElementById("timer").innerHTML = parseInt(distance/1000) + 's';
       console.log()
       if (distance < 0) {
         clearInterval(x);
@@ -44,7 +47,7 @@ class App extends Component {
     <div style="text-align:left;">
       <div class="container-fliud m-3">
         <h3 class="display-4">Welcome to Risk Game!
-        <p style="float:right;" id="timer" >
+        <p style="float:right;" id="timer" >Waiting for player..
       </p></h3>
         <a href="/lobby">Back to lobby</a>
       </div>

@@ -37,7 +37,9 @@ router.get('/:room', ensureLoggedIn('/signin'), async (req, res) => {
   } else if(players.length === ROOM_LIMIT) {
     let toggleResult = await game.toggleStatus(req.params.room, 'STARTED')
     let io = req.app.get('io')
-    io.emit(emitGameEvent(), '')
+    let endTime = new Date().getTime()+30000
+    io.emit(emitGameEvent(req.params.room), endTime)
+    let playerTime = endtime - new Date().getTime()
   }
 
   res.render('game', { title: 'Game', players })
