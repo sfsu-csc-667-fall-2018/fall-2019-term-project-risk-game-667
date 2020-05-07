@@ -39,7 +39,7 @@ router.get('/:room', ensureLoggedIn('/signin'), async (req, res) => {
     let io = req.app.get('io')
     let endTime = new Date().getTime()+30000
     io.emit(emitGameEvent(req.params.room), endTime)
-    let playerTime = endtime - new Date().getTime()
+    let playerTime = endTime - new Date().getTime()
   }
 
   res.render('game', { title: 'Game', players })
