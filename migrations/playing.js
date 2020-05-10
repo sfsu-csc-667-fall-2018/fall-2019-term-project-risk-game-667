@@ -18,6 +18,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      state: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       joined: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('NOW()'),
