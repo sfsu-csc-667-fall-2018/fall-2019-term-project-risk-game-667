@@ -4,7 +4,7 @@ const {
   getGamesAll,
   joinGame,
   getPlayers,
-  toggleStatus
+  deleteGame
 } = require('../../db/game')
 const { ensureLoggedIn } = require('connect-ensure-login')
 const { emitGameEvent } = require('../../config/events')
@@ -14,8 +14,12 @@ const router = express.Router()
 
 router.get('/all', async (req, res) => {
   let games = await getGamesAll()
-  console.log(games)
-  res.send(games)
+  if(games.error) {
+    res.send([])
+  } else {
+    games.map(g => g.status = JSON.parse(g.status))
+    res.send(games)
+  }
 })
 
 router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
@@ -51,6 +55,16 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   res.send({
     error: undefined,
     game
+  })
+})
+
+
+router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
+  let result = await deleteGame(req.body.id)
+  console.log(result)
+  
+  res.json({
+    error: undefined
   })
 })
 

@@ -25,7 +25,8 @@ class App extends Component {
 
   async getGames() {
     let response = await axios.get(`/game/all`)
-    console.log(response)
+    console.log(response.data)
+
     this.setState({
       games: response.data,
     })
@@ -39,6 +40,20 @@ class App extends Component {
         if (!data.error) {
           window.location = `/game/${data.game.id}`
         }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  deleteGame(id) {
+    axios
+      .post(`/game/delete`, {
+        id
+      })
+      .then(res => res.data)
+      .then((data) => {
+        this.getGames()
       })
       .catch((error) => {
         console.log(error)
@@ -61,7 +76,8 @@ class App extends Component {
             <tr>
               <th scope="col">Room id</th>
               <th scope="col">Status</th>
-              <th scope="col">Link</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
             </tr>
           </thead>
           ${this.state.games.map(
@@ -69,8 +85,9 @@ class App extends Component {
               <tbody>
                 <tr>
                   <th scope="row">${game.id}</th>
-                  <td>${game.status}</td>
-                  <td><a href="/game/${game.id}">Join</a></td>
+                  <td>${game.status.event}</td>
+                  <td><a class="btn btn-primary" href="/game/${game.id}">Join</a></td>
+                  <td><button class="btn btn-danger" onClick=${() => this.deleteGame(game.id)}>Delete</button></td>
                 </tr>
               </tbody>
             `

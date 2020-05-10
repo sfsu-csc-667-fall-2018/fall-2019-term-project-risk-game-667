@@ -16,6 +16,21 @@ function newGame(id, status, hostId) {
   })
 }
 
+function deleteGame(id) {
+  return new Promise((resolve) => {
+    db.any(
+      `DELETE FROM game_table WHERE id = '${id}';`
+    )
+      .then((results) => {
+        resolve({ error: undefined })
+      })
+      .catch((error) => {
+        console.log(error)
+        resolve({ error: `Error deleteing game with id ${id}!`, code: 500 })
+      })
+  })
+}
+
 function getGamesAll(offset = 0, limit = 100) {
   return new Promise((resolve) => {
     db.any(`SELECT * FROM game_table OFFSET ${offset} LIMIT ${limit}`)
@@ -24,7 +39,7 @@ function getGamesAll(offset = 0, limit = 100) {
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: 'Error getting games!' })
+        resolve({ error: 'Error getting games!', code: 500 })
       })
   })
 }
@@ -91,6 +106,7 @@ function toggleStatus(id, status) {
 
 module.exports = {
   newGame,
+  deleteGame,
   getGamesAll,
   getGame,
   joinGame,
