@@ -34,9 +34,10 @@ class App extends Component {
   newGame() {
     axios
       .get(`/game/new`)
-      .then((response) => {
-        if (!response.data.error) {
-          this.getGames()
+      .then(res => res.data)
+      .then((data) => {
+        if (!data.error) {
+          window.location = `/game/${data.game.id}`
         }
       })
       .catch((error) => {

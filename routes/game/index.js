@@ -49,7 +49,8 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   io.emit(emitGameEvent(), '')
 
   res.send({
-    error: null,
+    error: undefined,
+    game
   })
 })
 

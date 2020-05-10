@@ -54,8 +54,11 @@ function joinGame(playerId, gameId, state) {
         resolve({ error: undefined })
       })
       .catch((error) => {
-        console.log(error)
-        resolve({ error: `Error joining a game with id ${gameId}`, code: 500 })
+        if (error.code === '23505') {
+          resolve({ error: undefined })
+        } else {
+          resolve({ error: `Error joining a game with id ${gameId}`, code: 500 })
+        }
       })
   })
 }
