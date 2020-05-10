@@ -13,6 +13,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      host_id: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       created: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('NOW()'),

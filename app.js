@@ -28,7 +28,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 if (process.env.REDIS_PORT) {
   let RedisStore = require('connect-redis')(session)
-  
   let redisClient = require('redis').createClient(
     process.env.REDIS_PORT
   )

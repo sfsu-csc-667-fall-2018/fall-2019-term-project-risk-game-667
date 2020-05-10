@@ -1,10 +1,8 @@
 const db = require('.')
-const crypto = require('crypto')
 const { playingGame } = require('./user')
 
-function newGame(host, status = 'CREATED') {
+function newGame(host) {
   return new Promise((resolve) => {
-    let id = crypto.createHash('sha256').update(host.id + Date.now()).digest('hex')
 
     db.any(
       `INSERT INTO game_table ("id", "status") VALUES ('${id}', '${status}');`

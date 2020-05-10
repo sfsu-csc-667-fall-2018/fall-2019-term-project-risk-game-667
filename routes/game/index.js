@@ -1,4 +1,5 @@
 const express = require('express')
+const crypto = require('crypto')
 const game = require('../../db/game')
 const { ensureLoggedIn } = require('connect-ensure-login')
 const { emitGameEvent } = require('../../config/events')
@@ -7,13 +8,26 @@ const { ROOM_LIMIT } = require('../../config/const')
 const router = express.Router()
 
 router.get('/all', async (req, res) => {
-  let getGamesResult = await game.getGamesAll()
-  console.log(getGamesResult)
-  res.send(getGamesResult)
+  let games = await game.getGamesAll()
+  console.log(games)
+  res.send(games)
 })
 
 router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
-  let newGameResult = await game.newGame(req.user)
+  let user = req.user
+  let game = {
+    id: crypto.createHash('sha256').update(user.id + Date.now()).digest('hex'),
+    host: user.id,
+    status: {
+      event: 'CREATED',
+      timestamp: Date.now()
+    }
+  }
+
+  console.log(game)
+
+  // let result = await game.newGame(req.user)
+  // console.log(result)
 
   let io = req.app.get('io')
   io.emit(emitGameEvent(), '')
