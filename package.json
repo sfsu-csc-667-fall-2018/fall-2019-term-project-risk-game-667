@@ -8,9 +8,9 @@
     "start:win": "SET \"NODE_ENV=development\" SET DEBUG=myapp:* & nodemon ./bin/www",
     "build": "webpack --config webpack.config.js",
     "build:dev": "webpack --config webpack.config.js -w",
-    "db:create:migration": "npx sequelize migration:generate --name ",
-    "db:migrate": "npx sequelize db:migrate",
-    "db:rollback": "npx sequelize db:migrate:undo:all",
+    "db:create:migration": "sequelize migration:generate --name ",
+    "db:migrate": "sequelize db:migrate",
+    "db:rollback": "sequelize db:migrate:undo:all",
     "db:heroku:test": "node ./db/heroku-test",
     "postinstall": "sequelize db:migrate",
     "format": "prettier --write bin/www '**/*.js'"
