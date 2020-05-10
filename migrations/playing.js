@@ -13,7 +13,12 @@ module.exports = {
       game_id: {
         type: Sequelize.STRING,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
+        references: {
+          model: 'game_table',
+          key: 'id'
+        },
+        onDelete: 'cascade'
       },
       state: {
         type: Sequelize.STRING,
