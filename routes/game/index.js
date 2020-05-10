@@ -1,14 +1,19 @@
 const express = require('express')
-const crypto = require('crypto')
-const game = require('../../db/game')
+const {
+  newGame,
+  getGamesAll,
+  joinGame,
+  getPlayers,
+  toggleStatus
+} = require('../../db/game')
 const { ensureLoggedIn } = require('connect-ensure-login')
 const { emitGameEvent } = require('../../config/events')
 const { ROOM_LIMIT } = require('../../config/const')
-
+const { hash } = require('../../lib/util')
 const router = express.Router()
 
 router.get('/all', async (req, res) => {
-  let games = await game.getGamesAll()
+  let games = await getGamesAll()
   console.log(games)
   res.send(games)
 })
@@ -16,18 +21,29 @@ router.get('/all', async (req, res) => {
 router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   let user = req.user
   let game = {
-    id: crypto.createHash('sha256').update(user.id + Date.now()).digest('hex'),
-    host: user.id,
+    id: hash(user.id + Date.now()),
     status: {
       event: 'CREATED',
-      timestamp: Date.now()
-    }
+      timestamp: Date.now(),
+    },
   }
 
-  console.log(game)
+  let result = await newGame(
+    game.id,
+    JSON.stringify(game.status),
+    user.id
+  )
 
-  // let result = await game.newGame(req.user)
-  // console.log(result)
+  let state = { 
+    event: 'JOINED',
+    timestamp: Date.now(),
+  }
+  result.join = await joinGame(
+    user.id,
+    game.id,
+    JSON.stringify(state))
+
+  console.log(result)
 
   let io = req.app.get('io')
   io.emit(emitGameEvent(), '')
@@ -38,23 +54,32 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
 })
 
 router.get('/:room', ensureLoggedIn('/signin'), async (req, res) => {
-  let joinGameResult = await game.joinGame(req.user.id, req.params.room)
+  let state = { 
+    event: 'JOINED',
+    timestamp: Date.now(),
+  }
+  let joinGameResult = await joinGame(
+    req.user.id, 
+    req.params.room, 
+    JSON.stringify(state))
+
   console.log(joinGameResult)
-  let players = await game.getPlayers(req.params.room)
+  
+  
+  let players = await getPlayers(req.params.room)
   console.log(players)
 
-
-  if(players.length > ROOM_LIMIT) {
-    // TODO remove if never occured
-    console.log('Room capacity exceeded bug!')
-    res.redirect('/lobby')
-  } else if(players.length === ROOM_LIMIT) {
-    let toggleResult = await game.toggleStatus(req.params.room, 'STARTED')
-    let io = req.app.get('io')
-    let endTime = new Date().getTime()+30000
-    io.emit(emitGameEvent(req.params.room), endTime)
-    let playerTime = endTime - new Date().getTime()
-  }
+  // if (players.length > ROOM_LIMIT) {
+  //   // TODO remove if never occured
+  //   console.log('Room capacity exceeded bug!')
+  //   res.redirect('/lobby')
+  // } else if (players.length === ROOM_LIMIT) {
+  //   let toggleResult = await toggleStatus(req.params.room, 'STARTED')
+  //   let io = req.app.get('io')
+  //   let endTime = new Date().getTime() + 30000
+  //   io.emit(emitGameEvent(req.params.room), endTime)
+  //   let playerTime = endTime - new Date().getTime()
+  // }
 
   res.render('game', { title: 'Game', players })
 })

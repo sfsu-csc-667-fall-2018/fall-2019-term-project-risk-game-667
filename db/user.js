@@ -53,15 +53,16 @@ function playingGame(playerId, gameId) {
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: `Error finding a game with player_id ${playerId}, and game_id ${gameId}` })
+        resolve({
+          error: `Error finding a game with player_id ${playerId}, and game_id ${gameId}`,
+        })
       })
   })
 }
-
 
 module.exports = {
   registerUser,
   findUser,
   validatePassword,
-  playingGame
+  playingGame,
 }

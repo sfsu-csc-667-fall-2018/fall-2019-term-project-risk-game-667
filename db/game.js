@@ -1,29 +1,24 @@
 const db = require('.')
 const { playingGame } = require('./user')
 
-function newGame(host) {
+function newGame(id, status, hostId) {
   return new Promise((resolve) => {
-
     db.any(
-      `INSERT INTO game_table ("id", "status") VALUES ('${id}', '${status}');`
+      `INSERT INTO game_table ("id", "status", "host_id") VALUES ('${id}', '${status}', '${hostId}');`
     )
       .then((results) => {
-        resolve({
-          id
-        })
+        resolve({ error: undefined })
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: 'Error creating a new game!' })
+        resolve({ error: 'Error creating a new game!', code: 500 })
       })
   })
 }
 
 function getGamesAll(offset = 0, limit = 100) {
   return new Promise((resolve) => {
-    db.any(
-      `SELECT * FROM game_table OFFSET ${offset} LIMIT ${limit}`
-    )
+    db.any(`SELECT * FROM game_table OFFSET ${offset} LIMIT ${limit}`)
       .then((results) => {
         resolve(results)
       })
@@ -36,9 +31,7 @@ function getGamesAll(offset = 0, limit = 100) {
 
 function getGame(id) {
   return new Promise((resolve) => {
-    db.any(
-      `SELECT * FROM game_table WHERE id = '${id}'`
-    )
+    db.any(`SELECT * FROM game_table WHERE id = '${id}'`)
       .then((results) => {
         if (results.length !== 1) {
           resolve({ error: `Error finding a game with id ${id}` })
@@ -52,31 +45,24 @@ function getGame(id) {
   })
 }
 
-function joinGame(playerId, gameId) {
-  return new Promise(async (resolve) => {
-    let isPlaying = await playingGame(playerId, gameId);
-    if(isPlaying.result) {
-      resolve({ error: `You have already joined the game with id ${gameId}` })
-    } else {
-      db.any(
-        `INSERT INTO playing_table ("player_id", "game_id") VALUES ('${playerId}', '${gameId}');`
-      )
-        .then((results) => {
-          resolve()
-        })
-        .catch((error) => {
-          console.log(error)
-          resolve({ error: `Error joining a game with id ${gameId}` })
-        })  
-      }
-    })
-}
-
-function getPlayers (gameId) {
+function joinGame(playerId, gameId, state) {
   return new Promise(async (resolve) => {
     db.any(
-      `SELECT * FROM playing_table WHERE "game_id" = '${gameId}';`
+      `INSERT INTO playing_table ("player_id", "game_id", "state") VALUES ('${playerId}', '${gameId}', '${state}');`
     )
+      .then((results) => {
+        resolve({ error: undefined })
+      })
+      .catch((error) => {
+        console.log(error)
+        resolve({ error: `Error joining a game with id ${gameId}`, code: 500 })
+      })
+  })
+}
+
+function getPlayers(gameId) {
+  return new Promise(async (resolve) => {
+    db.any(`SELECT * FROM playing_table WHERE "game_id" = '${gameId}';`)
       .then((results) => {
         resolve(results)
       })
@@ -88,16 +74,16 @@ function getPlayers (gameId) {
 }
 
 function toggleStatus(id, status) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     db.any(`UPDATE game_table SET "status" = '${status}' WHERE id = '${id}';`)
-    .then((results) => {
-      resolve();
-    })
-    .catch((error) => {
-      console.log(error)
-      resolve({ error: `Error updating game status for a game ${id}!` });
-    });    
-  });
+      .then((results) => {
+        resolve()
+      })
+      .catch((error) => {
+        console.log(error)
+        resolve({ error: `Error updating game status for a game ${id}!` })
+      })
+  })
 }
 
 module.exports = {
@@ -106,5 +92,5 @@ module.exports = {
   getGame,
   joinGame,
   getPlayers,
-  toggleStatus
+  toggleStatus,
 }

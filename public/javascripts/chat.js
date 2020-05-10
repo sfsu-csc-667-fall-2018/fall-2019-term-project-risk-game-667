@@ -7,8 +7,8 @@ import axios from 'axios'
 const html = htm.bind(h)
 
 const getRoom = () => {
-  let url = window.location.pathname.split('/') 
-  return  url[url.length-1]
+  let url = window.location.pathname.split('/')
+  return url[url.length - 1]
 }
 
 class App extends Component {
@@ -56,7 +56,7 @@ class App extends Component {
     this.setState({ text: event.target.value })
   }
   handleKeypress(event) {
-    if(event.charCode === 13) {
+    if (event.charCode === 13) {
       this.sendMessage(event.target.value)
       event.preventDefault()
     }

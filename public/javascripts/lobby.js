@@ -10,7 +10,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      games: []
+      games: [],
     }
     this.socket = io()
   }
@@ -20,14 +20,14 @@ class App extends Component {
 
     this.socket.on(emitGameEvent(), (data) => {
       this.getGames()
-    })  
+    })
   }
 
   async getGames() {
     let response = await axios.get(`/game/all`)
     console.log(response)
     this.setState({
-      games: response.data
+      games: response.data,
     })
   }
 
@@ -46,7 +46,7 @@ class App extends Component {
 
   render() {
     return html`
-      <h4 class="mb-3">All Games</h4>        
+      <h4 class="mb-3">All Games</h4>
       <button
         type="button"
         onClick=${() => this.newGame()}

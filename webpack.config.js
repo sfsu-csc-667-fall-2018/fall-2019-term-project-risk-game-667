@@ -7,7 +7,7 @@ module.exports = {
     landing: './public/javascripts/landing.js',
     navbar: './public/javascripts/navbar.js',
     validators: './public/javascripts/validators.js',
-    lobby: './public/javascripts/lobby.js'
+    lobby: './public/javascripts/lobby.js',
   },
   output: {
     path: path.resolve(__dirname, 'public/javascripts/bundles'),

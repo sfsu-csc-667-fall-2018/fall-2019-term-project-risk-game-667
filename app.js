@@ -28,16 +28,14 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 if (process.env.REDIS_PORT) {
   let RedisStore = require('connect-redis')(session)
-  let redisClient = require('redis').createClient(
-    process.env.REDIS_PORT
-  )
+  let redisClient = require('redis').createClient(process.env.REDIS_PORT)
 
   app.use(
     session({
       store: new RedisStore({ client: redisClient }),
       secret: process.env.SECRET,
       resave: false,
-      saveUninitialized: false
+      saveUninitialized: false,
     })
   )
 } else {
@@ -45,9 +43,9 @@ if (process.env.REDIS_PORT) {
     session({
       secret: process.env.SECRET,
       resave: false,
-      saveUninitialized: false
+      saveUninitialized: false,
     })
-  )  
+  )
 }
 
 app.use(passport.initialize())

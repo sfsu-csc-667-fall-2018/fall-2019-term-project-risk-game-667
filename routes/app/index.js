@@ -9,5 +9,4 @@ router.get('/', (req, res) => {
   res.render('landing', { title: 'Lobby', user: req.user })
 })
 
-
 module.exports = router
