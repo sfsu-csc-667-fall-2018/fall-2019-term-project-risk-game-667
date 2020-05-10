@@ -22,10 +22,10 @@ class App extends Component {
     this.gameId = getRoom()
   }
   componentDidMount() {
-    this.getGameState()
-    this.socket.on(emitGameEvent(this.gameId), (data) => {
-      this.handleTimerEvent(parseInt(data))
-    })
+    // this.getGameState()
+    // this.socket.on(emitGameEvent(this.gameId), (data) => {
+    //   this.handleTimerEvent(parseInt(data))
+    // })
   }
   async getGameState() {
     let response = await axios.get(`/game/${this.gameId}`)

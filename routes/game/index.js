@@ -4,13 +4,15 @@ const {
   getGamesAll,
   joinGame,
   getPlayers,
-  deleteGame
+  deleteGame,
+  updateStatus
 } = require('../../db/game')
 const { ensureLoggedIn } = require('connect-ensure-login')
 const { emitGameEvent } = require('../../config/events')
 const { ROOM_LIMIT } = require('../../config/const')
 const { hash } = require('../../lib/util')
 const router = express.Router()
+const createError = require('http-errors')
 
 router.get('/all', async (req, res) => {
   let games = await getGamesAll()
@@ -68,22 +70,42 @@ router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
   })
 })
 
-router.get('/:room', ensureLoggedIn('/signin'), async (req, res) => {
-  let state = { 
-    event: 'JOINED',
-    timestamp: Date.now(),
-  }
-  let joinGameResult = await joinGame(
-    req.user.id, 
-    req.params.room, 
-    JSON.stringify(state))
-
-  console.log(joinGameResult)
-  
-  
+router.get('/:room', ensureLoggedIn('/signin'), async (req, res, next) => {
   let players = await getPlayers(req.params.room)
-  console.log(players)
+  let status = JSON.parse(players[0].status)
 
+  if(players.filter(p => p.player_id === req.user.id).length === 1) {
+    res.render('game', { title: 'Game', players })
+  } else if(players.length < ROOM_LIMIT && status.event === 'CREATED') {
+    let state = { 
+      event: 'JOINED',
+      timestamp: Date.now(),
+    }
+    let join = await joinGame(
+      req.user.id, 
+      req.params.room, 
+      JSON.stringify(state))
+
+    if(join.error) {
+      next(createError(500))  
+    } else {
+      let players = await getPlayers(req.params.room)
+      if(players.length === ROOM_LIMIT) {
+        let status = {
+          event: 'STARTED',
+          timestamp: Date.now(),
+        }
+        await updateStatus(
+          req.params.room, 
+          JSON.stringify(status))
+        
+        res.render('game', { title: 'Game', players })
+        
+      }      
+    }
+  } else {
+    next(createError(500))
+  }
   // if (players.length > ROOM_LIMIT) {
   //   // TODO remove if never occured
   //   console.log('Room capacity exceeded bug!')
@@ -96,7 +118,6 @@ router.get('/:room', ensureLoggedIn('/signin'), async (req, res) => {
   //   let playerTime = endTime - new Date().getTime()
   // }
 
-  res.render('game', { title: 'Game', players })
 })
 
 module.exports = router

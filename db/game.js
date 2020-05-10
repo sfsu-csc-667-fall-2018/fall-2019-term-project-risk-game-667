@@ -80,7 +80,12 @@ function joinGame(playerId, gameId, state) {
 
 function getPlayers(gameId) {
   return new Promise(async (resolve) => {
-    db.any(`SELECT * FROM playing_table WHERE "game_id" = '${gameId}';`)
+    db.any(`SELECT player_id, username, status FROM playing_table
+            INNER JOIN user_table
+            ON user_table.id = player_id
+            INNER JOIN game_table
+            ON game_table.id = game_id
+            WHERE "game_id" = '${gameId}';`)
       .then((results) => {
         resolve(results)
       })
@@ -91,9 +96,9 @@ function getPlayers(gameId) {
   })
 }
 
-function toggleStatus(id, status) {
+function updateStatus(gameId, status) {
   return new Promise((resolve) => {
-    db.any(`UPDATE game_table SET "status" = '${status}' WHERE id = '${id}';`)
+    db.any(`UPDATE game_table SET "status" = '${status}' WHERE id = '${gameId}';`)
       .then((results) => {
         resolve()
       })
@@ -111,5 +116,5 @@ module.exports = {
   getGame,
   joinGame,
   getPlayers,
-  toggleStatus,
+  updateStatus,
 }
