@@ -1,10 +1,8 @@
 import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import io from 'socket.io-client'
-import { 
-  emitGameCreated
-} from '../../config/events'
 import axios from 'axios'
+import Map from "./map"
 
 const html = htm.bind(h)
 
@@ -17,42 +15,67 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      expireTime: 0,
+      players: [],
+      player: {
+        username: '',
+        id: ''
+      },
+      game: {
+        id: '',
+        status: 'loading...'
+      }
     }
-    this.expireTime = 0
     this.socket = io()
     this.gameId = getRoom()
   }
   componentDidMount() {
-    // this.getGameState()
+    this.updateGameState()
     // this.socket.on(emitGameEvent(this.gameId), (data) => {
     //   this.handleTimerEvent(parseInt(data))
     // })
   }
-  async getGameState() {
-    let response = await axios.get(`/game/${this.gameId}`)
-  }
-  handleTimerEvent(time) {
-    var x = setInterval(function () {
-      var now = new Date().getTime()
-      var distance = time - now
-      document.getElementById('timer').innerHTML =
-        parseInt(distance / 1000) + 's'
-      console.log()
-      if (distance < 0) {
-        clearInterval(x)
-        document.getElementById('timer').innerHTML = 'EXPIRED'
-      }
-    }, 1000)
+  async updateGameState() {
+    let res = await axios.get(`/game/${this.gameId}/update`)
+    this.setState(res.data, () => console.log(this.state))
+    // console.log(res.data)
   }
   render() {
     return html`
-      <div style="text-align:left;">
+      <div>
+        <ul style="height: 80px;" class="pt-3 nav justify-content-end">
+          <li class="nav-item">
+            <a class="nav-link disabled">
+              Player: ${this.state.player.username}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled">
+              Game: ${this.state.game.id} Status: ${this.state.game.status.event}
+            </a>
+          </li>
+        </ul>
         <div class="container-fliud m-3">
-          <h3 class="display-4">
-            Welcome to Risk Game!
-            <p style="float:right;" id="timer">Waiting for player..</p>
-          </h3>
+          <div class="row">
+            <div class="col-12 col-xl-10">
+              <div class="container">
+                <${Map}/>
+              </div>
+            </div>
+            <div class="col-12 col-xl-2">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Players</h5>
+                  <ul class="list-group">
+                    ${this.state.players.map(
+                      (player, index) => html`
+                        <li class="list-group-item">${index+1} - ${player.username}</li>
+                      `
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
           <a href="/lobby">Back to lobby</a>
         </div>
       </div>

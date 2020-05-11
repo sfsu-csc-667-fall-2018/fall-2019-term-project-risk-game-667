@@ -63,13 +63,29 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   })
 })
 
-
 router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
   let result = await deleteGame(req.body.id)
   console.log(result)
   
   res.json({
     error: undefined
+  })
+})
+
+router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res, next) => {
+  let gameId = req.params.game_id
+  let players = await getPlayers(gameId)
+  let status = JSON.parse(players[0].status)
+  res.json({
+    player: {
+      id: req.user.id,
+      username: req.user.username,
+    },
+    game: {
+      id: gameId,
+      status: status
+    },
+    players,
   })
 })
 
@@ -102,29 +118,14 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
         await updateStatus(
           gameId, 
           JSON.stringify(status))
-
         let io = req.app.get('io')
         io.emit(emitGameStarted(), { id: gameId })
-
         res.render('game', { title: 'Game', players })
-        
       }      
     }
   } else {
     next(createError(500))
   }
-  // if (players.length > ROOM_LIMIT) {
-  //   // TODO remove if never occured
-  //   console.log('Room capacity exceeded bug!')
-  //   res.redirect('/lobby')
-  // } else if (players.length === ROOM_LIMIT) {
-  //   let toggleResult = await toggleStatus(req.params.room, 'STARTED')
-  //   let io = req.app.get('io')
-  //   let endTime = new Date().getTime() + 30000
-  //   io.emit(emitGameEvent(req.params.room), endTime)
-  //   let playerTime = endTime - new Date().getTime()
-  // }
-
 })
 
 module.exports = router

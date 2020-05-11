@@ -11,6 +11,7 @@ var n,r,o,i=String.fromCharCode;function s(t){for(var e,n,r=[],o=0,i=t.length;o<
       <div class="container-fliud m-3">
         <div class="card">
           <div class="card-body">
+            <h5 class="card-title">Chat</h5>
             <ul class="list-group chat-messages">
               ${this.state.messages.map(t=>f`
                   <li class="list-group-item">

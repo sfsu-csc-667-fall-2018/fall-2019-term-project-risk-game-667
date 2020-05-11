@@ -86,6 +86,7 @@ class App extends Component {
       <div class="container-fliud m-3">
         <div class="card">
           <div class="card-body">
+            <h5 class="card-title">Chat</h5>
             <ul class="list-group chat-messages">
               ${this.state.messages.map(
                 (message) => html`

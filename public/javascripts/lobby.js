@@ -70,37 +70,42 @@ class App extends Component {
 
   render() {
     return html`
-      <h4 class="mb-3">All Games</h4>
-      <button
-        type="button"
-        onClick=${() => this.newGame()}
-        class="m-3 btn btn-primary"
-      >
-        Create New Game
-      </button>
-      <div class="table-responsive-md">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Room id</th>
-              <th scope="col">Status</th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          ${this.state.games.map(
-            (game, index) => html`
-              <tbody>
+      <div class="card">
+        <div class="card-body">
+
+          <h4 class="mb-3">All Games</h4>
+          <button
+            type="button"
+            onClick=${() => this.newGame()}
+            class="m-3 btn btn-primary"
+          >
+            Create New Game
+          </button>
+          <div class="table-responsive-md">
+            <table class="table">
+              <thead>
                 <tr>
-                  <th scope="row">${game.id}</th>
-                  <td>${game.status.event} at ${Date(game.timestamp)}</td>
-                  <td><a class="btn btn-primary" href="/game/${game.id}">Join</a></td>
-                  <td><button class="btn btn-danger" onClick=${() => this.deleteGame(game.id)}>Delete</button></td>
+                  <th scope="col">Room id</th>
+                  <th scope="col">Status</th>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
                 </tr>
-              </tbody>
-            `
-          )}
-        </table>
+              </thead>
+              ${this.state.games.map(
+                (game, index) => html`
+                  <tbody>
+                    <tr>
+                      <th scope="row">${game.id}</th>
+                      <td>${game.status.event} at ${Date(game.timestamp)}</td>
+                      <td><a class="btn btn-primary" href="/game/${game.id}">Join</a></td>
+                      <td><button class="btn btn-danger" onClick=${() => this.deleteGame(game.id)}>Delete</button></td>
+                    </tr>
+                  </tbody>
+                `
+              )}
+            </table>
+          </div>
+        </div>
       </div>
     `
   }
