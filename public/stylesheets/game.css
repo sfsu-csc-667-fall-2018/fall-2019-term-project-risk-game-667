@@ -1,0 +1,489 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background: linear-gradient(to bottom, #19444d, #266673);
+}
+#action-arrow-container {
+  pointer-events: none;
+}
+#action-arrow-container #action-counter {
+  fill: #fff;
+  stroke: #000;
+}
+#action-arrow-container #action-arrow {
+  transition: transform ease-out 0.4s;
+}
+#action-arrow-container #action-arrow.player-0 {
+  stroke: #bf2d41;
+}
+#action-arrow-container #action-arrow.player-1 {
+  stroke: #80a73d;
+}
+#action-arrow-container #action-arrow.player-2 {
+  stroke: #609092;
+}
+#action-arrow-container #action-arrow.player-3 {
+  stroke: #a17c28;
+}
+#action-arrow-container #action-arrow.player-4 {
+  stroke: #756092;
+}
+#action-arrow-container #action-arrow.player-5 {
+  stroke: #616161;
+}
+#cards-container {
+  transform: translate(800px, 600px);
+}
+#cards-container .card {
+  fill: #fff;
+  stroke: #000;
+  transition: transform ease-out 0.4s;
+}
+#cards-container .card-text {
+  fill: #000;
+  text-anchor: middle;
+  transform: translate(36px, 48px) rotate(-45deg);
+  user-select: none;
+}
+#cards-container .card:nth-child(1) {
+  transform: translate(48px, 32px);
+}
+#cards-container .card:nth-child(1):hover {
+  transform: translate(48px, 0px);
+}
+#cards-container .card:nth-child(2) {
+  transform: translate(96px, 32px);
+}
+#cards-container .card:nth-child(2):hover {
+  transform: translate(96px, 0px);
+}
+#cards-container .card:nth-child(3) {
+  transform: translate(144px, 32px);
+}
+#cards-container .card:nth-child(3):hover {
+  transform: translate(144px, 0px);
+}
+#cards-container .card:nth-child(4) {
+  transform: translate(192px, 32px);
+}
+#cards-container .card:nth-child(4):hover {
+  transform: translate(192px, 0px);
+}
+#cards-container .card:nth-child(5) {
+  transform: translate(240px, 32px);
+}
+#cards-container .card:nth-child(5):hover {
+  transform: translate(240px, 0px);
+}
+#dices-container {
+  transform: translate(80px, 500px);
+}
+#dices-container #attack-dice-0 {
+  transform: translate(-72px, 0px);
+}
+#dices-container #attack-dice-1 {
+  transform: translate(0px, 0px);
+}
+#dices-container #attack-dice-2 {
+  transform: translate(72px, 0px);
+}
+#dices-container #defense-dice-0 {
+  transform: translate(-36px, 72px);
+}
+#dices-container #defense-dice-1 {
+  transform: translate(36px, 72px);
+}
+#dices-container .hidden-dice {
+  display: none;
+}
+#dices-container .attack-dice {
+  fill: #d40000;
+  stroke: #a00;
+}
+#dices-container .attack-dice circle {
+  fill: #fff;
+}
+#dices-container .defense-dice {
+  fill: #3771c8;
+  stroke: #2c5aa0;
+}
+#dices-container .defense-dice circle {
+  fill: #fff;
+}
+#dices-container .dice-value-1 .dice-0-0,
+#dices-container .dice-value-1 .dice-0-1,
+#dices-container .dice-value-1 .dice-0-2,
+#dices-container .dice-value-1 .dice-2-0,
+#dices-container .dice-value-1 .dice-2-1,
+#dices-container .dice-value-1 .dice-2-2 {
+  visibility: hidden;
+}
+#dices-container .dice-value-2 .dice-0-1,
+#dices-container .dice-value-2 .dice-0-2,
+#dices-container .dice-value-2 .dice-2-0,
+#dices-container .dice-value-2 .dice-2-1,
+#dices-container .dice-value-2 .dice-1-1 {
+  visibility: hidden;
+}
+#dices-container .dice-value-3 .dice-0-1,
+#dices-container .dice-value-3 .dice-0-2,
+#dices-container .dice-value-3 .dice-2-0,
+#dices-container .dice-value-3 .dice-2-1 {
+  visibility: hidden;
+}
+#dices-container .dice-value-4 .dice-0-1,
+#dices-container .dice-value-4 .dice-2-1,
+#dices-container .dice-value-4 .dice-1-1 {
+  visibility: hidden;
+}
+#dices-container .dice-value-5 .dice-0-1,
+#dices-container .dice-value-5 .dice-2-1 {
+  visibility: hidden;
+}
+#dices-container .dice-value-6 .dice-1-1 {
+  visibility: hidden;
+}
+#dices-container .dice-value-undefined {
+  visibility: hidden;
+}
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  pointer-events: none;
+}
+#info {
+  margin-top: 1rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#turn {
+  margin-right: 1rem;
+}
+#actions {
+  position: absolute;
+  bottom: 2rem;
+  display: flex;
+  pointer-events: all;
+}
+#plus,
+#minus,
+#next {
+  /* font-family: 'Roboto Slab', serif; */
+  font-size: 2rem;
+  padding: 0.5rem 2rem;
+  background: #bad6de;
+  color: #3c5a5b;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0px #82abad;
+  outline: 0;
+}
+#plus {
+  margin-left: 1rem;
+}
+#minus {
+  margin-right: 1rem;
+}
+#plus:disabled,
+#minus:disabled,
+#next:disabled {
+  opacity: 0.25;
+  background: #bababa;
+  color: #414141;
+  box-shadow: 2px 2px 0px #828282;
+}
+#plus:active,
+#minus:active,
+#next:active {
+  box-shadow: 0px 0px 0px #82abad;
+}
+#warning {
+  position: fixed;
+  top: 50%;
+  width: 100%;
+  height: 4rem;
+  background: rgba(160,0,0,0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-style: solid;
+  border-width: 0px;
+  -moz-border-image: url("dstripes.png") 0 42 0 0 repeat;
+  -webkit-border-image: url("dstripes.png") 0 42 0 0 repeat;
+  -o-border-image: url("dstripes.png") 0 42 0 0 repeat;
+  border-image: url("dstripes.png") 0 42 0 0 fill repeat;
+}
+.connected {
+  fill: #fdd;
+}
+.player-0 {
+  fill: #d65163;
+}
+.player-1 {
+  fill: #9cc35a;
+}
+.player-2 {
+  fill: #82abad;
+}
+.player-3 {
+  fill: #c99b32;
+}
+.player-4 {
+  fill: #9482ad;
+}
+.player-5 {
+  fill: #797979;
+}
+.connection {
+  stroke: #9696c8;
+  stroke-width: 1.5;
+  stroke-dasharray: 2;
+}
+#player-name {
+  margin-left: 1rem;
+}
+#phase-name {
+  margin-right: 1rem;
+}
+#turn,
+#player-name,
+#phase-name,
+#country-name {
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0px #000;
+  user-select: none;
+}
+#africa {
+  stroke: #9482ad;
+  fill: #cebade;
+}
+#asia {
+  stroke: #9cc35a;
+  fill: #bddb8c;
+}
+#oceania {
+  stroke: #d65163;
+  fill: #e78a94;
+}
+#europe {
+  stroke: #82abad;
+  fill: #bad6de;
+}
+#north-america {
+  stroke: #c99b32;
+  fill: #efcb73;
+}
+#south-america {
+  stroke: #797979;
+  fill: #c3c3c3;
+}
+.country.selected {
+  animation-name: countrySelected;
+  animation-duration: 0.4s;
+  animation-iteration-count: infinite;
+}
+.troop {
+  pointer-events: none;
+  user-select: none;
+}
+.troop-circle {
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+.troop-count {
+  fill: #fff;
+  user-select: none;
+  text-anchor: middle;
+  transform: translate(0, 5px);
+  font-weight: bold;
+}
+.troop#east-africa {
+  transform: translate(574.401px, 450px);
+}
+.troop#egypt {
+  transform: translate(517.5px, 361.5px);
+}
+.troop#congo {
+  transform: translate(506.535px, 483.5px);
+}
+.troop#madagascar {
+  transform: translate(589.75px, 563.5px);
+}
+.troop#south-africa {
+  transform: translate(516.014px, 566.5px);
+}
+.troop#north-africa {
+  transform: translate(450.803px, 389.5px);
+}
+.troop#afghanistan {
+  transform: translate(660.305px, 253.145px);
+}
+.troop#india {
+  transform: translate(710.5px, 373.739px);
+}
+.troop#irkutsk {
+  transform: translate(819.499px, 188.86px);
+}
+.troop#kamchatka {
+  transform: translate(933px, 161px);
+}
+.troop#middle-east {
+  transform: translate(595px, 348.5px);
+}
+.troop#mongolia {
+  transform: translate(837.375px, 241px);
+}
+.troop#siam {
+  transform: translate(781.5px, 380px);
+}
+.troop#china {
+  transform: translate(769px, 300px);
+}
+.troop#japan {
+  transform: translate(908px, 242.5px);
+}
+.troop#siberia {
+  transform: translate(749px, 152.618px);
+}
+.troop#ural {
+  transform: translate(685.77px, 172.108px);
+}
+.troop#yakutsk {
+  transform: translate(855.5px, 119.5px);
+}
+.troop#eastern-australia {
+  transform: translate(908px, 557px);
+}
+.troop#new-guinea {
+  transform: translate(921.5px, 466.343px);
+}
+.troop#western-australia {
+  transform: translate(805.5px, 552.5px);
+}
+.troop#indonesia {
+  transform: translate(820.5px, 445.5px);
+}
+.troop#great-britain {
+  transform: translate(434.856px, 204.549px);
+}
+.troop#iceland {
+  transform: translate(433px, 147.672px);
+}
+.troop#northern-europe {
+  transform: translate(489px, 218.447px);
+}
+.troop#scandinavia {
+  transform: translate(499.5px, 138.5px);
+}
+.troop#southern-europe {
+  transform: translate(503.073px, 275px);
+}
+.troop#ukraine {
+  transform: translate(585px, 193.5px);
+}
+.troop#western-europe {
+  transform: translate(442px, 269.5px);
+}
+.troop#alaska {
+  transform: translate(68px, 137.451px);
+}
+.troop#alberta {
+  transform: translate(161.5px, 178px);
+}
+.troop#central-america {
+  transform: translate(186px, 319px);
+}
+.troop#eastern-united-states {
+  transform: translate(255px, 255px);
+}
+.troop#greenland {
+  transform: translate(358.5px, 95.9053px);
+}
+.troop#northwest-territory {
+  transform: translate(177.033px, 113.5px);
+}
+.troop#ontario {
+  transform: translate(250.5px, 196.056px);
+}
+.troop#western-united-states {
+  transform: translate(180.126px, 246px);
+}
+.troop#quebec {
+  transform: translate(321.5px, 189.5px);
+}
+.troop#argentina {
+  transform: translate(246px, 565.319px);
+}
+.troop#brazil {
+  transform: translate(321.267px, 455.5px);
+}
+.troop#peru {
+  transform: translate(208.951px, 464px);
+}
+.troop#venezuela {
+  transform: translate(233px, 373.5px);
+}
+@-moz-keyframes countrySelected {
+  0% {
+    fill: auto;
+  }
+  50% {
+    fill: #fff;
+  }
+  100% {
+    fill: auto;
+  }
+}
+@-webkit-keyframes countrySelected {
+  0% {
+    fill: auto;
+  }
+  50% {
+    fill: #fff;
+  }
+  100% {
+    fill: auto;
+  }
+}
+@-o-keyframes countrySelected {
+  0% {
+    fill: auto;
+  }
+  50% {
+    fill: #fff;
+  }
+  100% {
+    fill: auto;
+  }
+}
+@keyframes countrySelected {
+  0% {
+    fill: auto;
+  }
+  50% {
+    fill: #fff;
+  }
+  100% {
+    fill: auto;
+  }
+}

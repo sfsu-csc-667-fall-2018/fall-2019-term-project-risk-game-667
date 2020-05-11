@@ -95,7 +95,8 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   let status = JSON.parse(players[0].status)
 
   if(players.filter(p => p.player_id === req.user.id).length === 1) {
-    res.render('game', { title: 'Game', players })
+    // res.render('game', { title: 'Game', players })
+    res.sendFile('/home/dev/fall-2019-term-project-risk-game-667/public/html/game.html')
   } else if(players.length < ROOM_LIMIT && status.event === 'CREATED') {
     let state = { 
       event: 'JOINED',
@@ -120,7 +121,8 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
           JSON.stringify(status))
         let io = req.app.get('io')
         io.emit(emitGameStarted(), { id: gameId })
-        res.render('game', { title: 'Game', players })
+        res.sendFile('/home/dev/fall-2019-term-project-risk-game-667/public/html/game.html')
+        // res.render('game', { title: 'Game', players })
       }      
     }
   } else {
