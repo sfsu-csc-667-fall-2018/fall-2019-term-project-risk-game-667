@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/stylesheets/game.css"></link>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.0.1/vuex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <title>Risk Game</title>
@@ -269,14 +270,6 @@
             <path d="M0,0 L100,-10 L100,-20 L150,0 L100,20 L100,10 Z" />
           </g>
         </g>
-        <g id="cards-container">
-          <g v-for="card in getCards()" class="card">
-            <rect x="0" y="0" width="64" height="96" ry="8" />
-            <text class="card-text" v-if="card === 0">Infantería</text>
-            <text class="card-text" v-else-if="card === 1">Caballería</text>
-            <text class="card-text" v-else-if="card === 2">Artillería</text>
-          </g>
-        </g>
         <g id="dices-container">
           <g id="attack-dice-0" :class="getDiceClasses('attack', 0)">
             <rect x="0" y="0" width="64" height="64" ry="8" />
@@ -353,14 +346,16 @@
        </div>-->
       </div>
     </div>
-
+    <div id="chat"></div>
+    <a id="btn-exit" href="/lobby" class="btn btn-lg btn-danger">Lobby</a>
+    <script src="/javascripts/bundles/chat.bundle.js"></script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script> -->
 
-    <script src="/javascripts/game-v2.js" type="text/babel"></script>
+    <script src="/javascripts/game.js" type="text/babel"></script>
 
   </body>
 </html>

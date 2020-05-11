@@ -487,3 +487,11 @@ body {
     fill: auto;
   }
 }
+
+
+/* Not compiled style */
+#btn-exit {
+  position: fixed;
+  right: 35px;
+  bottom: 35px;
+}
