@@ -8,7 +8,10 @@ const {
   updateStatus
 } = require('../../db/game')
 const { ensureLoggedIn } = require('connect-ensure-login')
-const { emitGameEvent } = require('../../config/events')
+const { 
+  emitGameCreated,
+  emitGameStarted
+} = require('../../config/events')
 const { ROOM_LIMIT } = require('../../config/const')
 const { hash } = require('../../lib/util')
 const router = express.Router()
@@ -52,7 +55,7 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   console.log(result)
 
   let io = req.app.get('io')
-  io.emit(emitGameEvent(), '')
+  io.emit(emitGameCreated(), { id: game.id })
 
   res.send({
     error: undefined,
@@ -70,8 +73,9 @@ router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
   })
 })
 
-router.get('/:room', ensureLoggedIn('/signin'), async (req, res, next) => {
-  let players = await getPlayers(req.params.room)
+router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
+  let gameId = req.params.game_id
+  let players = await getPlayers(gameId)
   let status = JSON.parse(players[0].status)
 
   if(players.filter(p => p.player_id === req.user.id).length === 1) {
@@ -83,22 +87,25 @@ router.get('/:room', ensureLoggedIn('/signin'), async (req, res, next) => {
     }
     let join = await joinGame(
       req.user.id, 
-      req.params.room, 
+      gameId, 
       JSON.stringify(state))
 
     if(join.error) {
       next(createError(500))  
     } else {
-      let players = await getPlayers(req.params.room)
+      let players = await getPlayers(gameId)
       if(players.length === ROOM_LIMIT) {
         let status = {
           event: 'STARTED',
           timestamp: Date.now(),
         }
         await updateStatus(
-          req.params.room, 
+          gameId, 
           JSON.stringify(status))
-        
+
+        let io = req.app.get('io')
+        io.emit(emitGameStarted(), { id: gameId })
+
         res.render('game', { title: 'Game', players })
         
       }      

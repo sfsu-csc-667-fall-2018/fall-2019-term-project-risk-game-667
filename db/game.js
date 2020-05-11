@@ -1,5 +1,4 @@
 const db = require('.')
-const { playingGame } = require('./user')
 
 function newGame(id, status, hostId) {
   return new Promise((resolve) => {

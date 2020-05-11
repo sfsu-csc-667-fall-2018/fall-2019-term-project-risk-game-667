@@ -2,7 +2,10 @@ import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import axios from 'axios'
 import io from 'socket.io-client'
-import { emitGameEvent } from '../../config/events'
+import {
+  emitGameCreated,
+  emitGameStarted
+} from '../../config/events'
 
 const html = htm.bind(h)
 
@@ -18,7 +21,12 @@ class App extends Component {
   componentDidMount() {
     this.getGames()
 
-    this.socket.on(emitGameEvent(), (data) => {
+    this.socket.on(emitGameCreated(), (data) => {
+      console.log("New Game Was Created", data)
+      this.getGames()
+    })
+    this.socket.on(emitGameStarted(), (data) => {
+      console.log("Game Was Started", data)
       this.getGames()
     })
   }
@@ -85,7 +93,7 @@ class App extends Component {
               <tbody>
                 <tr>
                   <th scope="row">${game.id}</th>
-                  <td>${game.status.event}</td>
+                  <td>${game.status.event} at ${Date(game.timestamp)}</td>
                   <td><a class="btn btn-primary" href="/game/${game.id}">Join</a></td>
                   <td><button class="btn btn-danger" onClick=${() => this.deleteGame(game.id)}>Delete</button></td>
                 </tr>

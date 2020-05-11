@@ -1,7 +1,9 @@
 import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import io from 'socket.io-client'
-import { emitGameEvent } from '../../config/events'
+import { 
+  emitGameCreated
+} from '../../config/events'
 import axios from 'axios'
 
 const html = htm.bind(h)
