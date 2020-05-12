@@ -69,56 +69,6 @@ const i18n = {
   },
 };
 
-const Countries = [
-  "great-britain",
-  "iceland",
-  "northern-europe",
-  "southern-europe",
-  "scandinavia",
-  "ukraine",
-  "western-europe",
-
-  "afghanistan",
-  "india",
-  "irkutsk",
-  "kamchatka",
-  "middle-east",
-  "mongolia",
-  "siam",
-  "china",
-  "japan",
-  "siberia",
-  "ural",
-  "yakutsk",
-
-  "east-africa",
-  "egypt",
-  "congo",
-  "madagascar",
-  "south-africa",
-  "north-africa",
-
-  "alaska",
-  "alberta",
-  "central-america",
-  "eastern-united-states",
-  "greenland",
-  "northwest-territory",
-  "ontario",
-  "western-united-states",
-  "quebec",
-
-  "argentina",
-  "brazil",
-  "peru",
-  "venezuela",
-
-  "eastern-australia",
-  "new-guinea",
-  "western-australia",
-  "indonesia"
-];
-
 const CountryCoordinates = new Map([
     ["east-africa", [574.401, 450]],
     ["egypt", [517.5, 361.5]],
@@ -164,89 +114,6 @@ const CountryCoordinates = new Map([
     ["venezuela", [233, 373.5]],
 ]);
 
-const ContinentBonuses = new Map([
-  ["asia", 7],
-  ["africa", 3],
-  ["europe", 5],
-  ["oceania", 2],
-  ["north-america", 5],
-  ["south-america", 2]
-]);
-
-const Continents = new Map([
-  [
-    "africa",
-    [
-      "east-africa",
-      "egypt",
-      "congo",
-      "madagascar",
-      "south-africa",
-      "north-africa"
-    ]
-  ],
-  [
-    "asia",
-    [
-      "afghanistan",
-      "india",
-      "irkutsk",
-      "kamchatka",
-      "middle-east",
-      "mongolia",
-      "siam",
-      "china",
-      "japan",
-      "siberia",
-      "ural",
-      "yakutsk"
-    ]
-  ],
-  [
-    "oceania",
-    [
-      "eastern-australia",
-      "new-guinea",
-      "western-australia",
-      "indonesia"
-    ]
-  ],
-  [
-    "europe",
-    [
-      "great-britain",
-      "iceland",
-      "northern-europe",
-      "scandinavia",
-      "southern-europe",
-      "ukraine",
-      "western-europe"
-    ]
-  ],
-  [
-    "north-america",
-    [
-      "alaska",
-      "alberta",
-      "central-america",
-      "eastern-united-states",
-      "greenland",
-      "northwest-territory",
-      "ontario",
-      "western-united-states",
-      "quebec"
-    ]
-  ],
-  [
-    "south-america",
-    [
-      "argentina",
-      "brazil",
-      "peru",
-      "venezuela"
-    ]
-  ]
-])
 
 const CountryConnections = new Map([
   ["great-britain", ["iceland", "scandinavia", "northern-europe", "western-europe"]],
@@ -298,9 +165,6 @@ const CountryConnections = new Map([
   ["indonesia", ["siam", "new-guinea", "western-australia", "eastern-australia"]]
 ]);
 
-const InitialArmies = [
-  0, 0, 40, 35, 30, 25, 20
-];
 
 const Phase = {
   DEPLOY: 0,
@@ -313,12 +177,6 @@ const Card = {
   INFANTRY: 0,
   CAVALRY: 1,
   ARTILLERY: 2
-};
-
-const AttackResult = {
-  WIN: 0,
-  DRAW: 1,
-  LOSE: 2,
 };
 
 const DEG_TO_RAD = Math.PI / 180;
@@ -367,109 +225,8 @@ function radiansToDegrees(value) {
   return value * RAD_TO_DEG;
 }
 
-function linear(value, min, max) {
-  return (value * (max - min)) + min;
-}
-
-function randomFloat(min, max) {
-  return linear(Math.random(), min, max);
-}
-
-function randomInt(min, max) {
-  return Math.round(randomFloat(min, max));
-}
-
-function randomIndex(list) {
-  return randomInt(0, list.length - 1);
-}
-
-function rollDice() {
-  return randomInt(1, 6);
-}
-
-function rollDices(count) {
-  const results = [];
-  for (let index = 0; index < count; index++) {
-    results.push(rollDice());
-  }
-  return results;
-}
-
-function getResultsValue(initialDefenseDices, finalDefenseDices) {
-  if (initialDefenseDices === finalDefenseDices) {
-    return AttackResult.LOSE;
-  } else if (initialDefenseDices !== finalDefenseDices) {
-    if (initialDefenseDices === 2 && finalDefenseDices === 1) {
-      return AttackResult.DRAW;
-    }
-    return AttackResult.WIN;
-  }
-}
-
-function resolveAttack(attack, defense) {
-  const attackResults = rollDices(Math.min(3, attack));
-  const defenseResults = rollDices(Math.min(2, defense));
-  
-  const attackResultsToShow = attackResults.slice();
-  const defenseResultsToShow = defenseResults.slice();
-  
-  attackResults.sort();
-  defenseResults.sort();
-  
-  for (let i = 0; i < attackResults.length; i++) {
-    const attackResult = attackResults[i];
-    for (let j = 0; j < defenseResults.length; j++) {
-      const defenseResult = defenseResults[j];
-      if (attackResult > defenseResult) {
-        defenseResults.splice(j, 1);
-      }
-    }
-  }
-  
-  return {
-    value: getResultsValue(defenseResultsToShow.length, defenseResults.length),
-    attack: attackResultsToShow,
-    defense: defenseResultsToShow,
-  };
-}
-
-function createInitialPlayerState(players) {
-  return {
-    objective: null,
-    cardRetrieved: false,
-    cards: [Card.INFANTRY, Card.CAVALRY, Card.ARTILLERY],
-    actions: [],
-    newTroops: Math.floor(InitialArmies[players] - (42 / players)),
-  };
-}
-
-function createInitialCountryState(id, owner) {
-  return { id, owner, count: 1, selected: false };
-}
-
-function createInitialState() {
-  const countries = new Map()
-  for (const Country of Countries) {
-    countries.set(Country, createInitialCountryState(Country, null));
-  }
-  
-  const NUM_PLAYERS = 2;
-
-  const players = [];
-  for (let playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++) {
-    players.push(createInitialPlayerState(NUM_PLAYERS));
-  }
-  
-  const countriesLeft = Countries.slice();
-  while (countriesLeft.length > 0) {
-    for (let playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++) {
-      const countryIndex = randomIndex(countriesLeft);
-      const [removedCountry] = countriesLeft.splice(countryIndex, 1);
-      countries.get(removedCountry).owner = playerIndex;
-    }
-  }
-  
-  let state = {
+const store = new Vuex.Store({
+  state: {
     isLoading: true,
     country: null,
     action: {
@@ -481,23 +238,9 @@ function createInitialState() {
     turn: 0,
     phase: Phase.LOADING,
     player: 0,
-    players: players,
-    countries: countries,
-  };
-
-  console.log("INITIATED A NEW GAME STATE", state)
-
-  return state;
-}
-
-// TODO do I need this part?
-// const initialState = createInitialState()
-
-
-
-
-const store = new Vuex.Store({
-  state: createInitialState(),
+    players: [],
+    countries: [],
+  },
   mutations: {
     updateState(state, payload) {
       console.log("UPDATED A GAME STATE", payload.state)
@@ -776,13 +519,11 @@ const vm = new Vue({
 
 
       if (state.phase === Phase.DEPLOY && state.players[state.player].actions.length === state.players[state.player].newTroops) {
-        // dispatch('nextPhase');
         let result = await this.postState(state)
         console.log(result)
       } else if (state.phase === Phase.ATTACK || state.phase === Phase.MOVE) {
         let result = await this.postState(state)
         console.log(result)
-        // dispatch('nextPhase');
       }
     },
     onClickPlus(e) {

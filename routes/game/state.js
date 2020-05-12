@@ -418,6 +418,15 @@ const Continents = new Map([
   ]
 ])
 
+const ContinentBonuses = new Map([
+  ["asia", 7],
+  ["africa", 3],
+  ["europe", 5],
+  ["oceania", 2],
+  ["north-america", 5],
+  ["south-america", 2]
+]);
+
 const AttackResult = {
   WIN: 0,
   DRAW: 1,
