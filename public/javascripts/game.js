@@ -484,6 +484,7 @@ function createInitialState() {
   //   countries,
   // };
   let state = {
+    isLoading: true,
     country: null,
     action: {
       from: null,
@@ -494,8 +495,8 @@ function createInitialState() {
     turn: 0,
     phase: Phase.LOADING,
     player: 0,
-    players,
-    countries,
+    players: players,
+    countries: countries,
   };
 
   console.log("INITIATED A NEW GAME STATE", state)
@@ -506,11 +507,23 @@ function createInitialState() {
 // TODO do I need this part?
 // const initialState = createInitialState()
 
+
+
+
 const store = new Vuex.Store({
   state: createInitialState(),
   mutations: {
     updateState(state, payload) {
+      console.log("UPDATED A GAME STATE", payload.state)
+      state.isLoading = payload.state.isLoading
+      state.country = payload.state.country
+      state.action = payload.state.action
+      state.result = payload.state.result
+      state.turn = payload.state.turn
       state.phase = payload.state.phase
+      state.player = payload.state.player
+      state.players = payload.state.players
+      state.countries = payload.state.countries
     },
     enterCountry(state, payload) {
       state.country = payload.id;
@@ -547,6 +560,7 @@ const store = new Vuex.Store({
         state.action.count--;
       }
     },
+    // this should be done on back end!
     nextPhase(state) {
       const startPhase = state.phase;
       if (state.phase === Phase.DEPLOY) {
@@ -742,6 +756,19 @@ const store = new Vuex.Store({
   }
 })
 
+let deserializeState = (state) => {
+  return {
+    country: state.country,
+    action: state.action,
+    result: state.result,
+    turn: state.turn,
+    phase: state.phase,
+    player: state.player,
+    players: state.players,
+    countries: new Map(state.countries),
+  }
+}
+
 const gameId = (function() {
   let url = window.location.pathname.split('/')
   return url[url.length - 1]
@@ -751,20 +778,20 @@ const vm = new Vue({
   el: '#app',
   store,
   mounted: async function(){
-    let s = await this.getState()
-    console.log(s)
-    
+    let state = await this.getState()
+    state.isLoading = false
     const { $store: { dispatch } } = this;
-    dispatch('updateState', { state: s });
+    dispatch('updateState', { state });
   },
   methods: {
-    async updateState() {
-      let res = await axios.get(`/game/${gameId}/update`)
-      console.log(res.data)
-    },
     async getState () {
       let res = await axios.get(`/game/${gameId}/update`)
-      return res.data.game.state
+      return deserializeState(res.data.game.state)
+    },
+    isLoading() {
+      const { $store: { state } } = this;
+      console.log("Here")
+      return state.isLoading;
     },
     getCards() {
       const { $store: { state } } = this;

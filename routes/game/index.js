@@ -122,7 +122,8 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res, next)
   let status = JSON.parse(players[0].status)
 
   let state = createInitialState()
-  
+  console.log(state)
+
   res.json({
     player: {
       id: req.user.id,

@@ -19,7 +19,6 @@ function createInitialState() {
       countries.get(removedCountry).owner = playerIndex;
     }
   }
-  
   let state = {
     country: null,
     action: {
@@ -35,7 +34,20 @@ function createInitialState() {
     countries,
   };
 
-  return state;
+  return serializeState(state);
+}
+
+let serializeState = (state) => {
+  return {
+    country: state.country,
+    action: state.action,
+    result: state.result,
+    turn: state.turn,
+    phase: state.phase,
+    player: state.player,
+    players: state.players,
+    countries: [...state.countries],
+  }
 }
 
 function createInitialCountryState(id, owner) {
