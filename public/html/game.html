@@ -332,7 +332,7 @@
           <div id="phase-name">{{phaseName}}</div>
           <div id="turn">{{turn}}</div>
         </div>
-        <div id="actions">
+        <div id="actions" :class="isPlayersTurn ? '' : 'd-none'">
           <button id="minus" type="button" :disabled="canSubtract" @click="onClickMinus">
             {{minusText}}
           </button>
