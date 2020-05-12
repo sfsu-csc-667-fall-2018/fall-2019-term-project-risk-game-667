@@ -769,6 +769,19 @@ let deserializeState = (state) => {
   }
 }
 
+let serializeState = (state) => {
+  return {
+    country: state.country,
+    action: state.action,
+    result: state.result,
+    turn: state.turn,
+    phase: state.phase,
+    player: state.player,
+    players: state.players,
+    countries: [...state.countries],
+  }
+}
+
 const gameId = (function() {
   let url = window.location.pathname.split('/')
   return url[url.length - 1]
@@ -787,6 +800,13 @@ const vm = new Vue({
     async getState () {
       let res = await axios.get(`/game/${gameId}/update`)
       return deserializeState(res.data.game.state)
+    },
+    async postState (state) {
+      console.log('SENDING A GAME STATE', state)
+      let res = await axios.post(`/game/${gameId}/update`, {
+        state: serializeState(state)
+      })
+      return res.data
     },
     isLoading() {
       const { $store: { state } } = this;
@@ -896,8 +916,12 @@ const vm = new Vue({
         }
       }
     },
-    onClickContinue(e) {
+    async onClickContinue(e) {
       const { $store: { dispatch, state } } = this;
+
+      let result = await this.postState(state)
+      console.log(result)
+
       if (state.phase === Phase.DEPLOY && state.players[state.player].actions.length === state.players[state.player].newTroops) {
         dispatch('nextPhase');
       } else if (state.phase === Phase.ATTACK || state.phase === Phase.MOVE) {

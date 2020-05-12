@@ -34,21 +34,9 @@ function createInitialState() {
     countries,
   };
 
-  return serializeState(state);
+  return state;
 }
 
-let serializeState = (state) => {
-  return {
-    country: state.country,
-    action: state.action,
-    result: state.result,
-    turn: state.turn,
-    phase: state.phase,
-    player: state.player,
-    players: state.players,
-    countries: [...state.countries],
-  }
-}
 
 function createInitialCountryState(id, owner) {
   return { id, owner, count: 1, selected: false };
