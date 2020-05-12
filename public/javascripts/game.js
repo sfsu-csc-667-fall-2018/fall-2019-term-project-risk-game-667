@@ -469,21 +469,8 @@ function createInitialState() {
     }
   }
   
-  // let state = {
-  //   country: null,
-  //   action: {
-  //     from: null,
-  //     to: null,
-  //     count: 0,
-  //   },
-  //   result: null,
-  //   turn: 0,
-  //   phase: Phase.DEPLOY,
-  //   player: 0,
-  //   players,
-  //   countries,
-  // };
   let state = {
+    isLoading: true,
     country: null,
     action: {
       from: null,
@@ -494,8 +481,8 @@ function createInitialState() {
     turn: 0,
     phase: Phase.LOADING,
     player: 0,
-    players,
-    countries,
+    players: players,
+    countries: countries,
   };
 
   console.log("INITIATED A NEW GAME STATE", state)
@@ -506,11 +493,23 @@ function createInitialState() {
 // TODO do I need this part?
 // const initialState = createInitialState()
 
+
+
+
 const store = new Vuex.Store({
   state: createInitialState(),
   mutations: {
     updateState(state, payload) {
+      console.log("UPDATED A GAME STATE", payload.state)
+      state.isLoading = payload.state.isLoading
+      state.country = payload.state.country
+      state.action = payload.state.action
+      state.result = payload.state.result
+      state.turn = payload.state.turn
       state.phase = payload.state.phase
+      state.player = payload.state.player
+      state.players = payload.state.players
+      state.countries = payload.state.countries
     },
     enterCountry(state, payload) {
       state.country = payload.id;
@@ -547,160 +546,6 @@ const store = new Vuex.Store({
         state.action.count--;
       }
     },
-    nextPhase(state) {
-      const startPhase = state.phase;
-      if (state.phase === Phase.DEPLOY) {
-        do {
-          const action = state.players[state.player].actions.pop();
-          const country = state.countries.get(action.id);
-          if (country.owner === state.player) {
-            country.count++;
-          }
-        } while (state.players[state.player].actions.length > 0);
-        if (state.turn === 0) {
-          state.players[state.player].newTroops = 3;
-          state.player = (state.player + 1) % state.players.length;
-          state.action.to = null;
-          if (state.player === 0) {
-            state.action.count = 1;
-            state.phase = Phase.ATTACK;
-            state.turn++;
-          } 
-        } else {        
-          state.phase = (state.phase + 1) % 3;
-          state.action.from = null;
-          state.action.to = null;
-          state.action.count = 1;
-        }        
-      } else if (state.phase === Phase.ATTACK) {        
-        if (state.action.from !== null 
-         && state.action.to !== null
-         && state.action.count >= 1) {          
-          state.players[state.player].actions.push({
-            from: state.action.from,
-            to: state.action.to,
-            count: state.action.count,
-          });
-          
-          state.action.from = null;
-          state.action.to = null;
-          state.action.count = 1;          
-        }        
-        if (state.players[state.player].actions.length > 0) {          
-          do {            
-            const action = state.players[state.player].actions.pop();
-            const from = state.countries.get(action.from);
-            const to = state.countries.get(action.to);
-            state.result = resolveAttack(action.count, to.count);
-            if (state.result.value === AttackResult.WIN) {
-              if (to.count - action.count <= 0) {
-                from.count -= action.count;
-                to.count = action.count;
-                to.owner = state.player;
-                if (!state.players[state.player].cardRetrieved) {
-                  state.players[state.player].cardRetrieved = true;
-                  state.players[state.player].cards.push(randomInt(0, 2));
-                }
-              }
-            } else if (state.result.value === AttackResult.DRAW) {
-              if (to.count - 1 <= 0) {
-                from.count -= action.count;
-                to.count = action.count - 1;
-                to.owner = state.player;
-              } else {
-                to.count--;
-                from.count--;
-                action.count--;
-              }
-            } else if (state.result.value === AttackResult.LOSE) {
-              if (action.count - to.count <= 0) {
-                from.count -= action.count;
-              } else {
-                from.count -= to.count;
-                action.count -= to.count;
-              }
-            }
-          } while (state.players[state.player].actions.length > 0);
-          console.log(state.action);          
-          let troopCount = 0;
-          let countryCount = 0;
-          for (const [id, countryState] of state.countries) {
-            if (countryState.owner === state.player) {
-              countryCount++;
-              troopCount += countryState.count;
-            }
-          }
-          if (troopCount === countryCount) {
-            state.phase = (state.phase + 1) % 3;
-            state.result = null;
-          }
-        } else {
-          state.phase = (state.phase + 1) % 3;
-          state.result = null;
-        }
-        state.action.from = null;
-        state.action.to = null;
-        state.action.count = 1;
-      } else if (state.phase === Phase.MOVE) {
-        if (state.action.from !== null && state.action.to !== null && state.action.count >= 1) {
-          state.players[state.player].actions.push({
-            from: state.action.from,
-            to: state.action.to,
-            count: state.action.count,
-          });
-          state.action.from = null;
-          state.action.to = null;
-          state.action.count = 1;
-        }
-        if (state.players[state.player].actions.length > 0) {
-          do {
-            const action = state.players[state.player].actions.pop();
-            const from = state.countries.get(action.from);
-            const to = state.countries.get(action.to);
-            from.count -= action.count;
-            to.count += action.count;
-          } while (state.players[state.player].actions.length > 0);
-        } else {
-          state.phase = (state.phase + 1) % 3;
-        }
-      }
-      if (startPhase !== state.phase && state.phase === Phase.DEPLOY) { 
-        state.player = (state.player + 1) % state.players.length;
-        if (state.player === 0) {
-          state.turn++;
-        }
-        // TODO: calculate how many new troops correspond to the player
-        if (state.turn > 0) {
-          let numberOfCountries = 0;
-          const ownedCountries = [];
-          const ownedContinents = [];
-          for (const [countryId, countryState] of state.countries) {
-            if (countryState.owner === state.player) {
-              numberOfCountries++;
-              ownedCountries.push(countryId);
-            }
-          }
-          const troopsPerCountry = Math.max(3, Math.floor(numberOfCountries / 3));
-          let troopsPerContinent = 0;
-          for (const [continentId, continentCountries] of Continents) {
-            let ownedContinentCountries = 0;
-            for (const continentCountryId of continentCountries) {
-              if (ownedCountries.includes(continentCountryId)) {
-                ownedContinentCountries++;
-              }
-            }
-            if (ownedContinentCountries === continentCountries.length) {
-              troopsPerContinent += ContinentBonuses.get(continentId);
-              ownedContinents.push(continentId);
-            }
-          }
-          const newTroops = state.players[state.player].newTroops = troopsPerContinent + troopsPerCountry;
-          console.log(`Player ${i18n.en.players[state.player]} has ${newTroops} more troops`);
-          console.log(` - ${troopsPerContinent} by continents (${ownedContinents.join(", ")})`);
-          console.log(` - ${troopsPerCountry} by countries (${ownedCountries.join(", ")})`);
-        }
-      }
-    }
   },
   actions: {
     updateState(context, payload) {
@@ -742,29 +587,86 @@ const store = new Vuex.Store({
   }
 })
 
+let deserializeState = (state) => {
+  return {
+    country: state.country,
+    action: state.action,
+    result: state.result,
+    turn: state.turn,
+    phase: state.phase,
+    player: state.player,
+    players: state.players,
+    countries: new Map(state.countries),
+  }
+}
+
+let serializeState = (state) => {
+  return {
+    country: state.country,
+    action: state.action,
+    result: state.result,
+    turn: state.turn,
+    phase: state.phase,
+    player: state.player,
+    players: state.players,
+    countries: [...state.countries],
+  }
+}
+
 const gameId = (function() {
   let url = window.location.pathname.split('/')
   return url[url.length - 1]
 })()
 
+let PLAYER_INDEX
+
+;(async function() {
+  let res = await axios.get(`/game/${gameId}/update`)
+  let {
+    players,
+    player
+  } = res.data
+  for(let i = 0; i < players.length; i++) {
+    if(players[i].player_id === player.id) {
+      PLAYER_INDEX = i
+      return
+    }
+  }
+})()
+
+
 const vm = new Vue({
   el: '#app',
   store,
   mounted: async function(){
-    let s = await this.getState()
-    console.log(s)
-    
+    let state = await this.getState()
+    state.isLoading = false
     const { $store: { dispatch } } = this;
-    dispatch('updateState', { state: s });
+    dispatch('updateState', { state });
+
+    socket.on(`GAME EVENT ${gameId}`, async (msg) => {
+      const { $store: { dispatch } } = this;
+      let state = await this.getState()
+      dispatch('updateState', { state });
+    })
+    
   },
   methods: {
-    async updateState() {
-      let res = await axios.get(`/game/${gameId}/update`)
-      console.log(res.data)
-    },
     async getState () {
       let res = await axios.get(`/game/${gameId}/update`)
-      return res.data.game.state
+      return deserializeState(res.data.game.state)
+    },
+    async postState (state) {
+      console.log('SENDING A GAME STATE', state)
+      let res = await axios.post(`/game/${gameId}/update`, {
+        state: serializeState(state)
+      })
+      return res.data
+    },
+    isLoading() {
+      const { $store: { state } } = this;
+      console.log("Here")
+      return state.isLoading;
     },
     getCards() {
       const { $store: { state } } = this;
@@ -869,12 +771,18 @@ const vm = new Vue({
         }
       }
     },
-    onClickContinue(e) {
+    async onClickContinue(e) {
       const { $store: { dispatch, state } } = this;
+
+
       if (state.phase === Phase.DEPLOY && state.players[state.player].actions.length === state.players[state.player].newTroops) {
-        dispatch('nextPhase');
+        // dispatch('nextPhase');
+        let result = await this.postState(state)
+        console.log(result)
       } else if (state.phase === Phase.ATTACK || state.phase === Phase.MOVE) {
-        dispatch('nextPhase');
+        let result = await this.postState(state)
+        console.log(result)
+        // dispatch('nextPhase');
       }
     },
     onClickPlus(e) {
@@ -895,6 +803,10 @@ const vm = new Vue({
     }
   },
   computed: {
+    isPlayersTurn() {
+      const { $store: { state } } = this;
+      return state.player === PLAYER_INDEX;
+    },
     turn() {
       const { $store: { state } } = this;
       return `${i18n.en.turn}: ${state.turn}`;
@@ -1051,3 +963,5 @@ const vm = new Vue({
     }
   }
 })
+
+const socket = io()

@@ -5,7 +5,10 @@ const {
   joinGame,
   getPlayers,
   deleteGame,
-  updateStatus
+  updateStatus,
+  newState,
+  getState,
+  updateState
 } = require('../../db/game')
 const { ensureLoggedIn } = require('connect-ensure-login')
 const { 
@@ -16,7 +19,10 @@ const { ROOM_LIMIT } = require('../../config/const')
 const { hash } = require('../../lib/util')
 const router = express.Router()
 const createError = require('http-errors')
-const { createInitialState } = require('./state')
+const { 
+  createInitialState,
+  nextPhase
+} = require('./state')
 
 router.get('/all', async (req, res) => {
   let games = await getGamesAll()
@@ -36,12 +42,18 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
       event: 'CREATED',
       timestamp: Date.now(),
     },
+    state: createInitialState()
   }
 
   let result = await newGame(
     game.id,
     JSON.stringify(game.status),
     user.id
+  )
+
+  result.state = await newState(
+    game.id,
+    JSON.stringify(serializeState(game.state))
   )
 
   let state = { 
@@ -116,12 +128,13 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
 
 
 
-router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res, next) => {
+router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
   let players = await getPlayers(gameId)
   let status = JSON.parse(players[0].status)
 
-  let state = createInitialState()
+  let rawState = await getState(gameId)
+  let state = JSON.parse(rawState.raw)
   
   res.json({
     player: {
@@ -131,12 +144,54 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res, next)
     game: {
       id: gameId,
       status: status,
-      state
+      state: state
     },
     players,
   })
 })
 
 
+router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
+  let gameId = req.params.game_id
+  
+  let state =  nextPhase(deserializeState(req.body.state))
+
+  let rawState = JSON.stringify(serializeState(state))
+  let storeResult = await updateState(gameId, rawState)
+
+  let io = req.app.get('io')
+  // TODO even should not be hardcoded
+  io.emit(`GAME EVENT ${gameId}`, { id: gameId })
+
+  res.json({
+    error: null,
+  })
+})
+
+
+let serializeState = (state) => {
+  return {
+    country: state.country,
+    action: state.action,
+    result: state.result,
+    turn: state.turn,
+    phase: state.phase,
+    player: state.player,
+    players: state.players,
+    countries: [...state.countries],
+  }
+}
+let deserializeState = (state) => {
+  return {
+    country: state.country,
+    action: state.action,
+    result: state.result,
+    turn: state.turn,
+    phase: state.phase,
+    player: state.player,
+    players: state.players,
+    countries: new Map(state.countries),
+  }
+}
 
 module.exports = router
