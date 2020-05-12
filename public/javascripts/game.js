@@ -469,20 +469,6 @@ function createInitialState() {
     }
   }
   
-  // let state = {
-  //   country: null,
-  //   action: {
-  //     from: null,
-  //     to: null,
-  //     count: 0,
-  //   },
-  //   result: null,
-  //   turn: 0,
-  //   phase: Phase.DEPLOY,
-  //   player: 0,
-  //   players,
-  //   countries,
-  // };
   let state = {
     isLoading: true,
     country: null,
@@ -795,6 +781,13 @@ const vm = new Vue({
     state.isLoading = false
     const { $store: { dispatch } } = this;
     dispatch('updateState', { state });
+
+    socket.on(`GAME EVENT ${gameId}`, async (msg) => {
+      const { $store: { dispatch } } = this;
+      let state = await this.getState()
+      dispatch('updateState', { state });
+    })
+    
   },
   methods: {
     async getState () {
@@ -919,13 +912,15 @@ const vm = new Vue({
     async onClickContinue(e) {
       const { $store: { dispatch, state } } = this;
 
-      let result = await this.postState(state)
-      console.log(result)
 
       if (state.phase === Phase.DEPLOY && state.players[state.player].actions.length === state.players[state.player].newTroops) {
-        dispatch('nextPhase');
+        // dispatch('nextPhase');
+        let result = await this.postState(state)
+        console.log(result)
       } else if (state.phase === Phase.ATTACK || state.phase === Phase.MOVE) {
-        dispatch('nextPhase');
+        let result = await this.postState(state)
+        console.log(result)
+        // dispatch('nextPhase');
       }
     },
     onClickPlus(e) {
@@ -1102,3 +1097,5 @@ const vm = new Vue({
     }
   }
 })
+
+const socket = io()
