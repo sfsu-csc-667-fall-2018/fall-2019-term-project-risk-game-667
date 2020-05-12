@@ -1,6 +1,6 @@
 const i18n = {
   en: {
-    phases: ["Deploy troops", "Attack!", "Move Troops"],
+    phases: ["Deploy troops", "Attack!", "Move Troops", "Loading"],
     players: [
       "Red",
       "Green",
@@ -305,7 +305,8 @@ const InitialArmies = [
 const Phase = {
   DEPLOY: 0,
   ATTACK: 1,
-  MOVE: 2
+  MOVE: 2,
+  LOADING: 3
 };
 
 const Card = {
@@ -468,6 +469,20 @@ function createInitialState() {
     }
   }
   
+  // let state = {
+  //   country: null,
+  //   action: {
+  //     from: null,
+  //     to: null,
+  //     count: 0,
+  //   },
+  //   result: null,
+  //   turn: 0,
+  //   phase: Phase.DEPLOY,
+  //   player: 0,
+  //   players,
+  //   countries,
+  // };
   let state = {
     country: null,
     action: {
@@ -477,7 +492,7 @@ function createInitialState() {
     },
     result: null,
     turn: 0,
-    phase: Phase.DEPLOY,
+    phase: Phase.LOADING,
     player: 0,
     players,
     countries,
@@ -488,12 +503,15 @@ function createInitialState() {
   return state;
 }
 
-// TODO do I need this part
+// TODO do I need this part?
 // const initialState = createInitialState()
 
 const store = new Vuex.Store({
   state: createInitialState(),
   mutations: {
+    updateState(state, payload) {
+      state.phase = payload.state.phase
+    },
     enterCountry(state, payload) {
       state.country = payload.id;
       state.countries.get(state.country).selected = true;
@@ -685,6 +703,9 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    updateState(context, payload) {
+      context.commit('updateState', payload);
+    },
     enterCountry(context, payload) {
       context.commit('enterCountry', payload);
     },
@@ -729,13 +750,21 @@ const gameId = (function() {
 const vm = new Vue({
   el: '#app',
   store,
-  mounted: function(){
-    this.updateState()
+  mounted: async function(){
+    let s = await this.getState()
+    console.log(s)
+    
+    const { $store: { dispatch } } = this;
+    dispatch('updateState', { state: s });
   },
   methods: {
     async updateState() {
       let res = await axios.get(`/game/${gameId}/update`)
       console.log(res.data)
+    },
+    async getState () {
+      let res = await axios.get(`/game/${gameId}/update`)
+      return res.data.game.state
     },
     getCards() {
       const { $store: { state } } = this;

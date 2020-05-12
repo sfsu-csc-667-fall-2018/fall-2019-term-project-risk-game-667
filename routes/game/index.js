@@ -16,6 +16,7 @@ const { ROOM_LIMIT } = require('../../config/const')
 const { hash } = require('../../lib/util')
 const router = express.Router()
 const createError = require('http-errors')
+const { createInitialState } = require('./state')
 
 router.get('/all', async (req, res) => {
   let games = await getGamesAll()
@@ -72,22 +73,7 @@ router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
   })
 })
 
-router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res, next) => {
-  let gameId = req.params.game_id
-  let players = await getPlayers(gameId)
-  let status = JSON.parse(players[0].status)
-  res.json({
-    player: {
-      id: req.user.id,
-      username: req.user.username,
-    },
-    game: {
-      id: gameId,
-      status: status
-    },
-    players,
-  })
-})
+
 
 router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   let gameId = req.params.game_id
@@ -127,5 +113,30 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
     next(createError(500))
   }
 })
+
+
+
+router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res, next) => {
+  let gameId = req.params.game_id
+  let players = await getPlayers(gameId)
+  let status = JSON.parse(players[0].status)
+
+  let state = createInitialState()
+  
+  res.json({
+    player: {
+      id: req.user.id,
+      username: req.user.username,
+    },
+    game: {
+      id: gameId,
+      status: status,
+      state
+    },
+    players,
+  })
+})
+
+
 
 module.exports = router
