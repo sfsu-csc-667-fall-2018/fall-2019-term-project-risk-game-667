@@ -1,5 +1,5 @@
 const i18n = {
-  es: {
+  en: {
     phases: ["Deploy troops", "Attack!", "Move Troops"],
     players: [
       "Red",
@@ -432,23 +432,6 @@ function resolveAttack(attack, defense) {
   };
 }
 
-/*
-let attack = 36;
-let defense = 12;
-while (attack > 0 && defense > 0) {
-  const result = resolveAttack(attack,defense);
-  if (result === AttackResult.WIN) {
-    defense -= 2;
-  } else if (result === AttackResult.DRAW) {
-    attack--;
-    defense--;
-  } else if (result === AttackResult.LOSE) {
-    attack -= 2;
-  }
-  console.log(attack, defense);
-}
-*/
-
 function createInitialPlayerState(players) {
   return {
     objective: null,
@@ -485,7 +468,7 @@ function createInitialState() {
     }
   }
   
-  return {
+  let state = {
     country: null,
     action: {
       from: null,
@@ -499,9 +482,14 @@ function createInitialState() {
     players,
     countries,
   };
+
+  console.log("INITIATED A NEW GAME STATE", state)
+
+  return state;
 }
 
-const initialState = createInitialState()
+// TODO do I need this part
+// const initialState = createInitialState()
 
 const store = new Vuex.Store({
   state: createInitialState(),
@@ -544,7 +532,6 @@ const store = new Vuex.Store({
     nextPhase(state) {
       const startPhase = state.phase;
       if (state.phase === Phase.DEPLOY) {
-        
         do {
           const action = state.players[state.player].actions.pop();
           const country = state.countries.get(action.id);
@@ -552,9 +539,7 @@ const store = new Vuex.Store({
             country.count++;
           }
         } while (state.players[state.player].actions.length > 0);
-        
         if (state.turn === 0) {
-          
           state.players[state.player].newTroops = 3;
           state.player = (state.player + 1) % state.players.length;
           state.action.to = null;
@@ -562,24 +547,17 @@ const store = new Vuex.Store({
             state.action.count = 1;
             state.phase = Phase.ATTACK;
             state.turn++;
-          }
-          
-        } else {
-        
+          } 
+        } else {        
           state.phase = (state.phase + 1) % 3;
-
           state.action.from = null;
           state.action.to = null;
           state.action.count = 1;
-
-        }
-        
-      } else if (state.phase === Phase.ATTACK) {
-        
+        }        
+      } else if (state.phase === Phase.ATTACK) {        
         if (state.action.from !== null 
          && state.action.to !== null
-         && state.action.count >= 1) {
-          
+         && state.action.count >= 1) {          
           state.players[state.player].actions.push({
             from: state.action.from,
             to: state.action.to,
@@ -588,14 +566,10 @@ const store = new Vuex.Store({
           
           state.action.from = null;
           state.action.to = null;
-          state.action.count = 1;
-          
-        }
-        
-        if (state.players[state.player].actions.length > 0) {
-          
-          do {
-            
+          state.action.count = 1;          
+        }        
+        if (state.players[state.player].actions.length > 0) {          
+          do {            
             const action = state.players[state.player].actions.pop();
             const from = state.countries.get(action.from);
             const to = state.countries.get(action.to);
@@ -629,9 +603,7 @@ const store = new Vuex.Store({
               }
             }
           } while (state.players[state.player].actions.length > 0);
-          
-          console.log(state.action);
-          
+          console.log(state.action);          
           let troopCount = 0;
           let countryCount = 0;
           for (const [id, countryState] of state.countries) {
@@ -640,65 +612,46 @@ const store = new Vuex.Store({
               troopCount += countryState.count;
             }
           }
-          
           if (troopCount === countryCount) {
             state.phase = (state.phase + 1) % 3;
             state.result = null;
           }
-          
         } else {
-          
           state.phase = (state.phase + 1) % 3;
           state.result = null;
-          
         }
-        
         state.action.from = null;
         state.action.to = null;
         state.action.count = 1;
-        //
-        
       } else if (state.phase === Phase.MOVE) {
-        
         if (state.action.from !== null && state.action.to !== null && state.action.count >= 1) {
-          
           state.players[state.player].actions.push({
             from: state.action.from,
             to: state.action.to,
             count: state.action.count,
           });
-          
           state.action.from = null;
           state.action.to = null;
           state.action.count = 1;
-          
         }
-        
         if (state.players[state.player].actions.length > 0) {
           do {
             const action = state.players[state.player].actions.pop();
             const from = state.countries.get(action.from);
             const to = state.countries.get(action.to);
-            
             from.count -= action.count;
             to.count += action.count;
-            
           } while (state.players[state.player].actions.length > 0);
-          
         } else {
           state.phase = (state.phase + 1) % 3;
         }
-        
       }
-      
-      if (startPhase !== state.phase && state.phase === Phase.DEPLOY) {
-        
+      if (startPhase !== state.phase && state.phase === Phase.DEPLOY) { 
         state.player = (state.player + 1) % state.players.length;
         if (state.player === 0) {
           state.turn++;
         }
-        
-        // TODO: Aquí deberíamos calcular cuántas nuevas tropas le corresponden al jugador.
+        // TODO: calculate how many new troops correspond to the player
         if (state.turn > 0) {
           let numberOfCountries = 0;
           const ownedCountries = [];
@@ -709,7 +662,6 @@ const store = new Vuex.Store({
               ownedCountries.push(countryId);
             }
           }
-
           const troopsPerCountry = Math.max(3, Math.floor(numberOfCountries / 3));
           let troopsPerContinent = 0;
           for (const [continentId, continentCountries] of Continents) {
@@ -724,10 +676,8 @@ const store = new Vuex.Store({
               ownedContinents.push(continentId);
             }
           }
-
-          // Nuevas tropas.
           const newTroops = state.players[state.player].newTroops = troopsPerContinent + troopsPerCountry;
-          console.log(`Player ${i18n.es.players[state.player]} has ${newTroops} more troops`);
+          console.log(`Player ${i18n.en.players[state.player]} has ${newTroops} more troops`);
           console.log(` - ${troopsPerContinent} by continents (${ownedContinents.join(", ")})`);
           console.log(` - ${troopsPerCountry} by countries (${ownedCountries.join(", ")})`);
         }
@@ -918,7 +868,7 @@ const vm = new Vue({
   computed: {
     turn() {
       const { $store: { state } } = this;
-      return `${i18n.es.turn}: ${state.turn}`;
+      return `${i18n.en.turn}: ${state.turn}`;
     },
     canContinue() {
       const { $store: { state } } = this;
@@ -953,30 +903,30 @@ const vm = new Vue({
       return this.$store.state.countries;
     },
     playerName() {
-      return `${i18n.es.player}: ${i18n.es.players[this.$store.state.player]}`;
+      return `${i18n.en.player}: ${i18n.en.players[this.$store.state.player]}`;
     },
     phaseName() {
       const { $store: { state } } = this;
-      const phase = i18n.es.phases[state.phase];
+      const phase = i18n.en.phases[state.phase];
       if (state.phase === Phase.DEPLOY) {
         const current = state.players[state.player].actions.length;
         const total = state.players[state.player].newTroops;
-        return `${i18n.es.phase}: ${phase} (${current}/${total})`;
+        return `${i18n.en.phase}: ${phase} (${current}/${total})`;
       }
       if (state.action.from !== null) {
         if (state.action.to !== null) {
-          return `${i18n.es.phase}: ${phase} ${i18n.es.from} ${state.action.from} ${i18n.es.to} ${state.action.to}`; 
+          return `${i18n.en.phase}: ${phase} ${i18n.en.from} ${state.action.from} ${i18n.en.to} ${state.action.to}`; 
         } else if (state.country !== null) {
-          return `${i18n.es.phase}: ${phase} ${i18n.es.from} ${state.action.from} ${i18n.es.to} ${state.country}`;
+          return `${i18n.en.phase}: ${phase} ${i18n.en.from} ${state.action.from} ${i18n.en.to} ${state.country}`;
         }
-        return `${i18n.es.phase}: ${phase} ${i18n.es.from} ${state.action.from}`;
+        return `${i18n.en.phase}: ${phase} ${i18n.en.from} ${state.action.from}`;
       }
-      return `${i18n.es.phase}: ${phase}`;
+      return `${i18n.en.phase}: ${phase}`;
     },
     countryName() {
       const { $store: { state } } = this;
       if (state.country) {
-        return `${i18n.es.country}: ${i18n.es.countries.get(state.country)}`;
+        return `${i18n.en.country}: ${i18n.en.countries.get(state.country)}`;
       }
       return '';
     },
@@ -1001,10 +951,10 @@ const vm = new Vue({
       }
     },
     minusText() {
-      return i18n.es.minus;
+      return i18n.en.minus;
     },
     plusText() {
-      return i18n.es.plus;
+      return i18n.en.plus;
     },
     warningText() {
       return "Warning";
