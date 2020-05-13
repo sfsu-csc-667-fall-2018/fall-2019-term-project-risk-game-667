@@ -1,4 +1,4 @@
-# Risk Game Documentations
+# Risk Game Documentation
 
 ## Overview
 
