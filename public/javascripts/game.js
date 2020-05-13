@@ -223,7 +223,6 @@ function radiansToDegrees(value) {
 
 const store = new Vuex.Store({
   state: {
-    isLoading: true,
     country: null,
     action: {
       from: null,
@@ -240,7 +239,6 @@ const store = new Vuex.Store({
   mutations: {
     updateState(state, payload) {
       console.log("UPDATED A GAME STATE", payload.state)
-      state.isLoading = payload.state.isLoading
       state.country = payload.state.country
       state.action = payload.state.action
       state.result = payload.state.result
@@ -362,7 +360,6 @@ const vm = new Vue({
   store,
   mounted: async function(){
     let state = await this.getState()
-    state.isLoading = false
     const { $store: { dispatch } } = this;
     dispatch('updateState', { state });
 
@@ -384,10 +381,6 @@ const vm = new Vue({
         state: serializeState(state)
       })
       return res.data
-    },
-    isLoading() {
-      const { $store: { state } } = this;
-      return state.isLoading;
     },
     getDiceClasses(type, index) {
       const { $store: { state } } = this;
@@ -490,8 +483,6 @@ const vm = new Vue({
     },
     async onClickContinue(e) {
       const { $store: { dispatch, state } } = this;
-
-
       if (state.phase === Phase.DEPLOY && state.players[state.player].actions.length === state.players[state.player].newTroops) {
         let result = await this.postState(state)
         console.log(result)
