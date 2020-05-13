@@ -10,6 +10,7 @@ const {
   getState,
   updateState
 } = require('../../db/game')
+
 const { ensureLoggedIn } = require('connect-ensure-login')
 const { 
   emitGameCreated,
@@ -23,6 +24,7 @@ const {
   createInitialState,
   nextPhase
 } = require('./state')
+const gameState = require('../../db/state')
 
 router.get('/all', async (req, res) => {
   let games = await getGamesAll()
@@ -50,6 +52,22 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
     JSON.stringify(game.status),
     user.id
   )
+
+
+  let newGameState = serializeState(game.state)
+  let storeNewState = await gameState.newState(
+    game.id,
+    newGameState.turn,
+    newGameState.phase,
+    newGameState.player,
+    JSON.stringify(newGameState.action),
+    JSON.stringify(newGameState.players[0]),
+    JSON.stringify(newGameState.players[1]),
+    JSON.stringify(newGameState.result),
+    JSON.stringify(newGameState.countries),
+    newGameState.country
+  )
+
 
   result.state = await newState(
     game.id,
@@ -153,11 +171,24 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
 
 router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
-  
   let state =  nextPhase(deserializeState(req.body.state))
 
-  let rawState = JSON.stringify(serializeState(state))
-  let storeResult = await updateState(gameId, rawState)
+  let serilizedState = serializeState(state)
+  let storeResult = await updateState(gameId, JSON.stringify(serilizedState))
+
+  let storeUpdatedState = await gameState.updateState(
+    gameId,
+    serilizedState.turn,
+    serilizedState.phase,
+    serilizedState.player,
+    JSON.stringify(serilizedState.action),
+    JSON.stringify(serilizedState.players[0]),
+    JSON.stringify(serilizedState.players[1]),
+    JSON.stringify(serilizedState.result),
+    JSON.stringify(serilizedState.countries),
+    serilizedState.country
+  )
+
 
   let io = req.app.get('io')
   // TODO even should not be hardcoded
