@@ -2,12 +2,33 @@
 
 ![Node.js CI](https://github.com/sfsu-csc-667-fall-2018/fall-2019-term-project-risk-game-667/workflows/Node.js%20CI/badge.svg?branch=master)
 
-Project description goes here
+Subset of risk game for written in JS
 
-## Requrements
+## Features
+
+- Multiplayer mode for 2 players
+
+- Authentication using username/password
+
+- Build in live chat
+
+## Overview
+
+The application has several main parts:
+
+- Web Server written in Express, and Pug as template enginge
+
+- Chat component written in Preact
+
+- Game component written in Vue
+
+Components communicate using HTTP and Websocket protocols, using axios and socket.io, respectively. 
+
+## Requirements
 
 - Node & npm or yarn
 - Postgres Server
+- Redis (For persistent sessions)
 
 ## Installation
 
@@ -59,8 +80,4 @@ On Windows
 npm run start:win 
 ```
 
-
-## Room join flow diagram
-
-![Room join flow](https://i.ibb.co/F5Y05Kq/userflow.png)
 
