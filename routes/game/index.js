@@ -55,7 +55,7 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
 
 
   let newGameState = serializeState(game.state)
-  let storeNewState = await gameState.newState(
+  result.state = await gameState.newState(
     game.id,
     newGameState.turn,
     newGameState.phase,
@@ -69,10 +69,10 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   )
 
 
-  result.state = await newState(
-    game.id,
-    JSON.stringify(serializeState(game.state))
-  )
+  // result.state = await newState(
+  //   game.id,
+  //   JSON.stringify(serializeState(game.state))
+  // )
 
   let state = { 
     event: 'JOINED',
@@ -144,16 +144,29 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   }
 })
 
-
+let constructState = (state) => ({
+  id: state.id,
+  turn: state.turn,
+  phase: state.phase,
+  player: state.current_player,
+  action: JSON.parse(state.action),
+  players: [JSON.parse(state.player_1), JSON.parse(state.player_2)],
+  result: JSON.parse(state.result),
+  countries: JSON.parse(state.countries),
+  country: null
+})
 
 router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
   let players = await getPlayers(gameId)
   let status = JSON.parse(players[0].status)
 
-  let rawState = await getState(gameId)
-  let state = JSON.parse(rawState.raw)
-  
+  // let rawState = await getState(gameId)
+  // let state = JSON.parse(rawState.raw)
+
+
+  let updatedState = await gameState.getState(gameId)
+
   res.json({
     player: {
       id: req.user.id,
@@ -162,7 +175,8 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
     game: {
       id: gameId,
       status: status,
-      state: state
+      state: constructState(updatedState),
+      // state
     },
     players,
   })
@@ -174,7 +188,6 @@ router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let state =  nextPhase(deserializeState(req.body.state))
 
   let serilizedState = serializeState(state)
-  let storeResult = await updateState(gameId, JSON.stringify(serilizedState))
 
   let storeUpdatedState = await gameState.updateState(
     gameId,

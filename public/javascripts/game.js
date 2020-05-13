@@ -397,6 +397,8 @@ const vm = new Vue({
   methods: {
     async getState () {
       let res = await axios.get(`/game/${gameId}/update`)
+      // console.log('OLD STATE', res.data.game.state)
+      // console.log('NEW STATE', res.data.game.newState)
       return deserializeState(res.data.game.state)
     },
     async postState (state) {
@@ -408,7 +410,6 @@ const vm = new Vue({
     },
     isLoading() {
       const { $store: { state } } = this;
-      console.log("Here")
       return state.isLoading;
     },
     getDiceClasses(type, index) {
