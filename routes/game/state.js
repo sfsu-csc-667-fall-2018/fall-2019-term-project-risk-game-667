@@ -44,9 +44,6 @@ function createInitialCountryState(id, owner) {
 
 function createInitialPlayerState(players) {
   return {
-    objective: null,
-    cardRetrieved: false,
-    cards: [Card.INFANTRY, Card.CAVALRY, Card.ARTILLERY],
     actions: [],
     newTroops: Math.floor(InitialArmies[players] - (42 / players)),
   };
@@ -102,10 +99,6 @@ function nextPhase(state) {
             from.count -= action.count;
             to.count = action.count;
             to.owner = state.player;
-            if (!state.players[state.player].cardRetrieved) {
-              state.players[state.player].cardRetrieved = true;
-              state.players[state.player].cards.push(randomInt(0, 2));
-            }
           }
         } else if (state.result.value === AttackResult.DRAW) {
           if (to.count - 1 <= 0) {

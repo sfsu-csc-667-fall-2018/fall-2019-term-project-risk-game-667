@@ -411,10 +411,6 @@ const vm = new Vue({
       console.log("Here")
       return state.isLoading;
     },
-    getCards() {
-      const { $store: { state } } = this;
-      return state.players[state.player].cards;
-    },
     getDiceClasses(type, index) {
       const { $store: { state } } = this;
       if (this.$store.state.result) {
