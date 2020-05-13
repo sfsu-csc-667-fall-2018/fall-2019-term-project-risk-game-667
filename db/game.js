@@ -108,50 +108,6 @@ function updateStatus(gameId, status) {
   })
 }
 
-function newState(id, rawData) {
-  return new Promise((resolve) => {
-    db.any(
-      `INSERT INTO state_table ("id", "raw") VALUES ('${id}', '${rawData}');`
-    )
-      .then((results) => {
-        resolve({ error: undefined })
-      })
-      .catch((error) => {
-        console.log(error)
-        resolve({ error: 'Error creating a new state!', code: 500 })
-      })
-  })
-}
-
-function updateState(id, rawData) {
-  return new Promise((resolve) => {
-    db.any(
-      `UPDATE state_table SET "raw" = '${rawData}' WHERE "id" = '${id}';`
-    )
-      .then((results) => {
-        resolve({ error: undefined })
-      })
-      .catch((error) => {
-        console.log(error)
-        resolve({ error: 'Error updating state!', code: 500 })
-      })
-  })
-}
-
-function getState(id) {
-  return new Promise((resolve) => {
-    db.any(
-      `SELECT * FROM state_table  WHERE "id" = '${id}';`
-    )
-      .then((results) => {
-        resolve(results[0])
-      })
-      .catch((error) => {
-        console.log(error)
-        resolve({ error: 'Error getting state!', code: 500 })
-      })
-  })
-}
 
 module.exports = {
   newGame,
@@ -161,7 +117,4 @@ module.exports = {
   joinGame,
   getPlayers,
   updateStatus,
-  newState,
-  getState,
-  updateState
 }

@@ -5,10 +5,7 @@ const {
   joinGame,
   getPlayers,
   deleteGame,
-  updateStatus,
-  newState,
-  getState,
-  updateState
+  updateStatus
 } = require('../../db/game')
 
 const { ensureLoggedIn } = require('connect-ensure-login')
