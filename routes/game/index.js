@@ -158,11 +158,10 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let players = await getPlayers(gameId)
   let status = JSON.parse(players[0].status)
 
-  // let rawState = await getState(gameId)
-  // let state = JSON.parse(rawState.raw)
-
-
   let updatedState = await gameState.getState(gameId)
+  let state = constructState(updatedState)
+  state.players[0].id = '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb'
+  state.players[1].id = 'ffb622df7e9926a3b77284dcb024a2ca667e1c474dd644321e90a16330107519'
 
   res.json({
     player: {
@@ -172,8 +171,7 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
     game: {
       id: gameId,
       status: status,
-      state: constructState(updatedState),
-      // state
+      state,
     },
     players,
   })

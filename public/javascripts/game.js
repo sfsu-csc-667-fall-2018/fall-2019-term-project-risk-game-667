@@ -3,11 +3,7 @@ const i18n = {
     phases: ["Deploy troops", "Attack!", "Move Troops", "Loading"],
     players: [
       "Red",
-      "Green",
-      "Blue",
-      "Yellow",
-      "Purple",
-      "Black",
+      "Green"
     ],
     turn: "Turn",
     from: "from",
@@ -361,23 +357,6 @@ const gameId = (function() {
   return url[url.length - 1]
 })()
 
-let PLAYER_INDEX
-
-;(async function() {
-  let res = await axios.get(`/game/${gameId}/update`)
-  let {
-    players,
-    player
-  } = res.data
-  for(let i = 0; i < players.length; i++) {
-    if(players[i].player_id === player.id) {
-      PLAYER_INDEX = i
-      return
-    }
-  }
-})()
-
-
 const vm = new Vue({
   el: '#app',
   store,
@@ -539,10 +518,6 @@ const vm = new Vue({
     }
   },
   computed: {
-    isPlayersTurn() {
-      const { $store: { state } } = this;
-      return state.player === PLAYER_INDEX;
-    },
     turn() {
       const { $store: { state } } = this;
       return `${i18n.en.turn}: ${state.turn}`;
@@ -578,6 +553,9 @@ const vm = new Vue({
     },
     countries() {
       return this.$store.state.countries;
+    },
+    gameStarted() {
+      return this.$store.state.players.length === 2;
     },
     playerName() {
       return `${i18n.en.player}: ${i18n.en.players[this.$store.state.player]}`;
