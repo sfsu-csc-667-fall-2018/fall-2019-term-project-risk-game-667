@@ -5,11 +5,10 @@ function createInitialState() {
   }
   
   const NUM_PLAYERS = 2;
-
-  const players = [];
-  for (let playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++) {
-    players.push(createInitialPlayerState(NUM_PLAYERS));
-  }
+  const players = [
+    createInitialPlayerState(NUM_PLAYERS), 
+    null
+  ];
   
   const countriesLeft = Countries.slice();
   while (countriesLeft.length > 0) {

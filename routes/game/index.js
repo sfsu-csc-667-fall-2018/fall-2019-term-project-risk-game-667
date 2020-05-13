@@ -141,17 +141,24 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   }
 })
 
-let constructState = (state) => ({
-  id: state.id,
-  turn: state.turn,
-  phase: state.phase,
-  player: state.current_player,
-  action: JSON.parse(state.action),
-  players: [JSON.parse(state.player_1), JSON.parse(state.player_2)],
-  result: JSON.parse(state.result),
-  countries: JSON.parse(state.countries),
-  country: null
-})
+let constructState = (state) => {
+  let players = [JSON.parse(state.player_1)]
+
+  if(state.player_2 !== 'null') {
+    players.add(JSON.parse(state.player_2))
+  }
+  return {
+    id: state.id,
+    turn: state.turn,
+    phase: state.phase,
+    player: state.current_player,
+    action: JSON.parse(state.action),
+    players,
+    result: JSON.parse(state.result),
+    countries: JSON.parse(state.countries),
+    country: null
+  }
+}
 
 router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
@@ -160,8 +167,6 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
 
   let updatedState = await gameState.getState(gameId)
   let state = constructState(updatedState)
-  state.players[0].id = '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb'
-  state.players[1].id = 'ffb622df7e9926a3b77284dcb024a2ca667e1c474dd644321e90a16330107519'
 
   res.json({
     player: {
