@@ -1,5 +1,5 @@
 const express = require('express')
-const { registerUser, deriveId } = require('../../db/user')
+const { registerUser, deriveId, hashPassword } = require('../../db/user')
 const router = express.Router()
 const passport = require('../../lib/auth')
 const { ensureLoggedIn, ensureLoggedOut } = require('connect-ensure-login')
@@ -28,7 +28,7 @@ router.get('/signup', ensureLoggedOut('/'), (req, res) => {
 
 router.post('/signup', async (req, res) => {
   let username = req.body.username
-  let password = req.body.password
+  let password = hashPassword(req.body.password)
   let id = deriveId(username)
   let result = await registerUser(id, username, password)
   if (result.error) {

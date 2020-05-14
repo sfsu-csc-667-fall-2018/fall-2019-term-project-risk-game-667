@@ -46,7 +46,7 @@ class App extends Component {
       .then(res => res.data)
       .then((data) => {
         if (!data.error) {
-          window.location = `/game/${data.game.id}`
+          window.location = `/game/${data.id}`
         }
       })
       .catch((error) => {
@@ -86,7 +86,6 @@ class App extends Component {
               <thead>
                 <tr>
                   <th scope="col">Room id</th>
-                  <th scope="col">Status</th>
                   <th scope="col"></th>
                   <th scope="col"></th>
                 </tr>
@@ -96,7 +95,6 @@ class App extends Component {
                   <tbody>
                     <tr>
                       <th scope="row">${game.id}</th>
-                      <td>${game.status.event} at ${Date(game.timestamp)}</td>
                       <td><a class="btn btn-primary" href="/game/${game.id}">Join</a></td>
                       <td><button class="btn btn-danger" onClick=${() => this.deleteGame(game.id)}>Delete</button></td>
                     </tr>

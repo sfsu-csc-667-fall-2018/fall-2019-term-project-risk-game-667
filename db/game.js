@@ -93,13 +93,19 @@ function getGame(id) {
 
 function joinGame(id, playerTwo) {
   return new Promise(async (resolve) => {
+    console.log(      `UPDATE ${GAME_TABLE} 
+    SET "player_two" = '${playerTwo}',
+    "phase" = '${Phase.DEPLOY}' 
+    WHERE id = '${id} '
+    AND player_two = null
+    AND player_one <> '${playerTwo}'`)
     db.any(
       `UPDATE ${GAME_TABLE} 
-      SET "player_2" = '${playerTwo}',
+      SET "player_two" = '${playerTwo}',
       "phase" = '${Phase.DEPLOY}' 
-      WHERE id = '${id} 
-      AND player_2 = 'null'
-      AND player_1 <> '${playerTwo}'`
+      WHERE id = '${id}' 
+      AND player_two = null
+      AND player_one <> '${playerTwo}'`
     )
       .then((results) => {
         console.log(results)

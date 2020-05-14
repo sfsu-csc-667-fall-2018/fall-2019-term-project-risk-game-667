@@ -37,7 +37,7 @@ router.get('/all', async (req, res) => {
 
 router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   let playerOne = req.user.id
-  let gameId = hash(user.id + Date.now())
+  let gameId = hash(playerOne + Date.now())
   let gameState = createInitialState()
 
   let serializedState = serializeState(gameState)
@@ -79,12 +79,11 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   let gameId = req.params.game_id
   let getGameResult = await getGame(gameId)
   let player = req.user.id
-
-  if(getGameResult.playerOne === player || getGameResult.playerTwo === player) {
+  if(getGameResult.player_one === player || getGameResult.player_two === player) {
     res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
   } else {
     // TODO this needs to be handled better
-    let joinGameResult = await joinGame(gameId, playerTwo)
+    let joinGameResult = await joinGame(gameId, player)
     console.log(joinGameResult)
     res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
   }
@@ -98,7 +97,7 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameState = formatState(storedState)
 
   gameState.playerId = req.user.id 
-  gameState.winner = getWinner(state)
+  gameState.winner = getWinner(gameState)
 
   res.json({
     state: gameState

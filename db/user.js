@@ -36,6 +36,8 @@ function findUser(username) {
   })
 }
 
+// TODO idk if this should be here
+let hashPassword = password => bcrypt.hashSync(password, 8)
 let validatePassword = (hash, password) => bcrypt.compareSync(password, hash)
 let deriveId = (username) => crypto.createHash('sha256').update(username).digest('hex')
 
@@ -43,5 +45,6 @@ module.exports = {
   registerUser,
   findUser,
   validatePassword,
-  deriveId
+  deriveId,
+  hashPassword
 }
