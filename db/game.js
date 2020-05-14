@@ -6,9 +6,27 @@ function createGame(id, phase, turn, currentPlayer, currentAction, battleResult,
   return new Promise((resolve) => {
     db.any(
       `INSERT INTO ${GAME_TABLE} 
-      ("id", "phase", "turn", "current_player", "current_action", "battle_result", "player_one", "player_two", "players_state", "countries_state") 
+      ("id", 
+      "phase", 
+      "turn", 
+      "current_player", 
+      "current_action", 
+      "battle_result", 
+      "player_one", 
+      "player_two", 
+      "players_state", 
+      "countries_state") 
       VALUES 
-      ('${id}', '${phase}', '${turn}', '${currentPlayer}', '${currentAction}', '${battleResult}', '${playerOne}', '${playerTwo}', '${playersState}', '${countriesState}');`
+      ('${id}', 
+      '${phase}', 
+      '${turn}', 
+      '${currentPlayer}', 
+      '${currentAction}', 
+      '${battleResult}', 
+      '${playerOne}', 
+      '${playerTwo}', 
+      '${playersState}', 
+      '${countriesState}');`
     )
       .then((results) => {
         resolve({ error: null })
@@ -23,7 +41,8 @@ function createGame(id, phase, turn, currentPlayer, currentAction, battleResult,
 function deleteGame(id) {
   return new Promise((resolve) => {
     db.any(
-      `DELETE FROM ${GAME_TABLE} WHERE id = '${id}';`
+      `DELETE FROM ${GAME_TABLE} 
+      WHERE id = '${id}';`
     )
       .then((results) => {
         resolve({ error: null })
@@ -39,14 +58,14 @@ function updateGameState(id, phase, turn, currentPlayer, currentAction, battleRe
   return new Promise((resolve) => {
     db.any(
       `UPDATE ${GAME_TABLE}
-       SET "phase" = '${phase}',
-       "turn" = '${turn}',
-       "current_player" = '${currentPlayer}',
-       "current_action" = '${currentAction}',
-       "battle_result" = '${battleResult}',
-       "players_state" = '${playersState}',
-       "countries_state" = '${countriesState}',
-       WHERE "id" = '${id}';`
+      SET "phase" = '${phase}',
+      "turn" = '${turn}',
+      "current_player" = '${currentPlayer}',
+      "current_action" = '${currentAction}',
+      "battle_result" = '${battleResult}',
+      "players_state" = '${playersState}',
+      "countries_state" = '${countriesState}',
+      WHERE "id" = '${id}';`
     )
       .then((results) => {
         resolve({ error: null })
@@ -61,7 +80,11 @@ function updateGameState(id, phase, turn, currentPlayer, currentAction, battleRe
 
 function getGames(offset = 0, limit = 100) {
   return new Promise((resolve) => {
-    db.any(`SELECT * FROM ${GAME_TABLE} OFFSET ${offset} LIMIT ${limit}`)
+    db.any(
+      `SELECT * FROM ${GAME_TABLE} 
+      OFFSET ${offset} 
+      LIMIT ${limit}`
+    )
       .then((results) => {
         resolve(results)
       })
@@ -74,7 +97,10 @@ function getGames(offset = 0, limit = 100) {
 
 function getGame(id) {
   return new Promise((resolve) => {
-    db.any(`SELECT * FROM ${GAME_TABLE} WHERE id = '${id}'`)
+    db.any(
+      `SELECT * FROM ${GAME_TABLE} 
+      WHERE id = '${id}'`
+    )
       .then((results) => {
         if (results.length !== 1) {
           resolve({ error: `Error finding game ${id}`, code: 500 })
@@ -93,10 +119,10 @@ function joinGame(id, playerTwo) {
   return new Promise(async (resolve) => {
     db.any(
       `UPDATE ${GAME_TABLE} 
-        SET player_2 = '${playerTwo}'
-        WHERE id = '${id} 
-        AND player_2 = 'null'
-        AND player_1 <> '${playerTwo}'`
+      SET player_2 = '${playerTwo}'
+      WHERE id = '${id} 
+      AND player_2 = 'null'
+      AND player_1 <> '${playerTwo}'`
     )
       .then((results) => {
         console.log(results)

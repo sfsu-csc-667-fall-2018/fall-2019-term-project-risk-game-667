@@ -1,12 +1,16 @@
 const db = require('.')
 
+const { MESSAGE_TABLE } = require('../config/const')
+
 function newMessage(message) {
   return new Promise((resolve) => {
     db.any(
-      `INSERT INTO message_table ("body", "sender_id", "sender_username", "chat_id") VALUES ('${message.body}', '${message.sender.id}', '${message.sender.username}', '${message.chatId}');`
+      `INSERT INTO ${MESSAGE_TABLE} 
+      ("body", "sender_id", "sender_username", "chat_id") 
+      VALUES ('${message.body}', '${message.sender.id}', '${message.sender.username}', '${message.chatId}');`
     )
       .then((results) => {
-        resolve({})
+        resolve({ error: null })
       })
       .catch((error) => {
         console.log(error)
@@ -15,10 +19,14 @@ function newMessage(message) {
   })
 }
 
-function getMessages(attribute, value, offset, limit) {
+function getMessages(chatId, offset, limit) {
   return new Promise((resolve) => {
     db.any(
-      `SELECT * FROM message_table WHERE ${attribute} = '${value}' ORDER BY id DESC OFFSET ${offset} LIMIT ${limit}`
+      `SELECT * FROM ${MESSAGE_TABLE} 
+      WHERE chat_id = '${chatId}' 
+      ORDER BY id DESC 
+      OFFSET ${offset} 
+      LIMIT ${limit}`
     )
       .then((results) => {
         resolve(results.map(serializeMessage))
