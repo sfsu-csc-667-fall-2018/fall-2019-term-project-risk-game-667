@@ -335,7 +335,7 @@ let deserializeState = (state) => {
 
 let serializeState = (state) => {
   return {
-    winner: winner,
+    winner: state.winner,
     playerId: state.playerId,
     action: state.action,
     result: state.result,

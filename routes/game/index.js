@@ -110,16 +110,16 @@ router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameState =  nextPhase(deserializeState(req.body.state))
 
   let serializedState = serializeState(gameState)
+
   let updateStateResult = await updateGameState(
     gameId,
     serializedState.phase,
     serializedState.turn,
     serializedState.player,
     JSON.stringify(serializedState.action),
-    JSON.stringify(serializedState.players.map(player => ({ actions: player.actions, newTroops: player.newTroops }))),
     JSON.stringify(serializedState.result),
+    JSON.stringify(serializedState.players.map(player => ({ actions: player.actions, newTroops: player.newTroops }))),
     JSON.stringify(serializedState.countries),
-    serializedState.country
   )
 
   let io = req.app.get('io')
