@@ -238,7 +238,6 @@ const store = new Vuex.Store({
       console.log("UPDATED A GAME STATE", payload.state)
       state.winner = payload.state.winner
       state.playerId = payload.state.playerId
-      state.country = payload.state.country
       state.action = payload.state.action
       state.result = payload.state.result
       state.turn = payload.state.turn
@@ -324,7 +323,6 @@ let deserializeState = (state) => {
   return {
     winner: state.winner,
     playerId: state.playerId,
-    country: state.country,
     action: state.action,
     result: state.result,
     turn: state.turn,
@@ -339,7 +337,6 @@ let serializeState = (state) => {
   return {
     winner: winner,
     playerId: state.playerId,
-    country: state.country,
     action: state.action,
     result: state.result,
     turn: state.turn,
@@ -368,12 +365,11 @@ const vm = new Vue({
       let state = await this.getState()
       dispatch('updateState', { state });
     })
-    
   },
   methods: {
     async getState () {
       let res = await axios.get(`/game/${gameId}/update`)
-      return deserializeState(res.data.game.state)
+      return deserializeState(res.data.state)
     },
     async postState (state) {
       console.log('SENDING A GAME STATE', state)
