@@ -20,7 +20,7 @@ const createError = require('http-errors')
 const { 
   createInitialState,
   nextPhase
-} = require('./state')
+} = require('../../lib/state')
 const gameState = require('../../db/state')
 
 router.get('/all', async (req, res) => {
@@ -64,12 +64,6 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
     JSON.stringify(newGameState.countries),
     newGameState.country
   )
-
-
-  // result.state = await newState(
-  //   game.id,
-  //   JSON.stringify(serializeState(game.state))
-  // )
 
   let state = { 
     event: 'JOINED',
@@ -145,7 +139,7 @@ let constructState = (state) => {
   let players = [JSON.parse(state.player_1)]
 
   if(state.player_2 !== 'null') {
-    players.add(JSON.parse(state.player_2))
+    players.push(JSON.parse(state.player_2))
   }
   return {
     id: state.id,
