@@ -550,6 +550,9 @@ const vm = new Vue({
     gameStarted() {
       return this.$store.state.players.length === 2;
     },
+    gameOver() {
+      return this.$store.state.winner === 0 || this.$store.state.winner === 1;
+    },
     getWinner() {
       return this.$store.state.winner;
     },
