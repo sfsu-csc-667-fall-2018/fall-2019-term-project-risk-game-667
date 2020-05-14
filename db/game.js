@@ -1,6 +1,6 @@
 const db = require('.')
 
-const { GAME_TABLE } = require('../config/const')
+const { GAME_TABLE, Phase } = require('../config/const')
 
 function createGame(id, phase, turn, currentPlayer, currentAction, battleResult, playerOne, playerTwo, playersState, countriesState) {
   return new Promise((resolve) => {
@@ -119,7 +119,8 @@ function joinGame(id, playerTwo) {
   return new Promise(async (resolve) => {
     db.any(
       `UPDATE ${GAME_TABLE} 
-      SET player_2 = '${playerTwo}'
+      SET "player_2" = '${playerTwo}',
+      "phase" = ${Phase.DEPLOY} 
       WHERE id = '${id} 
       AND player_2 = 'null'
       AND player_1 <> '${playerTwo}'`
@@ -134,8 +135,6 @@ function joinGame(id, playerTwo) {
       })
   })
 }
-
-
 
 module.exports = {
   createGame,

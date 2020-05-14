@@ -1,4 +1,6 @@
 const express = require('express')
+const router = express.Router()
+const createError = require('http-errors')
 const { ensureLoggedIn } = require('connect-ensure-login')
 const {
   createGame,
@@ -14,12 +16,13 @@ const {
 } = require('../../config/events')
 const { NUM_PLAYERS } = require('../../config/const')
 const { hash } = require('../../lib/util')
-const router = express.Router()
-const createError = require('http-errors')
 const { 
   createInitialState,
   nextPhase,
-  createInitialPlayerState
+  serializedState,
+  deserializeState,
+  constructState,
+  getWinner,
 } = require('../../lib/game-state')
 
 router.get('/all', async (req, res) => {
@@ -38,7 +41,7 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
 
   let serializedState = serializeState(gameState)
   
-  let resultCreateGame = await createGame(
+  let createGameResult = await createGame(
     gameId,
     serializedState.phase,
     serializedState.turn,
@@ -51,88 +54,75 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
     JSON.stringify(serializedState.countries),
   )
 
-  console.log(resultCreateGame)
+  console.log(createGameResult)
 
   let io = req.app.get('io')
   io.emit(emitGameCreated(), { id: gameId })
 
   res.send({
-    error: undefined,
+    error: null,
     id: gameId
   })
 })
 
 router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
-  let result = await deleteGame(req.body.id)
-  console.log(result)
+  let gameId = req.body.id
+  let deleteGameResult = await deleteGame(gameId)
   
   res.json({
-    error: undefined
+    error: null
   })
 })
 
-
-
 router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   let gameId = req.params.game_id
-  let players = await getPlayers(gameId)
-  let status = JSON.parse(players[0].status)
+  let playerTwo = req.user.id
+  
+  let joinGameResult = await joinGame(gameId, playerTwo)
+  console.log(joinGameResult)
 
-  if(players.filter(p => p.player_id === req.user.id).length === 1) {
-    res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
-  } else if(players.length < NUM_PLAYERS && status.event === 'CREATED') {
-    let state = { 
-      event: 'JOINED',
-      timestamp: Date.now(),
-    }
-    let join = await joinGame(
-      req.user.id, 
-      gameId, 
-      JSON.stringify(state))
+  // TODO join
+  
+  // let players = await getPlayers(gameId)
+  // let status = JSON.parse(players[0].status)
 
-    if(join.error) {
-      next(createError(500))  
-    } else {
-      let players = await getPlayers(gameId)
-      if(players.length === NUM_PLAYERS) {
-        let status = {
-          event: 'STARTED',
-          timestamp: Date.now(),
-        }
-        await updateStatus(
-          gameId, 
-          JSON.stringify(status))
+  // if(players.filter(p => p.player_id === req.user.id).length === 1) {
+  //   res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
+  // } else if(players.length < NUM_PLAYERS && status.event === 'CREATED') {
+  //   let state = { 
+  //     event: 'JOINED',
+  //     timestamp: Date.now(),
+  //   }
+  //   let join = await joinGame(
+  //     req.user.id, 
+  //     gameId, 
+  //     JSON.stringify(state))
 
-        await gameState.addSecondPlayer(gameId, JSON.stringify(createInitialPlayerState(req.user.id)))
+  //   if(join.error) {
+  //     next(createError(500))  
+  //   } else {
+  //     let players = await getPlayers(gameId)
+  //     if(players.length === NUM_PLAYERS) {
+  //       let status = {
+  //         event: 'STARTED',
+  //         timestamp: Date.now(),
+  //       }
+  //       await updateStatus(
+  //         gameId, 
+  //         JSON.stringify(status))
 
-        let io = req.app.get('io')
-        io.emit(emitGameStarted(), { id: gameId })
-        res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
-      }      
-    }
-  } else {
-    next(createError(500))
-  }
+  //       await gameState.addSecondPlayer(gameId, JSON.stringify(createInitialPlayerState(req.user.id)))
+
+  //       let io = req.app.get('io')
+  //       io.emit(emitGameStarted(), { id: gameId })
+  //       res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
+  //     }      
+  //   }
+  // } else {
+  //   next(createError(500))
+  // }
 })
 
-let constructState = (state) => {
-  let players = [JSON.parse(state.player_1)]
-
-  if(state.player_2 !== 'null') {
-    players.push(JSON.parse(state.player_2))
-  }
-  return {
-    id: state.id,
-    turn: state.turn,
-    phase: state.phase,
-    player: state.current_player,
-    action: JSON.parse(state.action),
-    players,
-    result: JSON.parse(state.result),
-    countries: JSON.parse(state.countries),
-    country: null
-  }
-}
 
 router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
@@ -159,15 +149,6 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   })
 })
 
-let getWinner = (state) => {
-  let ownershipSum = state.countries.reduce((sum, country) => sum + country[1].owner, 0);
-  if (ownershipSum === 0) {
-    return 0
-  } else if (ownershipSum === 42) {
-    return 1
-  }
-  return null
-}
 
 router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
@@ -200,27 +181,6 @@ router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
 })
 
 
-let serializeState = (state) => {
-  return {
-    action: state.action,
-    result: state.result,
-    turn: state.turn,
-    phase: state.phase,
-    player: state.player,
-    players: state.players,
-    countries: [...state.countries],
-  }
-}
-let deserializeState = (state) => {
-  return {
-    action: state.action,
-    result: state.result,
-    turn: state.turn,
-    phase: state.phase,
-    player: state.player,
-    players: state.players,
-    countries: new Map(state.countries),
-  }
-}
+
 
 module.exports = router
