@@ -18,30 +18,30 @@ const db = require('.')
 //   })
 // }
 
-function updateState(id, turn, phase, currentPlayer, action, player1, player2, result, countries, country) {
-  return new Promise((resolve) => {
-    db.any(
-      `UPDATE game_state_table
-       SET "turn" = '${turn}',
-       "phase" = '${phase}',
-       "current_player" = '${currentPlayer}',
-       "action" = '${action}',
-       "player_1" = '${player1}',
-       "player_2" = '${player2}',
-       "result" = '${result}',
-       "countries" = '${countries}',
-       "country" = '${country}' 
-       WHERE "id" = '${id}';`
-    )
-      .then((results) => {
-        resolve({ error: undefined })
-      })
-      .catch((error) => {
-        console.log(error)
-        resolve({ error: 'Error updating state!', code: 500 })
-      })
-  })
-}
+// function updateState(id, turn, phase, currentPlayer, action, player1, player2, result, countries, country) {
+//   return new Promise((resolve) => {
+//     db.any(
+//       `UPDATE game_state_table
+//        SET "turn" = '${turn}',
+//        "phase" = '${phase}',
+//        "current_player" = '${currentPlayer}',
+//        "action" = '${action}',
+//        "player_1" = '${player1}',
+//        "player_2" = '${player2}',
+//        "result" = '${result}',
+//        "countries" = '${countries}',
+//        "country" = '${country}' 
+//        WHERE "id" = '${id}';`
+//     )
+//       .then((results) => {
+//         resolve({ error: undefined })
+//       })
+//       .catch((error) => {
+//         console.log(error)
+//         resolve({ error: 'Error updating state!', code: 500 })
+//       })
+//   })
+// }
 
 function getState(id) {
   return new Promise((resolve) => {

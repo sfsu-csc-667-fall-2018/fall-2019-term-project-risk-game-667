@@ -15,7 +15,7 @@ function createGame(id, phase, turn, currentPlayer, currentAction, battleResult,
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: 'Error creating a new game!', code: 500 })
+        resolve({ error: `Error creating a new game ${id}`, code: 500 })
       })
   })
 }
@@ -30,7 +30,7 @@ function deleteGame(id) {
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: `Error deleteing game with id ${id}!`, code: 500 })
+        resolve({ error: `Error deleteing game ${id}`, code: 500 })
       })
   })
 }
@@ -53,98 +53,69 @@ function updateGameState(id, phase, turn, currentPlayer, currentAction, battleRe
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: 'Error updating state!', code: 500 })
+        resolve({ error: `Error updating game state ${id}`, code: 500 })
       })
   })
 }
 
 
-function getGamesAll(offset = 0, limit = 100) {
+function getGames(offset = 0, limit = 100) {
   return new Promise((resolve) => {
-    db.any(`SELECT * FROM game_table OFFSET ${offset} LIMIT ${limit}`)
+    db.any(`SELECT * FROM ${GAME_TABLE} OFFSET ${offset} LIMIT ${limit}`)
       .then((results) => {
         resolve(results)
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: 'Error getting games!', code: 500 })
+        resolve({ error: `Error getting games`, code: 500 })
       })
   })
 }
 
 function getGame(id) {
   return new Promise((resolve) => {
-    db.any(`SELECT * FROM game_table WHERE id = '${id}'`)
+    db.any(`SELECT * FROM ${GAME_TABLE} WHERE id = '${id}'`)
       .then((results) => {
         if (results.length !== 1) {
-          resolve({ error: `Error finding a game with id ${id}` })
+          resolve({ error: `Error finding game ${id}`, code: 500 })
+        } else {
+          resolve(results[0])
         }
-        resolve()
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: `Error finding a game with id ${id}` })
+        resolve({ error: `Error finding game ${id}`, code: 500 })
       })
   })
 }
 
-function joinGame(playerId, gameId, state) {
+function joinGame(id, playerTwo) {
   return new Promise(async (resolve) => {
     db.any(
-      `INSERT INTO playing_table ("player_id", "game_id", "state") VALUES ('${playerId}', '${gameId}', '${state}');`
+      `UPDATE ${GAME_TABLE} 
+        SET player_2 = '${playerTwo}'
+        WHERE id = '${id} 
+        AND player_2 = 'null'
+        AND player_1 <> '${playerTwo}'`
     )
       .then((results) => {
-        resolve({ error: undefined })
+        console.log(results)
+        resolve({ error: null })
       })
       .catch((error) => {
-        if (error.code === '23505') {
-          resolve({ error: undefined })
-        } else {
-          resolve({ error: `Error joining a game with id ${gameId}`, code: 500 })
-        }
+        console.log(error)
+        resolve({ error: `Error joining ${playerTwo} to game ${id}`, code: 500 })
       })
   })
 }
 
-function getPlayers(gameId) {
-  return new Promise(async (resolve) => {
-    db.any(`SELECT player_id, username, status FROM playing_table
-            INNER JOIN user_table
-            ON user_table.id = player_id
-            INNER JOIN game_table
-            ON game_table.id = game_id
-            WHERE "game_id" = '${gameId}';`)
-      .then((results) => {
-        resolve(results)
-      })
-      .catch((error) => {
-        console.log(error)
-        resolve({ error: `Error joining a game with id ${gameId}` })
-      })
-  })
-}
-
-function updateStatus(gameId, status) {
-  return new Promise((resolve) => {
-    db.any(`UPDATE game_table SET "status" = '${status}' WHERE id = '${gameId}';`)
-      .then((results) => {
-        resolve()
-      })
-      .catch((error) => {
-        console.log(error)
-        resolve({ error: `Error updating game status for a game ${id}!` })
-      })
-  })
-}
 
 
 module.exports = {
   createGame,
   deleteGame,
-  updateGame,
-  getGamesAll,
+  updateGameState,
+  getGames,
   getGame,
   joinGame,
-  getPlayers,
-  updateStatus,
 }
