@@ -14,4 +14,4 @@ Subset of Risk game written in JS
 
 ## Documentation
 
-- Documentation is available [here!](docs/README.md)
+- Documentation is available [here](docs/README.md)
