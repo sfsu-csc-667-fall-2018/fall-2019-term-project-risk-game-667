@@ -108,24 +108,20 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
 
 router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
-  let state =  nextPhase(deserializeState(req.body.state))
+  let gameState =  nextPhase(deserializeState(req.body.state))
 
-
-  let serializedState = serializeState(state)
-
-  let storeUpdatedState = await gameState.updateState(
+  let serializedState = serializeState(gameState)
+  let updateStateResult = await updateGameState(
     gameId,
-    serializedState.turn,
     serializedState.phase,
+    serializedState.turn,
     serializedState.player,
     JSON.stringify(serializedState.action),
-    JSON.stringify(serializedState.players[0]),
-    JSON.stringify(serializedState.players[1]),
+    JSON.stringify(serializedState.players.map(player => ({ actions: player.actions, newTroops: player.newTroops }))),
     JSON.stringify(serializedState.result),
     JSON.stringify(serializedState.countries),
     serializedState.country
   )
-
 
   let io = req.app.get('io')
   // TODO even should not be hardcoded
@@ -135,8 +131,6 @@ router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
     error: null,
   })
 })
-
-
 
 
 module.exports = router
