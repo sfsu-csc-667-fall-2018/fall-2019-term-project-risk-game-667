@@ -19,7 +19,8 @@ const router = express.Router()
 const createError = require('http-errors')
 const { 
   createInitialState,
-  nextPhase
+  nextPhase,
+  createInitialPlayerState
 } = require('../../lib/state')
 const gameState = require('../../db/state')
 
@@ -35,13 +36,14 @@ router.get('/all', async (req, res) => {
 
 router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   let user = req.user
+
   let game = {
     id: hash(user.id + Date.now()),
     status: {
       event: 'CREATED',
       timestamp: Date.now(),
     },
-    state: createInitialState()
+    state: createInitialState(req.user.id)
   }
 
   let result = await newGame(
@@ -125,6 +127,9 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
         await updateStatus(
           gameId, 
           JSON.stringify(status))
+
+        await gameState.addSecondPlayer(gameId, JSON.stringify(createInitialPlayerState(req.user.id)))
+
         let io = req.app.get('io')
         io.emit(emitGameStarted(), { id: gameId })
         res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
@@ -161,6 +166,7 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
 
   let updatedState = await gameState.getState(gameId)
   let state = constructState(updatedState)
+  state.playerId = req.user.id 
 
   res.json({
     player: {

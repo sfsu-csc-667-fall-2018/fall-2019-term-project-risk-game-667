@@ -333,7 +333,7 @@
             <div id="phase-name">{{phaseName}}</div>
             <div id="turn">{{turn}}</div>
           </div>
-          <div id="actions" >
+          <div v-if="playerTurn" id="actions" >
             <button id="minus" type="button" :disabled="canSubtract" @click="onClickMinus">
               {{minusText}}
             </button>
@@ -343,7 +343,8 @@
             <button id="plus" type="button" :disabled="canAdd" @click="onClickPlus">
               {{plusText}}
             </button>
-          </div>   
+          </div>
+          <h1 v-else>Wait for your opponent</h1>   
         </div>
       </div>
       <h1 v-else>Preparing your game...</h1>

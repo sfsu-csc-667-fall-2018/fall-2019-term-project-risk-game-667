@@ -7,13 +7,6 @@ const Phase = {
   MOVE: 2
 };
 
-
-const Card = {
-  INFANTRY: 0,
-  CAVALRY: 1,
-  ARTILLERY: 2
-};
-
 const InitialArmies = [
   0, 0, 40, 35, 30, 25, 20
 ];
@@ -163,7 +156,6 @@ module.exports = {
   ROOM_LIMIT,
   NUM_PLAYERS,
   Phase,
-  Card,
   InitialArmies,
   Countries,
   Continents,

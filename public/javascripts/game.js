@@ -169,12 +169,6 @@ const Phase = {
   LOADING: 3
 };
 
-const Card = {
-  INFANTRY: 0,
-  CAVALRY: 1,
-  ARTILLERY: 2
-};
-
 const DEG_TO_RAD = Math.PI / 180;
 const RAD_TO_DEG = 180 / Math.PI;
 
@@ -223,6 +217,7 @@ function radiansToDegrees(value) {
 
 const store = new Vuex.Store({
   state: {
+    playerId: null,
     country: null,
     action: {
       from: null,
@@ -239,6 +234,7 @@ const store = new Vuex.Store({
   mutations: {
     updateState(state, payload) {
       console.log("UPDATED A GAME STATE", payload.state)
+      state.playerId = payload.state.playerId
       state.country = payload.state.country
       state.action = payload.state.action
       state.result = payload.state.result
@@ -326,6 +322,7 @@ const store = new Vuex.Store({
 
 let deserializeState = (state) => {
   return {
+    playerId: state.playerId,
     country: state.country,
     action: state.action,
     result: state.result,
@@ -339,6 +336,7 @@ let deserializeState = (state) => {
 
 let serializeState = (state) => {
   return {
+    playerId: state.playerId,
     country: state.country,
     action: state.action,
     result: state.result,
@@ -544,6 +542,9 @@ const vm = new Vue({
     },
     countries() {
       return this.$store.state.countries;
+    },
+    playerTurn() {
+      return this.$store.state.playerId === this.$store.state.players[this.$store.state.player].id;
     },
     gameStarted() {
       return this.$store.state.players.length === 2;

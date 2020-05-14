@@ -57,9 +57,25 @@ function getState(id) {
       })
   })
 }
+// TODO some names are not discriptive
+function addSecondPlayer(id, player2) {
+  return new Promise((resolve) => {
+    db.any(
+      `UPDATE game_state_table SET player_2 = '${player2}' WHERE id = '${id}' AND player_2 = 'null'`
+    )
+      .then((results) => {
+        resolve(results[0])
+      })
+      .catch((error) => {
+        console.log(error)
+        resolve({ error: 'Error getting state!', code: 500 })
+      })
+  })
+}
 
 module.exports = {
   newState,
   getState,
-  updateState
+  updateState,
+  addSecondPlayer
 }
