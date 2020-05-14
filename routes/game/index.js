@@ -6,6 +6,7 @@ const {
   createGame,
   deleteGame,
   updateGameState,
+  getGameState,
   getGames,
   getGame,
   joinGame,
@@ -19,9 +20,9 @@ const { hash } = require('../../lib/util')
 const { 
   createInitialState,
   nextPhase,
-  serializedState,
+  serializeState,
   deserializeState,
-  constructState,
+  formatState,
   getWinner,
 } = require('../../lib/game-state')
 
@@ -76,76 +77,31 @@ router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
 
 router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   let gameId = req.params.game_id
-  let playerTwo = req.user.id
-  
-  let joinGameResult = await joinGame(gameId, playerTwo)
-  console.log(joinGameResult)
+  let getGameResult = await getGame(gameId)
+  let player = req.user.id
 
-  // TODO join
-  
-  // let players = await getPlayers(gameId)
-  // let status = JSON.parse(players[0].status)
-
-  // if(players.filter(p => p.player_id === req.user.id).length === 1) {
-  //   res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
-  // } else if(players.length < NUM_PLAYERS && status.event === 'CREATED') {
-  //   let state = { 
-  //     event: 'JOINED',
-  //     timestamp: Date.now(),
-  //   }
-  //   let join = await joinGame(
-  //     req.user.id, 
-  //     gameId, 
-  //     JSON.stringify(state))
-
-  //   if(join.error) {
-  //     next(createError(500))  
-  //   } else {
-  //     let players = await getPlayers(gameId)
-  //     if(players.length === NUM_PLAYERS) {
-  //       let status = {
-  //         event: 'STARTED',
-  //         timestamp: Date.now(),
-  //       }
-  //       await updateStatus(
-  //         gameId, 
-  //         JSON.stringify(status))
-
-  //       await gameState.addSecondPlayer(gameId, JSON.stringify(createInitialPlayerState(req.user.id)))
-
-  //       let io = req.app.get('io')
-  //       io.emit(emitGameStarted(), { id: gameId })
-  //       res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
-  //     }      
-  //   }
-  // } else {
-  //   next(createError(500))
-  // }
+  if(getGameResult.playerOne === player || getGameResult.playerTwo === player) {
+    res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
+  } else {
+    // TODO this needs to be handled better
+    let joinGameResult = await joinGame(gameId, playerTwo)
+    console.log(joinGameResult)
+    res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
+  }
 })
 
 
 router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
-  let players = await getPlayers(gameId)
-  let status = JSON.parse(players[0].status)
 
-  let updatedState = await gameState.getState(gameId)
-  let state = constructState(updatedState)
+  let storedState = await getGameState(gameId)
+  let gameState = formatState(storedState)
 
-  state.playerId = req.user.id 
-  state.winner = getWinner(state)
+  gameState.playerId = req.user.id 
+  gameState.winner = getWinner(state)
 
   res.json({
-    player: {
-      id: req.user.id,
-      username: req.user.username,
-    },
-    game: {
-      id: gameId,
-      status: status,
-      state,
-    },
-    players,
+    state: gameState
   })
 })
 

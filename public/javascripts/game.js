@@ -1,6 +1,6 @@
 const i18n = {
   en: {
-    phases: ["Deploy troops", "Attack!", "Move Troops", "Loading"],
+    phases: ["Deploy troops", "Attack!", "Move Troops", "Created", "Finished"],
     players: [
       "Red",
       "Green"
@@ -166,7 +166,8 @@ const Phase = {
   DEPLOY: 0,
   ATTACK: 1,
   MOVE: 2,
-  LOADING: 3
+  CREATED: 3,
+  FINISHED: 4,
 };
 
 const DEG_TO_RAD = Math.PI / 180;
