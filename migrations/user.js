@@ -1,10 +1,10 @@
 'use strict'
 
-const tableName = 'user_table'
+const { USER_TABLE } = require('../config/const')
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable(tableName, {
+    return queryInterface.createTable(USER_TABLE, {
       id: {
         type: Sequelize.STRING,
         primaryKey: true,
@@ -26,6 +26,6 @@ module.exports = {
     })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable(tableName)
+    return queryInterface.dropTable(USER_TABLE)
   },
 }

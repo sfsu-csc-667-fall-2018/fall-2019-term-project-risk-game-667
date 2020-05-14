@@ -1,12 +1,17 @@
 const db = require('.')
 
-function newGame(id, status, hostId) {
+const { GAME_TABLE } = require('../config/const')
+
+function createGame(id, phase, turn, currentPlayer, currentAction, battleResult, playerOne, playerTwo, playersState, countriesState) {
   return new Promise((resolve) => {
     db.any(
-      `INSERT INTO game_table ("id", "status", "host_id") VALUES ('${id}', '${status}', '${hostId}');`
+      `INSERT INTO ${GAME_TABLE} 
+      ("id", "phase", "turn", "current_player", "current_action", "battle_result", "player_one", "player_two", "players_state", "countries_state") 
+      VALUES 
+      ('${id}', '${phase}', '${turn}', '${currentPlayer}', '${currentAction}', '${battleResult}', '${playerOne}', '${playerTwo}', '${playersState}', '${countriesState}');`
     )
       .then((results) => {
-        resolve({ error: undefined })
+        resolve({ error: null })
       })
       .catch((error) => {
         console.log(error)
@@ -18,10 +23,10 @@ function newGame(id, status, hostId) {
 function deleteGame(id) {
   return new Promise((resolve) => {
     db.any(
-      `DELETE FROM game_table WHERE id = '${id}';`
+      `DELETE FROM ${GAME_TABLE} WHERE id = '${id}';`
     )
       .then((results) => {
-        resolve({ error: undefined })
+        resolve({ error: null })
       })
       .catch((error) => {
         console.log(error)
@@ -29,6 +34,30 @@ function deleteGame(id) {
       })
   })
 }
+
+function updateGameState(id, phase, turn, currentPlayer, currentAction, battleResult, playersState, countriesState) {
+  return new Promise((resolve) => {
+    db.any(
+      `UPDATE ${GAME_TABLE}
+       SET "phase" = '${phase}',
+       "turn" = '${turn}',
+       "current_player" = '${currentPlayer}',
+       "current_action" = '${currentAction}',
+       "battle_result" = '${battleResult}',
+       "players_state" = '${playersState}',
+       "countries_state" = '${countriesState}',
+       WHERE "id" = '${id}';`
+    )
+      .then((results) => {
+        resolve({ error: null })
+      })
+      .catch((error) => {
+        console.log(error)
+        resolve({ error: 'Error updating state!', code: 500 })
+      })
+  })
+}
+
 
 function getGamesAll(offset = 0, limit = 100) {
   return new Promise((resolve) => {
@@ -110,8 +139,9 @@ function updateStatus(gameId, status) {
 
 
 module.exports = {
-  newGame,
+  createGame,
   deleteGame,
+  updateGame,
   getGamesAll,
   getGame,
   joinGame,
