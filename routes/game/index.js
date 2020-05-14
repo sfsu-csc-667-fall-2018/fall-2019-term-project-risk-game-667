@@ -1,19 +1,18 @@
 const express = require('express')
-const {
-  newGame,
-  getGamesAll,
-  joinGame,
-  getPlayers,
-  deleteGame,
-  updateStatus
-} = require('../../db/game')
-
 const { ensureLoggedIn } = require('connect-ensure-login')
+const {
+  createGame,
+  deleteGame,
+  updateGameState,
+  getGames,
+  getGame,
+  joinGame,
+} = require('../../db/game')
 const { 
   emitGameCreated,
   emitGameStarted
 } = require('../../config/events')
-const { ROOM_LIMIT } = require('../../config/const')
+const { NUM_PLAYERS } = require('../../config/const')
 const { hash } = require('../../lib/util')
 const router = express.Router()
 const createError = require('http-errors')
@@ -21,69 +20,45 @@ const {
   createInitialState,
   nextPhase,
   createInitialPlayerState
-} = require('../../lib/state')
-const gameState = require('../../db/state')
+} = require('../../lib/game-state')
 
 router.get('/all', async (req, res) => {
-  let games = await getGamesAll()
+  let games = await getGames()
   if(games.error) {
     res.send([])
   } else {
-    games.map(g => g.status = JSON.parse(g.status))
     res.send(games)
   }
 })
 
 router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
-  let user = req.user
+  let playerOne = req.user.id
+  let gameId = hash(user.id + Date.now())
+  let gameState = createInitialState()
 
-  let game = {
-    id: hash(user.id + Date.now()),
-    status: {
-      event: 'CREATED',
-      timestamp: Date.now(),
-    },
-    state: createInitialState(req.user.id)
-  }
-
-  let result = await newGame(
-    game.id,
-    JSON.stringify(game.status),
-    user.id
+  let serializedState = serializeState(gameState)
+  
+  let resultCreateGame = await createGame(
+    gameId,
+    serializedState.phase,
+    serializedState.turn,
+    serializedState.player,
+    JSON.stringify(serializedState.action),
+    JSON.stringify(serializedState.result),
+    playerOne,
+    null,
+    JSON.stringify(serializedState.players),
+    JSON.stringify(serializedState.countries),
   )
 
-
-  let newGameState = serializeState(game.state)
-  result.state = await gameState.newState(
-    game.id,
-    newGameState.turn,
-    newGameState.phase,
-    newGameState.player,
-    JSON.stringify(newGameState.action),
-    JSON.stringify(newGameState.players[0]),
-    JSON.stringify(newGameState.players[1]),
-    JSON.stringify(newGameState.result),
-    JSON.stringify(newGameState.countries),
-    newGameState.country
-  )
-
-  let state = { 
-    event: 'JOINED',
-    timestamp: Date.now(),
-  }
-  result.join = await joinGame(
-    user.id,
-    game.id,
-    JSON.stringify(state))
-
-  console.log(result)
+  console.log(resultCreateGame)
 
   let io = req.app.get('io')
-  io.emit(emitGameCreated(), { id: game.id })
+  io.emit(emitGameCreated(), { id: gameId })
 
   res.send({
     error: undefined,
-    game
+    id: gameId
   })
 })
 
@@ -105,7 +80,7 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
 
   if(players.filter(p => p.player_id === req.user.id).length === 1) {
     res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
-  } else if(players.length < ROOM_LIMIT && status.event === 'CREATED') {
+  } else if(players.length < NUM_PLAYERS && status.event === 'CREATED') {
     let state = { 
       event: 'JOINED',
       timestamp: Date.now(),
@@ -119,7 +94,7 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
       next(createError(500))  
     } else {
       let players = await getPlayers(gameId)
-      if(players.length === ROOM_LIMIT) {
+      if(players.length === NUM_PLAYERS) {
         let status = {
           event: 'STARTED',
           timestamp: Date.now(),
@@ -227,7 +202,6 @@ router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
 
 let serializeState = (state) => {
   return {
-    country: state.country,
     action: state.action,
     result: state.result,
     turn: state.turn,
@@ -239,7 +213,6 @@ let serializeState = (state) => {
 }
 let deserializeState = (state) => {
   return {
-    country: state.country,
     action: state.action,
     result: state.result,
     turn: state.turn,

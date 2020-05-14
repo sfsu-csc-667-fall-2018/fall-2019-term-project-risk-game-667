@@ -1,4 +1,3 @@
-const ROOM_LIMIT = 2
 const NUM_PLAYERS = 2
 
 const USER_TABLE = 'user_table'
@@ -9,7 +8,7 @@ const Phase = {
   DEPLOY: 0,
   ATTACK: 1,
   MOVE: 2,
-  STARTED: 3,
+  CREATED: 3,
   FINISHED: 4,
 };
 
@@ -159,7 +158,6 @@ const AttackResult = {
 };
 
 module.exports = {
-  ROOM_LIMIT,
   NUM_PLAYERS,
   USER_TABLE,
   MESSAGE_TABLE,
