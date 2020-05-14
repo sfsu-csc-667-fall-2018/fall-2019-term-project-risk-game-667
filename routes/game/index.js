@@ -166,7 +166,9 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
 
   let updatedState = await gameState.getState(gameId)
   let state = constructState(updatedState)
+
   state.playerId = req.user.id 
+  state.winner = getWinner(state)
 
   res.json({
     player: {
@@ -182,24 +184,34 @@ router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   })
 })
 
+let getWinner = (state) => {
+  let ownershipSum = state.countries.reduce((sum, country) => sum + country[1].owner, 0);
+  if (ownershipSum === 0) {
+    return 0
+  } else if (ownershipSum === 42) {
+    return 1
+  }
+  return null
+}
 
 router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
   let state =  nextPhase(deserializeState(req.body.state))
 
-  let serilizedState = serializeState(state)
+
+  let serializedState = serializeState(state)
 
   let storeUpdatedState = await gameState.updateState(
     gameId,
-    serilizedState.turn,
-    serilizedState.phase,
-    serilizedState.player,
-    JSON.stringify(serilizedState.action),
-    JSON.stringify(serilizedState.players[0]),
-    JSON.stringify(serilizedState.players[1]),
-    JSON.stringify(serilizedState.result),
-    JSON.stringify(serilizedState.countries),
-    serilizedState.country
+    serializedState.turn,
+    serializedState.phase,
+    serializedState.player,
+    JSON.stringify(serializedState.action),
+    JSON.stringify(serializedState.players[0]),
+    JSON.stringify(serializedState.players[1]),
+    JSON.stringify(serializedState.result),
+    JSON.stringify(serializedState.countries),
+    serializedState.country
   )
 
 

@@ -217,6 +217,7 @@ function radiansToDegrees(value) {
 
 const store = new Vuex.Store({
   state: {
+    winner: null,
     playerId: null,
     country: null,
     action: {
@@ -234,6 +235,7 @@ const store = new Vuex.Store({
   mutations: {
     updateState(state, payload) {
       console.log("UPDATED A GAME STATE", payload.state)
+      state.winner = payload.state.winner
       state.playerId = payload.state.playerId
       state.country = payload.state.country
       state.action = payload.state.action
@@ -313,15 +315,13 @@ const store = new Vuex.Store({
     },
     actionDecrement(context) {
       context.commit('actionDecrement');
-    },
-    nextPhase(context) {
-      context.commit('nextPhase');
     }
   }
 })
 
 let deserializeState = (state) => {
   return {
+    winner: state.winner,
     playerId: state.playerId,
     country: state.country,
     action: state.action,
@@ -336,6 +336,7 @@ let deserializeState = (state) => {
 
 let serializeState = (state) => {
   return {
+    winner: winner,
     playerId: state.playerId,
     country: state.country,
     action: state.action,
@@ -548,6 +549,9 @@ const vm = new Vue({
     },
     gameStarted() {
       return this.$store.state.players.length === 2;
+    },
+    getWinner() {
+      return this.$store.state.winner;
     },
     playerName() {
       return `${i18n.en.player}: ${i18n.en.players[this.$store.state.player]}`;

@@ -6,7 +6,7 @@ The application has several main parts:
 
 - Web Server written in Express, and Pug as template enginge
 
-- Chat component written in Preact
+- Chat, and Lobby components written in Preact
 
 - Game component written in Vue
 
@@ -35,23 +35,22 @@ DATABASE_URL=postgres://<db_user>:<db_password>@<db_host>:<db_port>/<db_name>
 SECRET=<your_secret>
 ```
 
-3. Please complete step 1-2, before proceeding otherwise your post-install script will fail! 
+(Optional) If you want to run redis, pass REDIS_PORT environmental variable to the script. If the variable is not provided, app automatically fallbacks to in-process sessions storage.
 
-Install dependencies:
+3. Please complete step 1-2, before proceeding otherwise your database migration will fail 
+
+Install dependencies, and run post install db migrations
 
 ```bash
 npm i
 ```
-
-This will also run database migrations.
-
 
 ## Development
 
 1. In first terminal window, start Webpack in watch mode
 
 ```
-npm run build:watch 
+npm run build:dev
 ```
 
 2. In second window, start Express 
@@ -59,12 +58,12 @@ npm run build:watch
 On Linux
 
 ```
-npm run start:dev 
+npm run start:dev
 ```
 
 On Windows
 
 ```
-npm run start:win 
+npm run start:win
 ```
 
