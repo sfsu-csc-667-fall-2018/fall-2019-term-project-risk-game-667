@@ -1,6 +1,6 @@
 const express = require('express')
 const chat = require('../../db/chat')
-const { emitNewMessage } = require('../../config/events')
+const { messageEvent } = require('../../config/events')
 
 const router = express.Router()
 
@@ -30,7 +30,7 @@ router.post('/:chat_id/new', async (req, res) => {
   let sendResult = await chat.newMessage(message)
 
   let io = req.app.get('io')
-  io.emit(emitNewMessage(message.chatId), message)
+  io.emit(messageEvent(message.chatId), message)
 
   res.send({
     error: null,

@@ -1,3 +1,7 @@
+import {
+  gameEvent,
+} from '../../config/events'
+
 const i18n = {
   en: {
     phases: ["Deploy troops", "Attack!", "Move Troops", "Created", "Finished"],
@@ -169,6 +173,7 @@ const Phase = {
   CREATED: 3,
   FINISHED: 4,
 };
+
 
 const DEG_TO_RAD = Math.PI / 180;
 const RAD_TO_DEG = 180 / Math.PI;
@@ -360,7 +365,7 @@ const vm = new Vue({
     const { $store: { dispatch } } = this;
     dispatch('updateState', { state });
 
-    socket.on(`GAME EVENT ${gameId}`, async (msg) => {
+    socket.on(gameEvent(gameId), async (msg) => {
       const { $store: { dispatch } } = this;
       let state = await this.getState()
       dispatch('updateState', { state });

@@ -1,7 +1,7 @@
 import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import io from 'socket.io-client'
-import { emitNewMessage } from '../../config/events'
+import { messageEvent } from '../../config/events'
 import axios from 'axios'
 
 const html = htm.bind(h)
@@ -26,7 +26,7 @@ class App extends Component {
     this.getMessages()
     this.textArea = document.querySelector('#text-area')
 
-    this.socket.on(emitNewMessage(this.chatId), (data) => {
+    this.socket.on(messageEvent(this.chatId), (data) => {
       this.setState(
         {
           messages: [...this.state.messages, data],

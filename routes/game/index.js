@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const createError = require('http-errors')
 const { ensureLoggedIn } = require('connect-ensure-login')
 const {
   createGame,
@@ -12,8 +11,8 @@ const {
   joinGame,
 } = require('../../db/game')
 const { 
-  emitGameCreated,
-  emitGameStarted
+  lobbyEvent,
+  gameEvent
 } = require('../../config/events')
 const { NUM_PLAYERS } = require('../../config/const')
 const { hash } = require('../../lib/util')
@@ -58,7 +57,7 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   console.log(createGameResult)
 
   let io = req.app.get('io')
-  io.emit(emitGameCreated(), { id: gameId })
+  io.emit(lobbyEvent(), { id: gameId })
 
   res.send({
     error: null,
@@ -69,6 +68,9 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
 router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.body.id
   let deleteGameResult = await deleteGame(gameId)
+  
+  let io = req.app.get('io')
+  io.emit(lobbyEvent(), { id: gameId })
   
   res.json({
     error: null
@@ -85,6 +87,11 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
     res.redirect('/lobby?error=full')
   } else {
     let joinGameResult = await joinGame(gameId, player)
+    
+    let io = req.app.get('io')
+    io.emit(gameEvent(gameId), { id: gameId })
+    io.emit(lobbyEvent(), { id: gameId })
+
     res.redirect(`/game/${gameId}`)
   }
 })
@@ -123,8 +130,9 @@ router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   )
 
   let io = req.app.get('io')
-  // TODO even should not be hardcoded
-  io.emit(`GAME EVENT ${gameId}`, { id: gameId })
+  io.emit(gameEvent(gameId), { id: gameId })
+  io.emit(lobbyEvent(), { id: gameId })
+
   res.json({
     error: null,
   })

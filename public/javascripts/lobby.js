@@ -3,8 +3,7 @@ import htm from '../vendor/htm'
 import axios from 'axios'
 import io from 'socket.io-client'
 import {
-  emitGameCreated,
-  emitGameStarted
+  lobbyEvent
 } from '../../config/events'
 
 const html = htm.bind(h)
@@ -21,12 +20,8 @@ class App extends Component {
   componentDidMount() {
     this.getGames()
 
-    this.socket.on(emitGameCreated(), (data) => {
-      console.log("New Game Was Created", data)
-      this.getGames()
-    })
-    this.socket.on(emitGameStarted(), (data) => {
-      console.log("Game Was Started", data)
+    this.socket.on(lobbyEvent(), (data) => {
+      console.log("NEW LOBBY EVENT", data)
       this.getGames()
     })
   }
