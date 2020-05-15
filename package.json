@@ -8,6 +8,7 @@
     "start:win": "SET \"NODE_ENV=development\" SET DEBUG=myapp:* & nodemon ./bin/www",
     "build": "webpack --config webpack.config.js",
     "build:dev": "webpack --config webpack.config.js -w",
+    "clean": "rm ./public/javascripts/bundles/*.js",
     "db:create:migration": "sequelize migration:generate --name ",
     "db:migrate": "sequelize db:migrate",
     "db:rollback": "sequelize db:migrate:undo:all",

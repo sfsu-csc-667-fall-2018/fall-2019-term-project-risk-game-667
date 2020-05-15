@@ -1,6 +1,7 @@
 const path = require('path')
 
 module.exports = {
+  mode: 'production',
   entry: {
     chat: './public/javascripts/chat.js',
     landing: './public/javascripts/landing.js',
@@ -16,7 +17,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /game.js/,
+        test: /\.m?js$/,
         exclude: /(node_modules|bower_components|)/,
         use: {
           loader: 'babel-loader',
