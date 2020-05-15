@@ -10,7 +10,7 @@ Subset of Risk game written in JS
 
 - Authentication using username/password
 
-- Built-in live chat
+- Build in live chat
 
 ## Documentation
 

@@ -35,7 +35,7 @@ DATABASE_URL=postgres://<db_user>:<db_password>@<db_host>:<db_port>/<db_name>
 SECRET=<your_secret>
 ```
 
-(Optional) If you want to run redis, pass REDIS_PORT environmental variable to the script. If the variable is not provided, app automatically fallbacks to in-process sessions storage.
+(Optional) If you want to run redis, pass REDIS_URL environmental variable to the script. REDIS_URL can have be either a port, or full url. If the variable is not provided, app automatically fallbacks to in-process sessions storage.
 
 3. Please complete step 1-2, before proceeding otherwise your database migration will fail 
 

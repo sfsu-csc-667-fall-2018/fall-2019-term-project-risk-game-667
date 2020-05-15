@@ -26,28 +26,24 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
-if (process.env.REDIS_PORT) {
-  let RedisStore = require('connect-redis')(session)
-  let redisClient = require('redis').createClient(process.env.REDIS_PORT)
+let cookieSession = session({
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false,
+})
 
-  app.use(
-    session({
-      store: new RedisStore({ client: redisClient }),
-      secret: process.env.SECRET,
-      resave: false,
-      saveUninitialized: false,
-    })
-  )
-} else {
-  app.use(
-    session({
-      secret: process.env.SECRET,
-      resave: false,
-      saveUninitialized: false,
-    })
-  )
+if (process.env.REDIS_URL) {
+  let RedisStore = require('connect-redis')(session)
+  let redisClient = require('redis').createClient(process.env.REDIS_URL)
+  cookieSession = session({
+    store: new RedisStore({ client: redisClient }),
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
 }
 
+app.use(cookieSession)
 app.use(passport.initialize())
 app.use(passport.session())
 app.use('/', appRouter)
