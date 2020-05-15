@@ -2,9 +2,7 @@ import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import axios from 'axios'
 import io from 'socket.io-client'
-import {
-  lobbyEvent
-} from '../../config/events'
+import { lobbyEvent } from '../../config/events'
 
 const html = htm.bind(h)
 
@@ -21,7 +19,7 @@ class App extends Component {
     this.getGames()
 
     this.socket.on(lobbyEvent(), (data) => {
-      console.log("NEW LOBBY EVENT", data)
+      console.log('NEW LOBBY EVENT', data)
       this.getGames()
     })
   }
@@ -38,7 +36,7 @@ class App extends Component {
   newGame() {
     axios
       .get(`/game/new`)
-      .then(res => res.data)
+      .then((res) => res.data)
       .then((data) => {
         if (!data.error) {
           window.location = `/game/${data.id}`
@@ -52,9 +50,9 @@ class App extends Component {
   deleteGame(id) {
     axios
       .post(`/game/delete`, {
-        id
+        id,
       })
-      .then(res => res.data)
+      .then((res) => res.data)
       .then((data) => {
         this.getGames()
       })
@@ -67,7 +65,6 @@ class App extends Component {
     return html`
       <div class="card">
         <div class="card-body">
-
           <h4 class="mb-3">All Games</h4>
           <button
             type="button"
@@ -90,8 +87,19 @@ class App extends Component {
                   <tbody>
                     <tr>
                       <th scope="row">${game.id}</th>
-                      <td><a class="btn btn-primary" href="/game/${game.id}">Join</a></td>
-                      <td><button class="btn btn-danger" onClick=${() => this.deleteGame(game.id)}>Delete</button></td>
+                      <td>
+                        <a class="btn btn-primary" href="/game/${game.id}"
+                          >Join</a
+                        >
+                      </td>
+                      <td>
+                        <button
+                          class="btn btn-danger"
+                          onClick=${() => this.deleteGame(game.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   </tbody>
                 `

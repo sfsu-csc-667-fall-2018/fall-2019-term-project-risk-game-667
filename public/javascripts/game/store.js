@@ -1,6 +1,4 @@
-import {
-  PHASE,
-} from '../../../config/const'
+import { PHASE } from '../../../config/const'
 
 const store = new Vuex.Store({
   state: {
@@ -21,7 +19,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     updateState(state, payload) {
-      console.log("UPDATED A GAME STATE", payload.state)
+      console.log('UPDATED A GAME STATE', payload.state)
       state.winner = payload.state.winner
       state.playerId = payload.state.playerId
       state.action = payload.state.action
@@ -33,76 +31,81 @@ const store = new Vuex.Store({
       state.countries = payload.state.countries
     },
     enterCountry(state, payload) {
-      state.country = payload.id;
-      state.countries.get(state.country).selected = true;
+      state.country = payload.id
+      state.countries.get(state.country).selected = true
     },
     leaveCountry(state, payload) {
-      state.countries.get(state.country).selected = false;
-      state.country = payload.id;
+      state.countries.get(state.country).selected = false
+      state.country = payload.id
     },
     deployTroop(state, payload) {
-      state.players[state.player].actions.push({ id: state.action.to });
+      state.players[state.player].actions.push({ id: state.action.to })
     },
     gatherTroop(state) {
-      const index = state.players[state.player].actions.findIndex(action => action.id === state.action.to);
+      const index = state.players[state.player].actions.findIndex(
+        (action) => action.id === state.action.to
+      )
       if (index < 0) {
-        console.error('Cannot retrieve troops');
+        console.error('Cannot retrieve troops')
       }
-      const [removedAction] = state.players[state.player].actions.splice(index, 1);
-    },    
+      const [removedAction] = state.players[state.player].actions.splice(
+        index,
+        1
+      )
+    },
     actionFrom(state, payload) {
-      state.action.from = payload.id;
+      state.action.from = payload.id
     },
     actionTo(state, payload) {
-      state.action.to = payload.id;
-    },    
+      state.action.to = payload.id
+    },
     actionIncrement(state) {
-      const countryState = state.countries.get(state.action.from);
+      const countryState = state.countries.get(state.action.from)
       if (countryState.count - state.action.count > 1) {
-        state.action.count++;
+        state.action.count++
       }
     },
     actionDecrement(state) {
       if (state.action.count > 1) {
-        state.action.count--;
+        state.action.count--
       }
     },
   },
   actions: {
     updateState(context, payload) {
-      context.commit('updateState', payload);
+      context.commit('updateState', payload)
     },
     enterCountry(context, payload) {
-      context.commit('enterCountry', payload);
+      context.commit('enterCountry', payload)
     },
     leaveCountry(context, payload) {
-      context.commit('leaveCountry', payload);
+      context.commit('leaveCountry', payload)
     },
     deployTroop(context, payload) {
-      context.commit('deployTroop', payload);
+      context.commit('deployTroop', payload)
     },
     gatherTroop(context, payload) {
-      context.commit('gatherTroop', payload);
+      context.commit('gatherTroop', payload)
     },
     moveFrom(context, payload) {
-      context.commit('moveFrom', payload);
+      context.commit('moveFrom', payload)
     },
     moveTo(context, payload) {
-      context.commit('moveTo', payload);
+      context.commit('moveTo', payload)
     },
     actionFrom(context, payload) {
-      context.commit('actionFrom', payload);
+      context.commit('actionFrom', payload)
     },
     actionTo(context, payload) {
-      context.commit('actionTo', payload);
+      context.commit('actionTo', payload)
     },
     actionIncrement(context) {
-      context.commit('actionIncrement');
+      context.commit('actionIncrement')
     },
     actionDecrement(context) {
-      context.commit('actionDecrement');
-    }
-  }
+      context.commit('actionDecrement')
+    },
+  },
 })
 
 export default store

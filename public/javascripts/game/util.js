@@ -1,47 +1,44 @@
-import {
-  COUNTRY_CONNECTIONS,
-} from '../../../config/const'
+import { COUNTRY_CONNECTIONS } from '../../../config/const'
 
 function isOwned(from, state) {
-  const countryState = state.countries.get(from);
-  return countryState.owner === state.player;
+  const countryState = state.countries.get(from)
+  return countryState.owner === state.player
 }
 
 function isOwnedAndHasTroops(from, state) {
-  const countryState = state.countries.get(from);
+  const countryState = state.countries.get(from)
   if (countryState.owner === state.player && countryState.count > 1) {
-    return true;
+    return true
   }
-  return false;
+  return false
 }
 
 function isConnectedAndOwned(from, to, state) {
   if (isConnectedTo(from, to)) {
-    return state.countries.get(to).owner === state.countries.get(from).owner;
+    return state.countries.get(to).owner === state.countries.get(from).owner
   }
-  return false;
+  return false
 }
 
 function isConnectedAndNotOwned(from, to, state) {
   if (isConnectedTo(from, to)) {
-    return state.countries.get(to).owner !== state.countries.get(from).owner;
+    return state.countries.get(to).owner !== state.countries.get(from).owner
   }
-  return false;
+  return false
 }
 
 function isConnectedTo(from, to) {
   let country = COUNTRY_CONNECTIONS.get(from)
-  if(!country) {
+  if (!country) {
     return false
   }
-  return country.includes(to);
+  return country.includes(to)
 }
 
 // TODO not sure if needed paranthesis
 function radiansToDegrees(value) {
-  return value * (180 / Math.PI);
+  return value * (180 / Math.PI)
 }
-
 
 let deserializeState = (state) => {
   return {
@@ -79,5 +76,5 @@ export {
   isOwnedAndHasTroops,
   isOwned,
   serializeState,
-  deserializeState
+  deserializeState,
 }

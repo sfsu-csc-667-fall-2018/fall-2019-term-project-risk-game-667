@@ -2,7 +2,18 @@ const db = require('.')
 
 const { GAME_TABLE, PHASE } = require('../config/const')
 
-function createGame(id, phase, turn, currentPlayer, currentAction, battleResult, playerOne, playerTwo, playersState, countriesState) {
+function createGame(
+  id,
+  phase,
+  turn,
+  currentPlayer,
+  currentAction,
+  battleResult,
+  playerOne,
+  playerTwo,
+  playersState,
+  countriesState
+) {
   return new Promise((resolve) => {
     db.any(
       `INSERT INTO ${GAME_TABLE} 
@@ -107,13 +118,24 @@ function joinGame(id, playerTwo) {
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: `Error joining ${playerTwo} to game ${id}`, code: 500 })
+        resolve({
+          error: `Error joining ${playerTwo} to game ${id}`,
+          code: 500,
+        })
       })
   })
 }
 
-
-function updateGameState(id, phase, turn, currentPlayer, currentAction, battleResult, playersState, countriesState) {
+function updateGameState(
+  id,
+  phase,
+  turn,
+  currentPlayer,
+  currentAction,
+  battleResult,
+  playersState,
+  countriesState
+) {
   return new Promise((resolve) => {
     db.any(
       `UPDATE ${GAME_TABLE}

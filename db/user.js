@@ -34,7 +34,6 @@ function findUser(username) {
   })
 }
 
-
 module.exports = {
   registerUser,
   findUser,

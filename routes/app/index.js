@@ -3,7 +3,11 @@ const router = express.Router()
 const { ERRORS } = require('../../config/const')
 
 router.get('/lobby', (req, res) => {
-  res.render('lobby', { title: 'Lobby', user: req.user, error: ERRORS[req.query.error] })
+  res.render('lobby', {
+    title: 'Lobby',
+    user: req.user,
+    error: ERRORS[req.query.error],
+  })
 })
 
 router.get('/', (req, res) => {

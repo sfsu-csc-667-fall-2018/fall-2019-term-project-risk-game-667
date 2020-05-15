@@ -10,12 +10,9 @@ const {
   getGame,
   joinGame,
 } = require('../../db/game')
-const { 
-  lobbyEvent,
-  gameEvent
-} = require('../../config/events')
+const { lobbyEvent, gameEvent } = require('../../config/events')
 const { hash } = require('../../lib/util')
-const { 
+const {
   createInitialState,
   nextPhase,
   serializeState,
@@ -26,7 +23,7 @@ const {
 
 router.get('/all', async (req, res) => {
   let games = await getGames()
-  if(games.error) {
+  if (games.error) {
     res.send([])
   } else {
     res.send(games)
@@ -39,7 +36,7 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   let gameState = createInitialState()
 
   let serializedState = serializeState(gameState)
-  
+
   let createGameResult = await createGame(
     gameId,
     serializedState.phase,
@@ -50,7 +47,7 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
     playerOne,
     null,
     JSON.stringify(serializedState.players),
-    JSON.stringify(serializedState.countries),
+    JSON.stringify(serializedState.countries)
   )
 
   console.log(createGameResult)
@@ -60,19 +57,19 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
 
   res.send({
     error: null,
-    id: gameId
+    id: gameId,
   })
 })
 
 router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.body.id
   let deleteGameResult = await deleteGame(gameId)
-  
+
   let io = req.app.get('io')
   io.emit(lobbyEvent(), { id: gameId })
 
   res.json({
-    error: null
+    error: null,
   })
 })
 
@@ -80,13 +77,16 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   let gameId = req.params.game_id
   let getGameResult = await getGame(gameId)
   let player = req.user.id
-  if(getGameResult.player_one === player || getGameResult.player_two === player) {
+  if (
+    getGameResult.player_one === player ||
+    getGameResult.player_two === player
+  ) {
     res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
-  } else if(getGameResult.player_two !== 'null') {
+  } else if (getGameResult.player_two !== 'null') {
     res.redirect('/lobby?error=full')
   } else {
     let joinGameResult = await joinGame(gameId, player)
-    
+
     let io = req.app.get('io')
     io.emit(gameEvent(gameId), { id: gameId })
     io.emit(lobbyEvent(), { id: gameId })
@@ -95,25 +95,23 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   }
 })
 
-
 router.get('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
 
   let storedState = await getGameState(gameId)
   let gameState = formatState(storedState)
 
-  gameState.playerId = req.user.id 
+  gameState.playerId = req.user.id
   gameState.winner = getWinner(gameState)
 
   res.json({
-    state: gameState
+    state: gameState,
   })
 })
 
-
 router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let gameId = req.params.game_id
-  let gameState =  nextPhase(deserializeState(req.body.state))
+  let gameState = nextPhase(deserializeState(req.body.state))
 
   let serializedState = serializeState(gameState)
 
@@ -124,8 +122,13 @@ router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
     serializedState.player,
     JSON.stringify(serializedState.action),
     JSON.stringify(serializedState.result),
-    JSON.stringify(serializedState.players.map(player => ({ actions: player.actions, newTroops: player.newTroops }))),
-    JSON.stringify(serializedState.countries),
+    JSON.stringify(
+      serializedState.players.map((player) => ({
+        actions: player.actions,
+        newTroops: player.newTroops,
+      }))
+    ),
+    JSON.stringify(serializedState.countries)
   )
 
   let io = req.app.get('io')
@@ -136,6 +139,5 @@ router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
     error: null,
   })
 })
-
 
 module.exports = router
