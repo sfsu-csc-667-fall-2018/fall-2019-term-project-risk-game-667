@@ -1,193 +1,27 @@
 import {
   gameEvent,
-} from '../../config/events'
+} from '../../../config/events'
 import {
   i18n,
-} from '../../config/locales'
+} from '../../../config/locales'
 import {
   PHASE,
-  COUNTRY_CONNECTIONS,
   COUNTRY_COORDINATES,
-} from '../../config/const'
+} from '../../../config/const'
 
+import  {
+  radiansToDegrees,
+  isConnectedTo,
+  isConnectedAndNotOwned,
+  isConnectedAndOwned,
+  isOwnedAndHasTroops,
+  isOwned,
+  serializeState,
+  deserializeState
+} from './util'
 
-const DEG_TO_RAD = Math.PI / 180;
-const RAD_TO_DEG = 180 / Math.PI;
-
-function isOwned(from, state) {
-  const countryState = state.countries.get(from);
-  return countryState.owner === state.player;
-}
-
-function isOwnedAndHasTroops(from, state) {
-  const countryState = state.countries.get(from);
-  if (countryState.owner === state.player && countryState.count > 1) {
-    return true;
-  }
-  return false;
-}
-
-function isConnectedAndOwned(from, to, state) {
-  if (isConnectedTo(from, to)) {
-    return state.countries.get(to).owner === state.countries.get(from).owner;
-  }
-  return false;
-}
-
-function isConnectedAndNotOwned(from, to, state) {
-  if (isConnectedTo(from, to)) {
-    return state.countries.get(to).owner !== state.countries.get(from).owner;
-  }
-  return false;
-}
-
-function isConnectedTo(from, to) {
-  let country = COUNTRY_CONNECTIONS.get(from)
-  if(!country) {
-    return false
-  }
-  return country.includes(to);
-}
-
-function degreesToRadians(value) {
-  return value * DEG_TO_RAD;
-}
-
-function radiansToDegrees(value) {
-  return value * RAD_TO_DEG;
-}
-
-const store = new Vuex.Store({
-  state: {
-    winner: null,
-    playerId: null,
-    country: null,
-    action: {
-      from: null,
-      to: null,
-      count: 0,
-    },
-    result: null,
-    turn: 0,
-    phase: PHASE.CREATED,
-    player: 0,
-    players: [],
-    countries: [],
-  },
-  mutations: {
-    updateState(state, payload) {
-      console.log("UPDATED A GAME STATE", payload.state)
-      state.winner = payload.state.winner
-      state.playerId = payload.state.playerId
-      state.action = payload.state.action
-      state.result = payload.state.result
-      state.turn = payload.state.turn
-      state.phase = payload.state.phase
-      state.player = payload.state.player
-      state.players = payload.state.players
-      state.countries = payload.state.countries
-    },
-    enterCountry(state, payload) {
-      state.country = payload.id;
-      state.countries.get(state.country).selected = true;
-    },
-    leaveCountry(state, payload) {
-      state.countries.get(state.country).selected = false;
-      state.country = payload.id;
-    },
-    deployTroop(state, payload) {
-      state.players[state.player].actions.push({ id: state.action.to });
-    },
-    gatherTroop(state) {
-      const index = state.players[state.player].actions.findIndex(action => action.id === state.action.to);
-      if (index < 0) {
-        console.error('Cannot retrieve troops');
-      }
-      const [removedAction] = state.players[state.player].actions.splice(index, 1);
-    },    
-    actionFrom(state, payload) {
-      state.action.from = payload.id;
-    },
-    actionTo(state, payload) {
-      state.action.to = payload.id;
-    },    
-    actionIncrement(state) {
-      const countryState = state.countries.get(state.action.from);
-      if (countryState.count - state.action.count > 1) {
-        state.action.count++;
-      }
-    },
-    actionDecrement(state) {
-      if (state.action.count > 1) {
-        state.action.count--;
-      }
-    },
-  },
-  actions: {
-    updateState(context, payload) {
-      context.commit('updateState', payload);
-    },
-    enterCountry(context, payload) {
-      context.commit('enterCountry', payload);
-    },
-    leaveCountry(context, payload) {
-      context.commit('leaveCountry', payload);
-    },
-    deployTroop(context, payload) {
-      context.commit('deployTroop', payload);
-    },
-    gatherTroop(context, payload) {
-      context.commit('gatherTroop', payload);
-    },
-    moveFrom(context, payload) {
-      context.commit('moveFrom', payload);
-    },
-    moveTo(context, payload) {
-      context.commit('moveTo', payload);
-    },
-    actionFrom(context, payload) {
-      context.commit('actionFrom', payload);
-    },
-    actionTo(context, payload) {
-      context.commit('actionTo', payload);
-    },
-    actionIncrement(context) {
-      context.commit('actionIncrement');
-    },
-    actionDecrement(context) {
-      context.commit('actionDecrement');
-    }
-  }
-})
-
-let deserializeState = (state) => {
-  return {
-    winner: state.winner,
-    playerId: state.playerId,
-    action: state.action,
-    result: state.result,
-    turn: state.turn,
-    phase: state.phase,
-    player: state.player,
-    players: state.players,
-    countries: new Map(state.countries),
-  }
-}
-
-let serializeState = (state) => {
-  return {
-    winner: state.winner,
-    playerId: state.playerId,
-    action: state.action,
-    result: state.result,
-    turn: state.turn,
-    phase: state.phase,
-    player: state.player,
-    players: state.players,
-    countries: [...state.countries],
-  }
-}
-
+import store from './store'
+const socket = io()
 const gameId = (function() {
   let url = window.location.pathname.split('/')
   return url[url.length - 1]
@@ -514,5 +348,3 @@ const vm = new Vue({
     }
   }
 })
-
-const socket = io()
