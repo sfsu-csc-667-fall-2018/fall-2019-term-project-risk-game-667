@@ -57,7 +57,7 @@ function deleteGame(id) {
 function getGames(offset = 0, limit = 100) {
   return new Promise((resolve) => {
     db.any(
-      `SELECT * FROM ${GAME_TABLE} 
+      `SELECT id, phase, turn, current_player, player_one, player_two FROM ${GAME_TABLE} 
       OFFSET ${offset} 
       LIMIT ${limit}`
     )
@@ -74,7 +74,7 @@ function getGames(offset = 0, limit = 100) {
 function getGame(id) {
   return new Promise((resolve) => {
     db.any(
-      `SELECT * FROM ${GAME_TABLE} 
+      `SELECT id, phase, turn, current_player, player_one, player_two FROM ${GAME_TABLE} 
       WHERE id = '${id}'`
     )
       .then((results) => {

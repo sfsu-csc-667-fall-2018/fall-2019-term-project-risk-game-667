@@ -14,7 +14,6 @@ const {
   lobbyEvent,
   gameEvent
 } = require('../../config/events')
-const { NUM_PLAYERS } = require('../../config/const')
 const { hash } = require('../../lib/util')
 const { 
   createInitialState,
@@ -71,7 +70,7 @@ router.post('/delete', ensureLoggedIn('/signin'), async (req, res) => {
   
   let io = req.app.get('io')
   io.emit(lobbyEvent(), { id: gameId })
-  
+
   res.json({
     error: null
   })
