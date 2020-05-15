@@ -228,7 +228,7 @@ const store = new Vuex.Store({
     },
     result: null,
     turn: 0,
-    phase: Phase.LOADING,
+    phase: Phase.CREATED,
     player: 0,
     players: [],
     countries: [],
@@ -545,7 +545,7 @@ const vm = new Vue({
       return this.$store.state.playerId === this.$store.state.players[this.$store.state.player].id;
     },
     gameStarted() {
-      return this.$store.state.players.length === 2;
+      return this.$store.state.phase !== Phase.CREATED;
     },
     gameOver() {
       return this.$store.state.winner === 0 || this.$store.state.winner === 1;

@@ -8,7 +8,7 @@ const ERRORS = {
   full: 'The game you are trying to join is full!'
 }
 
-const Phase = {
+const PHASE = {
   DEPLOY: 0,
   ATTACK: 1,
   MOVE: 2,
@@ -17,12 +17,12 @@ const Phase = {
 };
 
 
-const InitialArmies = [
+const INITIAL_ARMIES = [
   0, 0, 40, 35, 30, 25, 20
 ];
 
 
-const Countries = [
+const COUNTRIES = [
   "great-britain",
   "iceland",
   "northern-europe",
@@ -72,7 +72,7 @@ const Countries = [
   "indonesia"
 ];
 
-const Continents = new Map([
+const CONTINENTS = new Map([
   [
     "africa",
     [
@@ -147,7 +147,7 @@ const Continents = new Map([
   ]
 ])
 
-const ContinentBonuses = new Map([
+const CONTINENT_BONUSES = new Map([
   ["asia", 7],
   ["africa", 3],
   ["europe", 5],
@@ -156,7 +156,7 @@ const ContinentBonuses = new Map([
   ["south-america", 2]
 ]);
 
-const AttackResult = {
+const ATTACK_RESULT = {
   WIN: 0,
   DRAW: 1,
   LOSE: 2,
@@ -168,11 +168,10 @@ module.exports = {
   MESSAGE_TABLE,
   GAME_TABLE,
   ERRORS,
-  // TODO change the formatting
-  Phase,
-  InitialArmies,
-  Countries,
-  Continents,
-  ContinentBonuses,
-  AttackResult,
+  PHASE,
+  INITIAL_ARMIES,
+  COUNTRIES,
+  CONTINENTS,
+  CONTINENT_BONUSES,
+  ATTACK_RESULT,
 }

@@ -1,6 +1,6 @@
 const db = require('.')
 
-const { GAME_TABLE, Phase } = require('../config/const')
+const { GAME_TABLE, PHASE } = require('../config/const')
 
 function createGame(id, phase, turn, currentPlayer, currentAction, battleResult, playerOne, playerTwo, playersState, countriesState) {
   return new Promise((resolve) => {
@@ -96,7 +96,7 @@ function joinGame(id, playerTwo) {
     db.any(
       `UPDATE ${GAME_TABLE} 
       SET "player_two" = '${playerTwo}',
-      "phase" = '${Phase.DEPLOY}' 
+      "phase" = '${PHASE.DEPLOY}' 
       WHERE id = '${id}'
       AND player_two = 'null'
       AND player_one <> '${playerTwo}'`
