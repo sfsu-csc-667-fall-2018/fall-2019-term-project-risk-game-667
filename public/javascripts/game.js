@@ -1,178 +1,14 @@
 import {
   gameEvent,
 } from '../../config/events'
-
-const i18n = {
-  en: {
-    phases: ["Deploy troops", "Attack!", "Move Troops", "Created", "Finished"],
-    players: [
-      "Red",
-      "Green"
-    ],
-    turn: "Turn",
-    from: "from",
-    to: "to",
-    minus: "-",
-    plus: "+",
-    player: "Player",
-    phase: "Phase",
-    country: "Country",
-    countries: new Map([
-      ["great-britain", "Gran Britain"],
-      ["iceland", "Iceland"],
-      ["northern-europe", "Northern Europe"],
-      ["southern-europe", "Southern Europe"],
-      ["scandinavia", "Scandinavia"],
-      ["ukraine", "Ukraine"],
-      ["western-europe", "Western Europe"],
-
-      ["afghanistan", "Afganistan"],
-      ["india", "India"],
-      ["irkutsk", "Irkutsk"],
-      ["kamchatka", "Kamchatka"],
-      ["middle-east", "Middle East"],
-      ["mongolia", "Mongolia"],
-      ["siam", "Siam"],
-      ["china", "China"],
-      ["japan", "Japan"],
-      ["siberia", "Siberia"],
-      ["ural", "Ural"],
-      ["yakutsk", "Yakutsk"],
-
-      ["east-africa", "Eastern Africa"],
-      ["egypt", "Egypt"],
-      ["congo", "Congo"],
-      ["madagascar", "Madagascar"],
-      ["south-africa", "Southern África"],
-      ["north-africa", "Northern África"],
-
-      ["alaska", "Alaska"],
-      ["alberta", "Alberta"],
-      ["central-america", "Central America"],
-      ["eastern-united-states", "Eastern US"],
-      ["greenland", "Greenland"],
-      ["northwest-territory", "Northwest"],
-      ["ontario", "Ontario"],
-      ["western-united-states", "Western US"],
-      ["quebec", "Quebec"],
-
-      ["argentina", "Argentina"],
-      ["brazil", "Brasil"],
-      ["peru", "Peru"],
-      ["venezuela", "Venezuela"],
-
-      ["eastern-australia", "Eastern Australia"],
-      ["new-guinea", "New Guinea"],
-      ["western-australia", "Western Australia"],
-      ["indonesia", "Indonesia"]
-    ])
-  },
-};
-
-const CountryCoordinates = new Map([
-    ["east-africa", [574.401, 450]],
-    ["egypt", [517.5, 361.5]],
-    ["congo", [506.535, 483.5]],
-    ["madagascar", [589.75, 563.5]],
-    ["south-africa", [516.014, 566.5]],
-    ["north-africa", [450.803, 389.5]],
-    ["afghanistan", [660.305, 253.145]],
-    ["india", [710.5, 373.739]],
-    ["irkutsk", [819.499, 188.86]],
-    ["kamchatka", [933, 161]],
-    ["middle-east", [595, 348.5]],
-    ["mongolia", [837.375, 241]],
-    ["siam", [781.5, 380]],
-    ["china", [769, 300]],
-    ["japan", [908, 242.5]],
-    ["siberia", [749, 152.618]],
-    ["ural", [685.77, 172.108]],
-    ["yakutsk", [855.5, 119.5]],
-    ["eastern-australia", [908, 557]],
-    ["new-guinea", [921.5, 466.343]],
-    ["western-australia", [805.5, 552.5]],
-    ["indonesia", [820.5, 445.5]],
-    ["great-britain", [434.856, 204.549]],
-    ["iceland", [433, 147.672]],
-    ["northern-europe", [489, 218.447]],
-    ["scandinavia", [499.5, 138.5]],
-    ["southern-europe", [503.073, 275]],
-    ["ukraine", [585, 193.5]],
-    ["western-europe", [442, 269.5]],
-    ["alaska", [68, 137.451]],
-    ["alberta", [161.5, 178]],
-    ["central-america", [186, 319]],
-    ["eastern-united-states", [255, 255]],
-    ["greenland", [358.5, 95.9053]],
-    ["northwest-territory", [177.033, 113.5]],
-    ["ontario", [250.5, 196.056]],
-    ["western-united-states", [180.126, 246]],
-    ["quebec", [321.5, 189.5]],
-    ["argentina", [246, 565.319]],
-    ["brazil", [321.267, 455.5]],
-    ["peru", [208.951, 464]],
-    ["venezuela", [233, 373.5]],
-]);
-
-
-const CountryConnections = new Map([
-  ["great-britain", ["iceland", "scandinavia", "northern-europe", "western-europe"]],
-  ["iceland", ["greenland", "scandinavia", "great-britain"]],
-  ["northern-europe", ["southern-europe", "western-europe", "scandinavia", "ukraine", "great-britain"]],
-  ["southern-europe", ["western-europe", "northern-europe", "ukraine", "middle-east", "egypt", "north-africa"]],
-  ["scandinavia", ["iceland", "ukraine", "northern-europe", "great-britain"]],
-  ["ukraine", ["ural", "afghanistan", "middle-east", "southern-europe", "northern-europe", "scandinavia"]],
-  ["western-europe", ["great-britain", "southern-europe", "northern-europe", "north-africa"]],
-
-  ["afghanistan", ["ural", "china", "india", "middle-east", "ukraine"]],
-  ["india", ["china", "siam", "middle-east", "afghanistan"]],
-  ["irkutsk", ["yakutsk", "mongolia", "kamchatka", "siberia"]],
-  ["kamchatka", ["alaska", "yakutsk", "irkutsk", "mongolia", "japan"]],
-  ["middle-east", ["southern-europe", "egypt", "ukraine", "afghanistan", "india", "east-africa"]],
-  ["mongolia", ["china", "japan", "irkutsk", "siberia", "kamchatka"]],
-  ["siam", ["india", "china", "indonesia"]],
-  ["china", ["india", "siam", "mongolia", "afghanistan", "ural", "siberia"]],
-  ["japan", ["mongolia", "kamchatka"]],
-  ["siberia", ["ural", "china", "yakutsk", "irkutsk", "mongolia"]],
-  ["ural", ["ukraine", "afghanistan", "china", "siberia"]],
-  ["yakutsk", ["irkutsk", "siberia", "kamchatka"]],
-
-  ["east-africa", ["middle-east", "egypt", "madagascar", "congo", "north-africa", "south-africa"]],
-  ["egypt", ["north-africa", "middle-east", "east-africa", "southern-europe"]],
-  ["congo", ["east-africa", "south-africa", "north-africa"]],
-  ["madagascar", ["east-africa", "south-africa"]],
-  ["south-africa", ["madagascar", "east-africa", "congo"]],
-  ["north-africa", ["western-europe", "southern-europe", "east-africa", "egypt", "congo", "brazil"]],
-
-  ["alaska", ["kamchatka", "northwest-territory", "alberta"]],
-  ["alberta", ["ontario", "alaska", "northwest-territory", "western-united-states"]],
-  ["central-america", ["western-united-states", "eastern-united-states", "venezuela"]],
-  ["eastern-united-states", ["western-united-states", "central-america", "quebec", "ontario"]],
-  ["greenland", ["iceland", "northwest-territory", "ontario", "quebec"]],
-  ["northwest-territory", ["alaska", "alberta", "ontario", "greenland"]],
-  ["ontario", ["alberta", "northwest-territory", "quebec", "western-united-states", "eastern-united-states", "greenland"]],
-  ["western-united-states", ["eastern-united-states", "ontario", "alberta", "central-america"]],
-  ["quebec", ["ontario", "greenland", "eastern-united-states"]],
-
-  ["argentina", ["brazil", "peru"]],
-  ["brazil", ["argentina", "peru", "north-africa", "venezuela"]],
-  ["peru", ["venezuela", "argentina", "brazil"]],
-  ["venezuela", ["brazil", "peru", "central-america"]],
-
-  ["eastern-australia", ["western-australia", "new-guinea"]],
-  ["new-guinea", ["eastern-australia", "indonesia"]],
-  ["western-australia", ["eastern-australia", "new-guinea", "indonesia"]],
-  ["indonesia", ["siam", "new-guinea", "western-australia", "eastern-australia"]]
-]);
-
-
-const Phase = {
-  DEPLOY: 0,
-  ATTACK: 1,
-  MOVE: 2,
-  CREATED: 3,
-  FINISHED: 4,
-};
+import {
+  i18n,
+} from '../../config/locales'
+import {
+  PHASE,
+  COUNTRY_CONNECTIONS,
+  COUNTRY_COORDINATES,
+} from '../../config/const'
 
 
 const DEG_TO_RAD = Math.PI / 180;
@@ -206,7 +42,7 @@ function isConnectedAndNotOwned(from, to, state) {
 }
 
 function isConnectedTo(from, to) {
-  let country = CountryConnections.get(from)
+  let country = COUNTRY_CONNECTIONS.get(from)
   if(!country) {
     return false
   }
@@ -233,7 +69,7 @@ const store = new Vuex.Store({
     },
     result: null,
     turn: 0,
-    phase: Phase.CREATED,
+    phase: PHASE.CREATED,
     player: 0,
     players: [],
     countries: [],
@@ -396,7 +232,7 @@ const vm = new Vue({
     },
     getCountryCount(country) {
       const countryState = this.$store.state.countries.get(country);
-      if (this.$store.state.phase === Phase.DEPLOY) {
+      if (this.$store.state.phase === PHASE.DEPLOY) {
         const playerIndex = this.$store.state.player;
         const playerState = this.$store.state.players[playerIndex];
         const deployedTroops = playerState.actions.filter((action) => action.id === country).length;
@@ -408,14 +244,14 @@ const vm = new Vue({
       const { $store: { state } } = this;
       const countryState = this.$store.state.countries.get(country);
       const classes = ['country'];
-      if (state.phase === Phase.DEPLOY) {
+      if (state.phase === PHASE.DEPLOY) {
         if ((countryState.selected === true
           && state.action.to === null 
           && countryState.owner === state.player) 
         || state.action.to === country) {
           classes.push('selected');
         }
-      } else if (state.phase === Phase.ATTACK) {
+      } else if (state.phase === PHASE.ATTACK) {
         if ((countryState.selected === true 
           && state.action.from === null 
           && countryState.owner === state.player 
@@ -426,7 +262,7 @@ const vm = new Vue({
           && isConnectedTo(state.action.from, country))) {
           classes.push('selected');
         }
-      } else if (state.phase === Phase.MOVE) {
+      } else if (state.phase === PHASE.MOVE) {
         if ((countryState.selected === true 
           && state.action.from === null
           && countryState.owner === state.player 
@@ -460,11 +296,11 @@ const vm = new Vue({
       const { $store: { state, dispatch } } = this;
       const playerIndex = state.player;
       const playerState = state.players[playerIndex];
-      if (state.phase === Phase.DEPLOY) {
+      if (state.phase === PHASE.DEPLOY) {
         if (isOwned(e.target.id, state)) {
           dispatch('actionTo', { id: e.target.id });
         }
-      } else if (state.phase === Phase.ATTACK) {
+      } else if (state.phase === PHASE.ATTACK) {
         if (state.action.from === null && isOwnedAndHasTroops(e.target.id, state)) {
           dispatch('actionFrom', { id: e.target.id });
         } else if (state.action.from !== null && state.action.to === null && isConnectedAndNotOwned(state.action.from, e.target.id, state)) {
@@ -472,7 +308,7 @@ const vm = new Vue({
         } else if (state.action.from !== null && e.target.id === state.action.from) {
           dispatch('actionFrom', { id: null });
         }
-      } else if (state.phase === Phase.MOVE) {
+      } else if (state.phase === PHASE.MOVE) {
         if (state.action.from === null && isOwnedAndHasTroops(e.target.id, state)) {
           dispatch('actionFrom', { id: e.target.id });
         } else if (state.action.from !== null && state.action.to === null && isConnectedAndOwned(state.action.from, e.target.id, state)) {
@@ -484,27 +320,27 @@ const vm = new Vue({
     },
     async onClickContinue(e) {
       const { $store: { dispatch, state } } = this;
-      if (state.phase === Phase.DEPLOY && state.players[state.player].actions.length === state.players[state.player].newTroops) {
+      if (state.phase === PHASE.DEPLOY && state.players[state.player].actions.length === state.players[state.player].newTroops) {
         let result = await this.postState(state)
         console.log(result)
-      } else if (state.phase === Phase.ATTACK || state.phase === Phase.MOVE) {
+      } else if (state.phase === PHASE.ATTACK || state.phase === PHASE.MOVE) {
         let result = await this.postState(state)
         console.log(result)
       }
     },
     onClickPlus(e) {
       const { $store: { dispatch, state } } = this;
-      if ((state.phase === Phase.ATTACK || state.phase === Phase.MOVE) && state.action.from !== null && state.action.to !== null) {
+      if ((state.phase === PHASE.ATTACK || state.phase === PHASE.MOVE) && state.action.from !== null && state.action.to !== null) {
         dispatch('actionIncrement');
-      } else if (state.phase === Phase.DEPLOY) {
+      } else if (state.phase === PHASE.DEPLOY) {
         dispatch('deployTroop');
       }
     },
     onClickMinus(e) {
       const { $store: { dispatch, state } } = this;
-      if ((state.phase === Phase.ATTACK || state.phase === Phase.MOVE) && state.action.from !== null && state.action.to !== null) {
+      if ((state.phase === PHASE.ATTACK || state.phase === PHASE.MOVE) && state.action.from !== null && state.action.to !== null) {
         dispatch('actionDecrement');
-      } else if (state.phase === Phase.DEPLOY) {
+      } else if (state.phase === PHASE.DEPLOY) {
         dispatch('gatherTroop');
       }
     }
@@ -518,7 +354,7 @@ const vm = new Vue({
       const { $store: { state } } = this;
       const playerIndex = state.player;
       const playerState = state.players[playerIndex];
-      if (state.phase === Phase.DEPLOY) {
+      if (state.phase === PHASE.DEPLOY) {
         if (playerState.newTroops > playerState.actions.length) {
           return true;
         }
@@ -527,21 +363,21 @@ const vm = new Vue({
     },
     canAdd() {
       const { $store: { state } } = this;
-      if (state.phase === Phase.DEPLOY && state.action.to !== null && state.players[state.player].actions.length < state.players[state.player].newTroops) {
+      if (state.phase === PHASE.DEPLOY && state.action.to !== null && state.players[state.player].actions.length < state.players[state.player].newTroops) {
         return false;
       }
-      return !((state.phase === Phase.ATTACK || state.phase === Phase.MOVE) && state.action.from !== null && state.action.to !== null);
+      return !((state.phase === PHASE.ATTACK || state.phase === PHASE.MOVE) && state.action.from !== null && state.action.to !== null);
     },
     canSubtract() {
       const { $store: { state } } = this;
-      if (state.phase === Phase.DEPLOY && state.action.to !== null && state.players[state.player].actions.length > 0) {
+      if (state.phase === PHASE.DEPLOY && state.action.to !== null && state.players[state.player].actions.length > 0) {
         return false;
       }
-      return !((state.phase === Phase.ATTACK || state.phase === Phase.MOVE) && state.action.from !== null && state.action.to !== null);
+      return !((state.phase === PHASE.ATTACK || state.phase === PHASE.MOVE) && state.action.from !== null && state.action.to !== null);
     },
     canAddOrSubtract() {
       const { $store: { state } } = this;      
-      return !((state.phase === Phase.ATTACK || state.phase === Phase.MOVE) && state.action.from !== null && state.action.to !== null);
+      return !((state.phase === PHASE.ATTACK || state.phase === PHASE.MOVE) && state.action.from !== null && state.action.to !== null);
     },
     countries() {
       return this.$store.state.countries;
@@ -550,7 +386,7 @@ const vm = new Vue({
       return this.$store.state.playerId === this.$store.state.players[this.$store.state.player].id;
     },
     gameStarted() {
-      return this.$store.state.phase !== Phase.CREATED;
+      return this.$store.state.phase !== PHASE.CREATED;
     },
     gameOver() {
       return this.$store.state.winner === 0 || this.$store.state.winner === 1;
@@ -564,7 +400,7 @@ const vm = new Vue({
     phaseName() {
       const { $store: { state } } = this;
       const phase = i18n.en.phases[state.phase];
-      if (state.phase === Phase.DEPLOY) {
+      if (state.phase === PHASE.DEPLOY) {
         const current = state.players[state.player].actions.length;
         const total = state.players[state.player].newTroops;
         return `${i18n.en.phase}: ${phase} (${current}/${total})`;
@@ -588,16 +424,16 @@ const vm = new Vue({
     },
     buttonText() {
       const { $store: { state } } = this;
-      if (state.phase === Phase.DEPLOY) {
+      if (state.phase === PHASE.DEPLOY) {
         return 'Deploy';
-      } else if (state.phase === Phase.ATTACK) {
+      } else if (state.phase === PHASE.ATTACK) {
         if (state.action.from === null) {
           return 'Next';
         } else if (state.action.to !== null) {
           return `Attack with ${state.action.count} troops`;
         }
         return 'Attack';
-      } else if (state.phase === Phase.MOVE) {
+      } else if (state.phase === PHASE.MOVE) {
         if (state.action.from === null) {
           return 'Next';
         } else if (state.action.to !== null) {
@@ -624,9 +460,9 @@ const vm = new Vue({
     actionStyle() {
       const { $store: { state } } = this;
       if (state.action.from !== null) {
-        const [fx, fy] = CountryCoordinates.get(state.action.from);
+        const [fx, fy] = COUNTRY_COORDINATES.get(state.action.from);
         if (state.action.to !== null) {
-          const [tx, ty] = CountryCoordinates.get(state.action.to);
+          const [tx, ty] = COUNTRY_COORDINATES.get(state.action.to);
           const dx = tx - fx;
           const dy = ty - fy;
           const d = Math.sqrt(dx * dx + dy * dy);
@@ -635,7 +471,7 @@ const vm = new Vue({
             strokeWidth: 1.5 * (1 / s)
           };
         } else if (state.country !== null) {
-          const [tx, ty] = CountryCoordinates.get(state.country);
+          const [tx, ty] = COUNTRY_COORDINATES.get(state.country);
           const dx = tx - fx;
           const dy = ty - fy;
           const d = Math.sqrt(dx * dx + dy * dy);
@@ -652,17 +488,17 @@ const vm = new Vue({
     actionTransform() {
       const { $store: { state } } = this;
       if (state.action.from !== null) {
-        const [fx, fy] = CountryCoordinates.get(state.action.from);
+        const [fx, fy] = COUNTRY_COORDINATES.get(state.action.from);
         if (state.action.to !== null) {
-          const [tx, ty] = CountryCoordinates.get(state.action.to);
+          const [tx, ty] = COUNTRY_COORDINATES.get(state.action.to);
           const dx = tx - fx;
           const dy = ty - fy;
           const d = Math.sqrt(dx * dx + dy * dy);
           const s = d / 150;
           const rotation = radiansToDegrees(Math.atan2(dy,dx));
           return `translate(${fx},${fy}) rotate(${rotation}) scale(${s},${s})`;
-        } else if (state.country !== null && (state.phase === Phase.ATTACK && isConnectedAndNotOwned(state.action.from, state.country, state)) || (state.phase === Phase.MOVE && isConnectedAndOwned(state.action.from, state.country, state))) {
-          const [tx, ty] = CountryCoordinates.get(state.country);
+        } else if (state.country !== null && (state.phase === PHASE.ATTACK && isConnectedAndNotOwned(state.action.from, state.country, state)) || (state.phase === PHASE.MOVE && isConnectedAndOwned(state.action.from, state.country, state))) {
+          const [tx, ty] = COUNTRY_COORDINATES.get(state.country);
           const dx = tx - fx;
           const dy = ty - fy;
           const d = Math.sqrt(dx * dx + dy * dy);

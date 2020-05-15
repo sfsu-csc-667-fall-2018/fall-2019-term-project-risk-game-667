@@ -4,7 +4,7 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const session = require('express-session')
-const passport = require('./lib/auth')
+const { passport } = require('./lib/auth')
 
 const authRouter = require('./routes/auth')
 const appRouter = require('./routes/app')

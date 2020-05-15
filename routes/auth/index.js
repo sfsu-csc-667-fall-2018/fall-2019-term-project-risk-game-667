@@ -1,7 +1,7 @@
 const express = require('express')
-const { registerUser, deriveId, hashPassword } = require('../../db/user')
+const { registerUser } = require('../../db/user')
 const router = express.Router()
-const passport = require('../../lib/auth')
+const { passport, deriveId, hashPassword } = require('../../lib/auth')
 const { ensureLoggedIn, ensureLoggedOut } = require('connect-ensure-login')
 
 router.get('/signin', ensureLoggedOut('/'), (req, res) => {
