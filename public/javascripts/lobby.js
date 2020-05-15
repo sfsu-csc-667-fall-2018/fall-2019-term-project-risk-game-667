@@ -2,10 +2,7 @@ import { h, Component, render } from '../vendor/preact'
 import htm from '../vendor/htm'
 import axios from 'axios'
 import io from 'socket.io-client'
-import {
-  emitGameCreated,
-  emitGameStarted
-} from '../../config/events'
+import { lobbyEvent } from '../../config/events'
 
 const html = htm.bind(h)
 
@@ -21,12 +18,8 @@ class App extends Component {
   componentDidMount() {
     this.getGames()
 
-    this.socket.on(emitGameCreated(), (data) => {
-      console.log("New Game Was Created", data)
-      this.getGames()
-    })
-    this.socket.on(emitGameStarted(), (data) => {
-      console.log("Game Was Started", data)
+    this.socket.on(lobbyEvent(), (data) => {
+      console.log('NEW LOBBY EVENT', data)
       this.getGames()
     })
   }
@@ -43,10 +36,10 @@ class App extends Component {
   newGame() {
     axios
       .get(`/game/new`)
-      .then(res => res.data)
+      .then((res) => res.data)
       .then((data) => {
         if (!data.error) {
-          window.location = `/game/${data.game.id}`
+          window.location = `/game/${data.id}`
         }
       })
       .catch((error) => {
@@ -57,9 +50,9 @@ class App extends Component {
   deleteGame(id) {
     axios
       .post(`/game/delete`, {
-        id
+        id,
       })
-      .then(res => res.data)
+      .then((res) => res.data)
       .then((data) => {
         this.getGames()
       })
@@ -72,7 +65,6 @@ class App extends Component {
     return html`
       <div class="card">
         <div class="card-body">
-
           <h4 class="mb-3">All Games</h4>
           <button
             type="button"
@@ -86,7 +78,6 @@ class App extends Component {
               <thead>
                 <tr>
                   <th scope="col">Room id</th>
-                  <th scope="col">Status</th>
                   <th scope="col"></th>
                   <th scope="col"></th>
                 </tr>
@@ -96,9 +87,19 @@ class App extends Component {
                   <tbody>
                     <tr>
                       <th scope="row">${game.id}</th>
-                      <td>${game.status.event} at ${Date(game.timestamp)}</td>
-                      <td><a class="btn btn-primary" href="/game/${game.id}">Join</a></td>
-                      <td><button class="btn btn-danger" onClick=${() => this.deleteGame(game.id)}>Delete</button></td>
+                      <td>
+                        <a class="btn btn-primary" href="/game/${game.id}"
+                          >Join</a
+                        >
+                      </td>
+                      <td>
+                        <button
+                          class="btn btn-danger"
+                          onClick=${() => this.deleteGame(game.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   </tbody>
                 `

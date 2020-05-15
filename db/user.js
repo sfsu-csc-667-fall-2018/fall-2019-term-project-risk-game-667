@@ -1,48 +1,40 @@
 const db = require('.')
-const bcrypt = require('bcryptjs')
-const crypto = require('crypto')
 
-function registerUser(username, password) {
+const { USER_TABLE } = require('../config/const')
+
+function registerUser(id, username, password) {
   return new Promise((resolve) => {
-    let user = {
-      id: crypto.createHash('sha256').update(username).digest('hex'),
-      password: bcrypt.hashSync(password, 8),
-      username,
-    }
     db.any(
-      `INSERT INTO user_table ("id", "username", "password") VALUES ('${user.id}', '${user.username}', '${user.password}');`
+      `INSERT INTO ${USER_TABLE} 
+      ("id", "username", "password") 
+      VALUES ('${id}', '${username}', '${password}');`
     )
       .then((results) => {
-        resolve({})
+        resolve({ error: null })
       })
       .catch((error) => {
-        resolve({ error: 'Username already exists!' })
+        resolve({ error: 'Username already exists!', code: 200 })
       })
   })
 }
 
-function findUser(attribute, value) {
+function findUser(username) {
   return new Promise((resolve) => {
-    db.any(`SELECT * FROM user_table WHERE ${attribute} = '${value}'`)
+    db.any(`SELECT * FROM ${USER_TABLE} WHERE username = '${username}'`)
       .then((results) => {
         if (results.length === 0) {
-          resolve({ error: 'User was not found!' })
+          resolve({ error: 'User was not found!', code: 200 })
+        } else {
+          resolve(results[0])
         }
-        resolve(results[0])
       })
       .catch((error) => {
-        resolve({ error: 'Error querying user!' })
+        resolve({ error: 'Error querying user!', code: 500 })
       })
   })
 }
-
-function validatePassword(hash, password) {
-  return bcrypt.compareSync(password, hash)
-}
-
 
 module.exports = {
   registerUser,
   findUser,
-  validatePassword,
 }

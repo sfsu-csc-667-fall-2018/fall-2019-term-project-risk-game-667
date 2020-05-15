@@ -1,9 +1,9 @@
-const emitNewMessage = (chatId) => `NEW MESSAGE ${chatId}`
-const emitGameCreated = () => `GAME CREATED`
-const emitGameStarted = () => `GAME EVENT`
+const messageEvent = (chatId) => `NEW MESSAGE ${chatId}`
+const lobbyEvent = () => `LOBBY EVENT`
+const gameEvent = (gameId) => `GAME EVENT ${gameId}`
 
-module.exports = { 
-  emitNewMessage, 
-  emitGameCreated,
-  emitGameStarted
+module.exports = {
+  messageEvent,
+  lobbyEvent,
+  gameEvent,
 }

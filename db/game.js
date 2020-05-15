@@ -1,16 +1,50 @@
 const db = require('.')
 
-function newGame(id, status, hostId) {
+const { GAME_TABLE, PHASE } = require('../config/const')
+
+function createGame(
+  id,
+  phase,
+  turn,
+  currentPlayer,
+  currentAction,
+  battleResult,
+  playerOne,
+  playerTwo,
+  playersState,
+  countriesState
+) {
   return new Promise((resolve) => {
     db.any(
-      `INSERT INTO game_table ("id", "status", "host_id") VALUES ('${id}', '${status}', '${hostId}');`
+      `INSERT INTO ${GAME_TABLE} 
+      ("id", 
+      "phase", 
+      "turn", 
+      "current_player", 
+      "current_action", 
+      "battle_result", 
+      "player_one", 
+      "player_two", 
+      "players_state", 
+      "countries_state") 
+      VALUES 
+      ('${id}', 
+      '${phase}', 
+      '${turn}', 
+      '${currentPlayer}', 
+      '${currentAction}', 
+      '${battleResult}', 
+      '${playerOne}', 
+      '${playerTwo}', 
+      '${playersState}', 
+      '${countriesState}');`
     )
       .then((results) => {
-        resolve({ error: undefined })
+        resolve({ error: null })
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: 'Error creating a new game!', code: 500 })
+        resolve({ error: `Error creating a new game ${id}`, code: 500 })
       })
   })
 }
@@ -18,103 +52,138 @@ function newGame(id, status, hostId) {
 function deleteGame(id) {
   return new Promise((resolve) => {
     db.any(
-      `DELETE FROM game_table WHERE id = '${id}';`
+      `DELETE FROM ${GAME_TABLE} 
+      WHERE id = '${id}';`
     )
       .then((results) => {
-        resolve({ error: undefined })
+        resolve({ error: null })
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: `Error deleteing game with id ${id}!`, code: 500 })
+        resolve({ error: `Error deleteing game ${id}`, code: 500 })
       })
   })
 }
 
-function getGamesAll(offset = 0, limit = 100) {
+function getGames(offset = 0, limit = 100) {
   return new Promise((resolve) => {
-    db.any(`SELECT * FROM game_table OFFSET ${offset} LIMIT ${limit}`)
+    db.any(
+      `SELECT id, phase, turn, current_player, player_one, player_two FROM ${GAME_TABLE} 
+      OFFSET ${offset} 
+      LIMIT ${limit}`
+    )
       .then((results) => {
         resolve(results)
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: 'Error getting games!', code: 500 })
+        resolve({ error: `Error getting games`, code: 500 })
       })
   })
 }
 
 function getGame(id) {
   return new Promise((resolve) => {
-    db.any(`SELECT * FROM game_table WHERE id = '${id}'`)
-      .then((results) => {
-        if (results.length !== 1) {
-          resolve({ error: `Error finding a game with id ${id}` })
-        }
-        resolve()
-      })
-      .catch((error) => {
-        console.log(error)
-        resolve({ error: `Error finding a game with id ${id}` })
-      })
-  })
-}
-
-function joinGame(playerId, gameId, state) {
-  return new Promise(async (resolve) => {
     db.any(
-      `INSERT INTO playing_table ("player_id", "game_id", "state") VALUES ('${playerId}', '${gameId}', '${state}');`
+      `SELECT id, phase, turn, current_player, player_one, player_two FROM ${GAME_TABLE} 
+      WHERE id = '${id}'`
     )
       .then((results) => {
-        resolve({ error: undefined })
-      })
-      .catch((error) => {
-        if (error.code === '23505') {
-          resolve({ error: undefined })
+        if (results.length !== 1) {
+          resolve({ error: `Error finding game ${id}`, code: 500 })
         } else {
-          resolve({ error: `Error joining a game with id ${gameId}`, code: 500 })
+          resolve(results[0])
         }
       })
+      .catch((error) => {
+        console.log(error)
+        resolve({ error: `Error finding game ${id}`, code: 500 })
+      })
   })
 }
 
-function getPlayers(gameId) {
+function joinGame(id, playerTwo) {
   return new Promise(async (resolve) => {
-    db.any(`SELECT player_id, username, status FROM playing_table
-            INNER JOIN user_table
-            ON user_table.id = player_id
-            INNER JOIN game_table
-            ON game_table.id = game_id
-            WHERE "game_id" = '${gameId}';`)
+    db.any(
+      `UPDATE ${GAME_TABLE} 
+      SET "player_two" = '${playerTwo}',
+      "phase" = '${PHASE.DEPLOY}' 
+      WHERE id = '${id}'
+      AND player_two = 'null'
+      AND player_one <> '${playerTwo}'`
+    )
       .then((results) => {
-        resolve(results)
+        console.log(results)
+        resolve({ error: null })
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: `Error joining a game with id ${gameId}` })
+        resolve({
+          error: `Error joining ${playerTwo} to game ${id}`,
+          code: 500,
+        })
       })
   })
 }
 
-function updateStatus(gameId, status) {
+function updateGameState(
+  id,
+  phase,
+  turn,
+  currentPlayer,
+  currentAction,
+  battleResult,
+  playersState,
+  countriesState
+) {
   return new Promise((resolve) => {
-    db.any(`UPDATE game_table SET "status" = '${status}' WHERE id = '${gameId}';`)
+    db.any(
+      `UPDATE ${GAME_TABLE}
+      SET "phase" = '${phase}',
+      "turn" = '${turn}',
+      "current_player" = '${currentPlayer}',
+      "current_action" = '${currentAction}',
+      "battle_result" = '${battleResult}',
+      "players_state" = '${playersState}',
+      "countries_state" = '${countriesState}'
+      WHERE "id" = '${id}';`
+    )
       .then((results) => {
-        resolve()
+        resolve({ error: null })
       })
       .catch((error) => {
         console.log(error)
-        resolve({ error: `Error updating game status for a game ${id}!` })
+        resolve({ error: `Error updating game state ${id}`, code: 500 })
       })
   })
 }
 
+function getGameState(id) {
+  return new Promise((resolve) => {
+    db.any(
+      `SELECT * FROM ${GAME_TABLE} 
+      WHERE id = '${id}'`
+    )
+      .then((results) => {
+        if (results.length !== 1) {
+          resolve({ error: `Error finding game ${id}`, code: 500 })
+        } else {
+          resolve(results[0])
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+        resolve({ error: `Error finding game ${id}`, code: 500 })
+      })
+  })
+}
 
 module.exports = {
-  newGame,
+  createGame,
   deleteGame,
-  getGamesAll,
+  updateGameState,
+  getGameState,
+  getGames,
   getGame,
   joinGame,
-  getPlayers,
-  updateStatus,
 }

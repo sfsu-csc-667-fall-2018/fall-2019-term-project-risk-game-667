@@ -1,25 +1,26 @@
 const express = require('express')
 const chat = require('../../db/chat')
-const { emitNewMessage } = require('../../config/events')
+const { messageEvent } = require('../../config/events')
 
 const router = express.Router()
 
-router.get('/:room', async (req, res) => {
-  let getResult = await chat.getMessages('chat_id', req.params.room, 0, 20)
+router.get('/:chat_id', async (req, res) => {
+  let chatId = req.params.chat_id
+  let getResult = await chat.getMessages(chatId, 0, 20)
 
   res.send({
     messages: getResult,
   })
 })
 
-router.post('/:room/new', async (req, res) => {
+router.post('/:chat_id/new', async (req, res) => {
   let message = {
     sender: {
       id: '-1',
       username: 'Guest',
     },
     body: req.body.text,
-    chatId: req.params.room,
+    chatId: req.params.chat_id,
   }
   if (req.user) {
     message.sender.id = req.user.id
@@ -29,7 +30,7 @@ router.post('/:room/new', async (req, res) => {
   let sendResult = await chat.newMessage(message)
 
   let io = req.app.get('io')
-  io.emit(emitNewMessage(message.chatId), message)
+  io.emit(messageEvent(message.chatId), message)
 
   res.send({
     error: null,
