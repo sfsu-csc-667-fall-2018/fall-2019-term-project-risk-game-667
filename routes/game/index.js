@@ -81,11 +81,11 @@ router.get('/:game_id', ensureLoggedIn('/signin'), async (req, res, next) => {
   let player = req.user.id
   if(getGameResult.player_one === player || getGameResult.player_two === player) {
     res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
+  } else if(getGameResult.player_two !== 'null') {
+    res.redirect('/lobby?error=full')
   } else {
-    // TODO this needs to be handled better
     let joinGameResult = await joinGame(gameId, player)
-    console.log(joinGameResult)
-    res.sendFile('public/html/game.html', { root: `${__dirname}/../../` })
+    res.redirect(`/game/${gameId}`)
   }
 })
 
@@ -125,7 +125,6 @@ router.post('/:game_id/update', ensureLoggedIn('/signin'), async (req, res) => {
   let io = req.app.get('io')
   // TODO even should not be hardcoded
   io.emit(`GAME EVENT ${gameId}`, { id: gameId })
-
   res.json({
     error: null,
   })

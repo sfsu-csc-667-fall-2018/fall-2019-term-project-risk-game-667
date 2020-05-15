@@ -4,6 +4,10 @@ const USER_TABLE = 'user_table'
 const MESSAGE_TABLE = 'message_table'
 const GAME_TABLE = 'game_table'
 
+const ERRORS = {
+  full: 'The game you are trying to join is full!'
+}
+
 const Phase = {
   DEPLOY: 0,
   ATTACK: 1,
@@ -11,6 +15,7 @@ const Phase = {
   CREATED: 3,
   FINISHED: 4,
 };
+
 
 const InitialArmies = [
   0, 0, 40, 35, 30, 25, 20
@@ -162,6 +167,7 @@ module.exports = {
   USER_TABLE,
   MESSAGE_TABLE,
   GAME_TABLE,
+  ERRORS,
   // TODO change the formatting
   Phase,
   InitialArmies,
