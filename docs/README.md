@@ -12,6 +12,16 @@ The application has several main parts:
 
 Components communicate using HTTP and Websocket protocols, using axios and socket.io, respectively. 
 
+## Components
+
+### Server
+
+## Lobby
+
+### Chat
+
+### Game
+
 ## Requirements
 
 - Node & npm or yarn
