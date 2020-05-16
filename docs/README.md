@@ -95,31 +95,41 @@ npm run start:win
 
 The application has several main parts:
 
-- Web Server written in Express, and Pug as template enginge
+- Web Server
 
-- Chat, and Lobby components written in Preact
+- Chat and Lobby
 
-- Game component written in Vue
+- Gameboard
 
-Components communicate using HTTP and Websocket protocols, using axios and socket.io, respectively. 
+### Web Server
 
+- Runtime: Node
 
-### Server
+- Supported protocols: HTTP and WS
 
-HTTP and WS server
+- Web framework: Express
 
-### Lobby
+- Template engine: Pug
 
-Preact component. 
+Web Server is key component of the application. It processes various data, and manages the state. It broadcast events to subscribers via WS, and exposes HTTP API allowing to retrive or mutate current state. 
 
-### Chat
+### Lobby and Chat
 
-Preact component. Written to be used as a pluggin. Chat id is always last part of the current url. Binds to an element with css selector `#chat`. Uses socket.io to listen for `messageEvent` with correct chat id.
+- Framework: Preact
 
-### Game
+- Template language: Htm
 
-Vue application with Vuex store.
+Lobby and Chat are simple Preact components. Lobby binds to an element with css selector `#lobby`. It uses socket.io to listen for `lobbyEvent`, and update internal state (list of games) using Web Server's HTTP API.
 
+Chat is written to be used as a pluggin. Its id is always last part of the current web page url. The componet binds to an element with css selector `#chat`. Uses socket.io to listen for `messageEvent` with correct chat id.
+
+### Gameboard
+
+- Framework: Vue
+
+- State management: Vuex
+
+Vue component. Game state is managed by Vuex store. Actions are propagated to the Server via HTTP API, where the state is updated. The Server later broadcasts `gameEvent`, which triggers Gameboard component to update the state (also happens via HTTP API). The gameboard itself is svg.  
 
 ## Application Flow
 
