@@ -16,11 +16,19 @@ Components communicate using HTTP and Websocket protocols, using axios and socke
 
 ### Server
 
+HTTP and WS server
+
 ## Lobby
+
+Preact component. 
 
 ### Chat
 
+Preact component. Written to be used as a pluggin. Chat id is always last part of the current url. Binds to an element with css selector `#chat`. Uses socket.io to listen for `messageEvent` with correct chat id.
+
 ### Game
+
+Vue application with Vuex store.
 
 ## Requirements
 
