@@ -69,7 +69,7 @@ class App extends Component {
           <button
             type="button"
             onClick=${() => this.newGame()}
-            class="m-3 btn btn-primary"
+            class="m-3 btn btn-primary btn-lg"
           >
             Create New Game
           </button>
@@ -79,7 +79,6 @@ class App extends Component {
                 <tr>
                   <th scope="col">Room id</th>
                   <th scope="col"></th>
-                  <th scope="col"></th>
                 </tr>
               </thead>
               ${this.state.games.map(
@@ -88,17 +87,9 @@ class App extends Component {
                     <tr>
                       <th scope="row">${game.id}</th>
                       <td>
-                        <a class="btn btn-primary" href="/game/${game.id}"
+                        <a class="btn btn-primary btn-lg" href="/game/${game.id}"
                           >Join</a
                         >
-                      </td>
-                      <td>
-                        <button
-                          class="btn btn-danger"
-                          onClick=${() => this.deleteGame(game.id)}
-                        >
-                          Delete
-                        </button>
                       </td>
                     </tr>
                   </tbody>

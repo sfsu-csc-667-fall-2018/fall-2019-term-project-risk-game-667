@@ -24,7 +24,6 @@ block content
               a(href='/signup') Sign Up
 
   div(class='lobby-container container-fliud my-5')
-    h3(class='display-4')=title
     if user
       h2(class='display-5')='Welcome ' + user.username +'!'
     else
@@ -37,26 +36,21 @@ block content
 
     .row.my-3
       .col-md-4.order-md-2.mb-4
-        div(id="scene-container")
+        if user
+          button.btn.btn-primary.btn-lg.btn-block(type='button' data-toggle='modal' data-target='#staticBackdrop') Play Risk
+          #staticBackdrop.modal.fade(data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+            .modal-dialog.modal-dialog-centered.modal-xl
+              .modal-content
+                .modal-body
+                    div(id='games-table')
+                .modal-footer
+                  button.btn.btn-lg.btn-danger(type='button' data-dismiss='modal') Close
+          script(src='/javascripts/bundles/lobby.bundle.js')
+        div.d-none.d-md-block(id="scene-container")
 
       .col-md-8.order-md-1
-        if user
-          div(id='games-table')
-          div(id='chat')
-          script(src='/javascripts/bundles/lobby.bundle.js')
-          script(src='/javascripts/bundles/chat.bundle.js')  
+        div(id='chat')
+        script(src='/javascripts/bundles/chat.bundle.js')
 
-
-        else
-          .alert.alert-warning.mt-5.px-4.py-5(role='alert') Only authenticated users can see games in progress!
-
-
-  footer#footer
-    .container
-      .copyright
-        | &copy; Copyright
-        strong
-          span Risky Savages
-        | . All Rights Reserved
   script(src='/javascripts/bundles/navbar.bundle.js')
   script(src='/javascripts/bundles/lobby_scene.bundle.js')

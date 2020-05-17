@@ -31,7 +31,7 @@ var n,r,o,i=String.fromCharCode;function s(t){for(var e,n,r=[],o=0,i=t.length;o<
               <button
                 type="button"
                 onClick=${()=>this.sendMessage(this.textArea.value)}
-                class="m-3 btn btn-primary"
+                class="m-3 btn btn-primary btn-lg"
               >
                 Send
               </button>

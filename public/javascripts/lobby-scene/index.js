@@ -7,7 +7,7 @@ if (WEBGL.isWebGLAvailable()) {
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera( 100, window.innerWidth*0.3 / window.innerHeight, 0.1, 1000 );
   var renderer = new THREE.WebGLRenderer();
-  renderer.setSize( window.innerWidth*0.3, window.innerHeight*0.8 );
+  renderer.setSize( window.innerWidth*0.3, window.innerHeight-300 );
   renderer.setClearColor(0xE8E9EB);
 
   var controls = new OrbitControls( camera, renderer.domElement );

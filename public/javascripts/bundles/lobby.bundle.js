@@ -14,7 +14,7 @@ var n,r,o,i=String.fromCharCode;function s(t){for(var e,n,r=[],o=0,i=t.length;o<
           <button
             type="button"
             onClick=${()=>this.newGame()}
-            class="m-3 btn btn-primary"
+            class="m-3 btn btn-primary btn-lg"
           >
             Create New Game
           </button>
@@ -24,7 +24,6 @@ var n,r,o,i=String.fromCharCode;function s(t){for(var e,n,r=[],o=0,i=t.length;o<
                 <tr>
                   <th scope="col">Room id</th>
                   <th scope="col"></th>
-                  <th scope="col"></th>
                 </tr>
               </thead>
               ${this.state.games.map((t,e)=>f`
@@ -32,17 +31,9 @@ var n,r,o,i=String.fromCharCode;function s(t){for(var e,n,r=[],o=0,i=t.length;o<
                     <tr>
                       <th scope="row">${t.id}</th>
                       <td>
-                        <a class="btn btn-primary" href="/game/${t.id}"
+                        <a class="btn btn-primary btn-lg" href="/game/${t.id}"
                           >Join</a
                         >
-                      </td>
-                      <td>
-                        <button
-                          class="btn btn-danger"
-                          onClick=${()=>this.deleteGame(t.id)}
-                        >
-                          Delete
-                        </button>
                       </td>
                     </tr>
                   </tbody>

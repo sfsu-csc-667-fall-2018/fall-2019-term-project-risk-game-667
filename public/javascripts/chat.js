@@ -108,7 +108,7 @@ class App extends Component {
               <button
                 type="button"
                 onClick=${() => this.sendMessage(this.textArea.value)}
-                class="m-3 btn btn-primary"
+                class="m-3 btn btn-primary btn-lg"
               >
                 Send
               </button>
