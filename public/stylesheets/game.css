@@ -504,3 +504,23 @@ body {
   right: 35px;
   bottom: 35px;
 }
+
+.chat-messages{
+  height: 200px;
+  width: 200px;
+  overflow: auto;
+}
+
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background: linear-gradient(to bottom, #19444d, #266673);
+}
+
+.card-body {
+  padding: 0.5rem;
+  padding-bottom: 0;
+}

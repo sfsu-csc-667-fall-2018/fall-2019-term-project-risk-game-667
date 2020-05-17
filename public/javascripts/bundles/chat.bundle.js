@@ -15,7 +15,7 @@ var n,r,o,i=String.fromCharCode;function s(t){for(var e,n,r=[],o=0,i=t.length;o<
             <ul class="list-group chat-messages">
               ${this.state.messages.map(t=>f`
                   <li class="list-group-item">
-                    ${t.sender.username} said ${t.body}
+                    ${t.sender.username}: ${t.body}
                   </li>
                 `)}
             </ul>

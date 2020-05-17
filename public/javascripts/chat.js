@@ -91,7 +91,7 @@ class App extends Component {
               ${this.state.messages.map(
                 (message) => html`
                   <li class="list-group-item">
-                    ${message.sender.username} said ${message.body}
+                    ${message.sender.username}: ${message.body}
                   </li>
                 `
               )}
