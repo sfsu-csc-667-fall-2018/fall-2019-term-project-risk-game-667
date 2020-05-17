@@ -8,6 +8,7 @@ module.exports = {
     navbar: './public/javascripts/navbar.js',
     validators: './public/javascripts/validators.js',
     lobby: './public/javascripts/lobby.js',
+    lobby_scene: './public/javascripts/lobby-scene/index.js',
     game: './public/javascripts/game/index.js',
   },
   output: {

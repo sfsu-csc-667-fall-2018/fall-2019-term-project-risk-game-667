@@ -4,6 +4,7 @@ block content
   link(href='/vendor/icofont/icofont.min.css' rel='stylesheet')
   link(href='/stylesheets/landing.css' rel='stylesheet')
   link(href='/stylesheets/navbar.css' rel='stylesheet')
+  link(href='/stylesheets/lobby.css' rel='stylesheet')
   header#header.fixed-top
     .container.d-flex
       .logo.mr-auto
@@ -36,11 +37,16 @@ block content
 
     .row.my-3
       .col-md-4.order-md-2.mb-4
-        div(id='chat')  
+        div(id="scene-container")
+
       .col-md-8.order-md-1
         if user
           div(id='games-table')
+          div(id='chat')
           script(src='/javascripts/bundles/lobby.bundle.js')
+          script(src='/javascripts/bundles/chat.bundle.js')  
+
+
         else
           .alert.alert-warning.mt-5.px-4.py-5(role='alert') Only authenticated users can see games in progress!
 
@@ -52,5 +58,5 @@ block content
         strong
           span Risky Savages
         | . All Rights Reserved
-  script(src='/javascripts/bundles/chat.bundle.js')
   script(src='/javascripts/bundles/navbar.bundle.js')
+  script(src='/javascripts/bundles/lobby_scene.bundle.js')
