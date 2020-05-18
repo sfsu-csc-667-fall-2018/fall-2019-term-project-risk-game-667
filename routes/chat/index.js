@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.get('/:chat_id', async (req, res) => {
   let chatId = req.params.chat_id
-  let getResult = await chat.getMessages(chatId, 0, 20)
+  let getResult = await chat.getMessages(chatId, 0, 40)
 
   res.send({
     messages: getResult,
@@ -17,7 +17,7 @@ router.post('/:chat_id/new', async (req, res) => {
   let message = {
     sender: {
       id: '-1',
-      username: 'Guest',
+      username: 'guest',
     },
     body: req.body.text,
     chatId: req.params.chat_id,

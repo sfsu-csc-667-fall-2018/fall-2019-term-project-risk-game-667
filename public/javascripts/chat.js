@@ -6,11 +6,6 @@ import axios from 'axios'
 
 const html = htm.bind(h)
 
-const getRoom = () => {
-  let url = window.location.pathname.split('/')
-  return url[url.length - 1]
-}
-
 class App extends Component {
   constructor(props) {
     super(props)
@@ -19,7 +14,10 @@ class App extends Component {
       warning: '',
     }
     this.socket = io()
-    this.chatId = getRoom()
+    this.chatId = (function () {
+      let url = window.location.pathname.split('/')
+      return url[url.length - 1]
+    })()
   }
 
   componentDidMount() {
@@ -27,19 +25,13 @@ class App extends Component {
     this.textArea = document.querySelector('#text-area')
 
     this.socket.on(messageEvent(this.chatId), (data) => {
-      this.setState(
-        {
-          messages: [...this.state.messages, data],
-        },
-        () => {
-          scrollMessages()
-        }
-      )
+      this.getMessages()
     })
   }
 
   async getMessages() {
     let response = await axios.get(`/chat/${this.chatId}`)
+    console.log(response.data)
     this.setState(
       {
         messages: response.data.messages.reverse(),
