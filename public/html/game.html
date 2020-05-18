@@ -345,30 +345,12 @@
             </button>
           </div>
           <div v-else>
-            <h1>Wait for your opponent<span id="loading">.</span></h1>
-            <script>
-              ;(function () { 
-                let i = 0
-                setInterval(() => {
-                  document.querySelector('#loading').innerHTML = ['.', '..', '...', '....'][i%4]
-                  i++
-                }, 1000)
-              })()
-            </script>
+            <h1>Wait for your opponent<span id="loading1">.</span></h1>
           </div>   
         </div>
       </div>
       <div v-else>
-        <h1>Preparing your game<span id="loading">.</span></h1>
-        <script>
-          ;(function () { 
-            let i = 0
-            setInterval(() => {
-              document.querySelector('#loading').innerHTML = ['.', '..', '...', '....'][i%4]
-              i++
-            }, 1000)
-          })()
-        </script>
+        <h1>Preparing your game<span id="loading2">.</span></h1>
       </div>
     </div>
     <div id="chat"></div>
@@ -376,7 +358,6 @@
     <button id="btn-exit" type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#exampleModalCenter">
       Exit to Lobby
     </button>
-
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">

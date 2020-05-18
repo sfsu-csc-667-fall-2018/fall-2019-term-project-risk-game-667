@@ -8,7 +8,6 @@ import { PHASE } from '../../config/const'
 const html = htm.bind(h)
 
 const capitalize = word => word.charAt(0).toUpperCase() + word.slice(1)
-const canJoin = game => game.phase === PHASE.CREATED
 
 class App extends Component {
   constructor(props) {
@@ -23,7 +22,9 @@ class App extends Component {
       'all': (game) => game,
       'started': (game) => game.player_two !== 'null',
       'hosted': (game) => game.player_one === this.state.id,
+      'partaken': (game) => this.filters.hosted(game) || game.player_two === this.state.id,
     }
+    this.canJoin = game => !this.filters.started(game) || this.filters.partaken(game)
   }
 
   componentDidMount() {
@@ -123,11 +124,15 @@ class App extends Component {
                       <th scope="row">${game.host}</th>
                       <td>
                         <a
-                          class="btn ${canJoin(game) ? '' : 'disabled'} btn-primary btn-lg"
+                          class="btn ${this.canJoin(game) ? '' : 'disabled'} btn-primary btn-lg"
                           href="/game/${game.id}"
                           style="width: 100%;"
                           >
-                            ${canJoin(game) ? 'Join' : 'GAME STARTED'}
+                            ${this.filters.partaken(game) 
+                              ? 'Continue' 
+                              : (this.canJoin(game)
+                                  ? 'Join'
+                                  : 'GAME STARTED')}
                           </a
                         >
                       </td>
