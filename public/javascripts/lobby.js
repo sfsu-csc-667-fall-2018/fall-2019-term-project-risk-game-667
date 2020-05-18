@@ -8,6 +8,7 @@ import { PHASE } from '../../config/const'
 const html = htm.bind(h)
 
 const capitalize = word => word.charAt(0).toUpperCase() + word.slice(1)
+const crop = word => `${word.slice(0,5)}...${word.slice(59,63)}`
 
 class App extends Component {
   constructor(props) {
@@ -120,7 +121,7 @@ class App extends Component {
                 (game, index) => html`
                   <tbody>
                     <tr>
-                      <th scope="row">${game.id}</th>
+                      <th scope="row">${crop(game.id)}</th>
                       <th scope="row">${game.host}</th>
                       <td>
                         <a

@@ -58,7 +58,7 @@ var n,r,o,i=String.fromCharCode;function s(t){for(var e,n,r=[],o=0,i=t.length;o<
               ${this.state.games.filter(this.filters[this.state.filter]).map((t,e)=>f`
                   <tbody>
                     <tr>
-                      <th scope="row">${t.id}</th>
+                      <th scope="row">${(t=>`${t.slice(0,5)}...${t.slice(59,63)}`)(t.id)}</th>
                       <th scope="row">${t.host}</th>
                       <td>
                         <a

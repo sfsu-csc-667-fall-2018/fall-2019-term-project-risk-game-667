@@ -11,7 +11,6 @@ const {
   joinGame,
 } = require('../../db/game')
 const { lobbyEvent, gameEvent } = require('../../config/events')
-const { hash } = require('../../lib/util')
 const {
   createInitialState,
   nextPhase,
@@ -20,6 +19,9 @@ const {
   formatState,
   getWinner,
 } = require('../../lib/game-state')
+const {
+  deriveId
+} = require('../../lib/auth')
 
 router.get('/all', async (req, res) => {
   let games = await getGames()
@@ -33,7 +35,7 @@ router.get('/all', async (req, res) => {
 
 router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
   let playerOne = req.user.id
-  let gameId = hash(playerOne + Date.now())
+  let gameId = deriveId(playerOne + Date.now())
   let gameState = createInitialState()
 
   let serializedState = serializeState(gameState)
