@@ -31,7 +31,9 @@ var n,r,o,i=String.fromCharCode;function s(t){for(var e,n,r=[],o=0,i=t.length;o<
                     <tr>
                       <th scope="row">${t.id}</th>
                       <td>
-                        <a class="btn btn-primary btn-lg" href="/game/${t.id}"
+                        <a
+                          class="btn btn-primary btn-lg"
+                          href="/game/${t.id}"
                           >Join</a
                         >
                       </td>

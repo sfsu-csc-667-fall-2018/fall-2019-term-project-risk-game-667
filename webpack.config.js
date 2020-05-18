@@ -29,7 +29,7 @@ module.exports = {
       },
     ],
   },
-  performance: {    
-    hints: false
-  }
+  performance: {
+    hints: false,
+  },
 }

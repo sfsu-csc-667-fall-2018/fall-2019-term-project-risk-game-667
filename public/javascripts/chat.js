@@ -56,17 +56,17 @@ class App extends Component {
       this.displayWarning('Your message is too short!')
     } else {
       axios
-      .post(`/chat/${this.chatId}/new`, {
-        text: message,
-      })
-      .then((response) => {
-        if (!response.data.error) {
-          this.textArea.value = ''
-        }
-      })
-      .catch((error) => {
-        this.displayWarning('Problem sending your message! Try again later!')
-      })
+        .post(`/chat/${this.chatId}/new`, {
+          text: message,
+        })
+        .then((response) => {
+          if (!response.data.error) {
+            this.textArea.value = ''
+          }
+        })
+        .catch((error) => {
+          this.displayWarning('Problem sending your message! Try again later!')
+        })
     }
   }
 

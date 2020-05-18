@@ -39,7 +39,7 @@ class App extends Component {
           window.location = `/game/${data.id}`
         }
       })
-      .catch((error) => { })
+      .catch((error) => {})
   }
 
   deleteGame(id) {
@@ -51,7 +51,7 @@ class App extends Component {
       .then((data) => {
         this.getGames()
       })
-      .catch((error) => { })
+      .catch((error) => {})
   }
 
   render() {
@@ -80,7 +80,9 @@ class App extends Component {
                     <tr>
                       <th scope="row">${game.id}</th>
                       <td>
-                        <a class="btn btn-primary btn-lg" href="/game/${game.id}"
+                        <a
+                          class="btn btn-primary btn-lg"
+                          href="/game/${game.id}"
                           >Join</a
                         >
                       </td>

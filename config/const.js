@@ -2,7 +2,7 @@ const NUM_PLAYERS = 2
 
 const GUEST = {
   USERNAME: 'guest',
-  ID: '-1'
+  ID: '-1',
 }
 
 const USER_TABLE = 'user_table'
