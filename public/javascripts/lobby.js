@@ -3,10 +3,12 @@ import htm from '../vendor/htm'
 import axios from 'axios'
 import io from 'socket.io-client'
 import { lobbyEvent } from '../../config/events'
+import { PHASE } from '../../config/const'
 
 const html = htm.bind(h)
 
 const capitalize = word => word.charAt(0).toUpperCase() + word.slice(1)
+const canJoin = game => game.phase === PHASE.CREATED
 
 class App extends Component {
   constructor(props) {
@@ -19,7 +21,7 @@ class App extends Component {
     this.socket = io()
     this.filters = {
       'all': (game) => game,
-      'started': (game) => game.player_two === 'null',
+      'started': (game) => game.player_two !== 'null',
       'hosted': (game) => game.player_one === this.state.id,
     }
   }
@@ -121,10 +123,12 @@ class App extends Component {
                       <th scope="row">${game.host}</th>
                       <td>
                         <a
-                          class="btn btn-primary btn-lg"
+                          class="btn ${canJoin(game) ? '' : 'disabled'} btn-primary btn-lg"
                           href="/game/${game.id}"
                           style="width: 100%;"
-                          >Join</a
+                          >
+                            ${canJoin(game) ? 'Join' : 'GAME STARTED'}
+                          </a
                         >
                       </td>
                     </tr>
