@@ -32,17 +32,12 @@ class App extends Component {
 
   async getMessages() {
     let response = await axios.get(`/chat/${this.chatId}`)
-    console.log(response.data)
     this.setState(
       {
         messages: response.data.messages.reverse(),
       },
       () => scrollMessages()
     )
-  }
-
-  userJoined(data) {
-    console.log(data)
   }
 
   handleTextAreaChange(event) {
@@ -55,23 +50,29 @@ class App extends Component {
     }
   }
   sendMessage(message) {
-    if (message.length !== 0) {
-      axios
-        .post(`/chat/${this.chatId}/new`, {
-          text: message,
-        })
-        .then((response) => {
-          if (!response.data.error) {
-            this.textArea.value = ''
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+    if (message.length > 250) {
+      this.displayWarning('Your message is too long!')
+    } else if (message.length < 1) {
+      this.displayWarning('Your message is too short!')
     } else {
-      this.setState({ warning: 'Your message is too short!' })
-      setTimeout(() => this.setState({ warning: '' }), 2000)
+      axios
+      .post(`/chat/${this.chatId}/new`, {
+        text: message,
+      })
+      .then((response) => {
+        if (!response.data.error) {
+          this.textArea.value = ''
+        }
+      })
+      .catch((error) => {
+        this.displayWarning('Problem sending your message! Try again later!')
+      })
     }
+  }
+
+  displayWarning(warning) {
+    this.setState({ warning })
+    setTimeout(() => this.setState({ warning: '' }), 2000)
   }
 
   render() {

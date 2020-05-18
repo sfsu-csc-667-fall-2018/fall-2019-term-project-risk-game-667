@@ -13,7 +13,6 @@ function newMessage(message) {
         resolve({ error: null })
       })
       .catch((error) => {
-        console.log(error)
         resolve({ error: 'Error sedning message!' })
       })
   })
@@ -32,7 +31,6 @@ function getMessages(chatId, offset, limit) {
         resolve(results.map(serializeMessage))
       })
       .catch((error) => {
-        console.log(error)
         resolve({ error: 'Error querying messages!' })
       })
   })

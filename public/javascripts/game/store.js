@@ -19,7 +19,6 @@ const store = new Vuex.Store({
   },
   mutations: {
     updateState(state, payload) {
-      console.log('UPDATED A GAME STATE', payload.state)
       state.winner = payload.state.winner
       state.playerId = payload.state.playerId
       state.action = payload.state.action

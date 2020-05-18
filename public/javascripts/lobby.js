@@ -19,15 +19,12 @@ class App extends Component {
     this.getGames()
 
     this.socket.on(lobbyEvent(), (data) => {
-      console.log('NEW LOBBY EVENT', data)
       this.getGames()
     })
   }
 
   async getGames() {
     let response = await axios.get(`/game/all`)
-    console.log(response.data)
-
     this.setState({
       games: response.data,
     })
@@ -42,9 +39,7 @@ class App extends Component {
           window.location = `/game/${data.id}`
         }
       })
-      .catch((error) => {
-        console.log(error)
-      })
+      .catch((error) => { })
   }
 
   deleteGame(id) {
@@ -56,9 +51,7 @@ class App extends Component {
       .then((data) => {
         this.getGames()
       })
-      .catch((error) => {
-        console.log(error)
-      })
+      .catch((error) => { })
   }
 
   render() {

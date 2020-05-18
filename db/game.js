@@ -43,7 +43,6 @@ function createGame(
         resolve({ error: null })
       })
       .catch((error) => {
-        console.log(error)
         resolve({ error: `Error creating a new game ${id}`, code: 500 })
       })
   })
@@ -59,7 +58,6 @@ function deleteGame(id) {
         resolve({ error: null })
       })
       .catch((error) => {
-        console.log(error)
         resolve({ error: `Error deleteing game ${id}`, code: 500 })
       })
   })
@@ -76,7 +74,6 @@ function getGames(offset = 0, limit = 100) {
         resolve(results)
       })
       .catch((error) => {
-        console.log(error)
         resolve({ error: `Error getting games`, code: 500 })
       })
   })
@@ -96,7 +93,6 @@ function getGame(id) {
         }
       })
       .catch((error) => {
-        console.log(error)
         resolve({ error: `Error finding game ${id}`, code: 500 })
       })
   })
@@ -113,11 +109,9 @@ function joinGame(id, playerTwo) {
       AND player_one <> '${playerTwo}'`
     )
       .then((results) => {
-        console.log(results)
         resolve({ error: null })
       })
       .catch((error) => {
-        console.log(error)
         resolve({
           error: `Error joining ${playerTwo} to game ${id}`,
           code: 500,
@@ -152,7 +146,6 @@ function updateGameState(
         resolve({ error: null })
       })
       .catch((error) => {
-        console.log(error)
         resolve({ error: `Error updating game state ${id}`, code: 500 })
       })
   })
@@ -172,7 +165,6 @@ function getGameState(id) {
         }
       })
       .catch((error) => {
-        console.log(error)
         resolve({ error: `Error finding game ${id}`, code: 500 })
       })
   })

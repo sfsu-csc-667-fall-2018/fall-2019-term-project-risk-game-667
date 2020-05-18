@@ -50,8 +50,6 @@ router.get('/new', ensureLoggedIn('/signin'), async (req, res) => {
     JSON.stringify(serializedState.countries)
   )
 
-  console.log(createGameResult)
-
   let io = req.app.get('io')
   io.emit(lobbyEvent(), { id: gameId })
 

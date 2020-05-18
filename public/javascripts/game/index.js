@@ -44,7 +44,6 @@ const vm = new Vue({
       return deserializeState(res.data.state)
     },
     async postState(state) {
-      console.log('SENDING A GAME STATE', state)
       let res = await axios.post(`/game/${gameId}/update`, {
         state: serializeState(state),
       })
@@ -197,10 +196,8 @@ const vm = new Vue({
           state.players[state.player].newTroops
       ) {
         let result = await this.postState(state)
-        console.log(result)
       } else if (state.phase === PHASE.ATTACK || state.phase === PHASE.MOVE) {
         let result = await this.postState(state)
-        console.log(result)
       }
     },
     onClickPlus(e) {
