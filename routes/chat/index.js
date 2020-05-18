@@ -1,6 +1,7 @@
 const express = require('express')
 const chat = require('../../db/chat')
 const { messageEvent } = require('../../config/events')
+const { GUEST } = require('../../config/const')
 
 const router = express.Router()
 
@@ -16,8 +17,8 @@ router.get('/:chat_id', async (req, res) => {
 router.post('/:chat_id/new', async (req, res) => {
   let message = {
     sender: {
-      id: '-1',
-      username: 'guest',
+      id: GUEST.ID,
+      username: GUEST.USERNAME,
     },
     body: req.body.text,
     chatId: req.params.chat_id,
@@ -30,7 +31,7 @@ router.post('/:chat_id/new', async (req, res) => {
   let sendResult = await chat.newMessage(message)
 
   let io = req.app.get('io')
-  io.emit(messageEvent(message.chatId), message)
+  io.emit(messageEvent(message.chatId))
 
   res.send({
     error: null,

@@ -3,6 +3,7 @@ import htm from '../vendor/htm'
 import io from 'socket.io-client'
 import { messageEvent } from '../../config/events'
 import axios from 'axios'
+import { GUEST } from '../../config/const'
 
 const html = htm.bind(h)
 
@@ -100,7 +101,7 @@ class App extends Component {
               <button
                 type="button"
                 onClick=${() => this.sendMessage(this.textArea.value)}
-                class="m-3 btn btn-primary btn-lg"
+                class="p-2 btn mt-3 btn-block btn-primary btn-lg"
               >
                 Send
               </button>

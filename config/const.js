@@ -1,5 +1,10 @@
 const NUM_PLAYERS = 2
 
+const GUEST = {
+  USERNAME: 'guest',
+  ID: '-1'
+}
+
 const USER_TABLE = 'user_table'
 const MESSAGE_TABLE = 'message_table'
 const GAME_TABLE = 'game_table'
@@ -331,6 +336,7 @@ const COUNTRY_CONNECTIONS = new Map([
 ])
 
 module.exports = {
+  GUEST,
   NUM_PLAYERS,
   USER_TABLE,
   MESSAGE_TABLE,
