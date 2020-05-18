@@ -18,3 +18,7 @@ body {
 .table {
   color: #ffffff
 }
+
+.dropdown-menu > a {
+  cursor: pointer;
+}

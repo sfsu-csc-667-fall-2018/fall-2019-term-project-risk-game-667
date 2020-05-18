@@ -23,10 +23,11 @@ const {
 
 router.get('/all', async (req, res) => {
   let games = await getGames()
+  let userId = req.user.id
   if (games.error) {
-    res.send([])
+    res.send({ id: userId, games: [] })
   } else {
-    res.send(games)
+    res.send({ id: userId, games })
   }
 })
 

@@ -1,6 +1,6 @@
 const db = require('.')
 
-const { GAME_TABLE, PHASE } = require('../config/const')
+const { GAME_TABLE, PHASE, USER_TABLE } = require('../config/const')
 
 function createGame(
   id,
@@ -66,7 +66,16 @@ function deleteGame(id) {
 function getGames(offset = 0, limit = 100) {
   return new Promise((resolve) => {
     db.any(
-      `SELECT id, phase, turn, current_player, player_one, player_two FROM ${GAME_TABLE} 
+      `SELECT ${GAME_TABLE}.id, 
+      phase, turn, 
+      current_player, 
+      player_one, 
+      player_two, 
+      username as host 
+      FROM ${GAME_TABLE} 
+      INNER JOIN 
+      ${USER_TABLE} 
+      on ${USER_TABLE}.id = player_one
       OFFSET ${offset} 
       LIMIT ${limit}`
     )
