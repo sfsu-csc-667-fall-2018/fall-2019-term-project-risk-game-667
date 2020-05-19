@@ -14,7 +14,9 @@
     "db:rollback": "sequelize db:migrate:undo:all",
     "db:heroku:test": "node ./db/heroku-test",
     "postinstall": "sequelize db:migrate",
-    "format": "prettier --write bin/www '**/*.js'"
+    "format": "prettier --write bin/www '**/*.js'",
+    "slides:gen": "npx @marp-team/marp-cli -o docs/index.html docs/slides.md",
+    "slides:serve": "npx serve docs"
   },
   "dependencies": {
     "axios": "^0.19.2",
