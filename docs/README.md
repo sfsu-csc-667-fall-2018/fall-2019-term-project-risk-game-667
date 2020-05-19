@@ -133,4 +133,18 @@ Vue component. Game state is managed by Vuex store. Actions are propagated to th
 
 ## Application Flow
 
-TODO add stuff and diagrams
+Please refer to [slides](https://sfsu-csc-667-fall-2018.github.io/fall-2019-term-project-risk-game-667/)
+
+## Credits & Contributions
+
+- [Gameboard design, and some of game logic](https://codepen.io/AzazelN28/pen/BrGmrd)
+
+- [Soldiers models](https://sketchfab.com/blackspire)
+
+- [Github Actions config](https://dev.to/mscccc/github-actions-deploy-to-heroku-22np)
+
+- [Authentication implementation](https://github.com/jaredhanson/passport-local)
+
+- [Risk logo](cleanpng.com)
+
+- [Other graphics](https://www.canva.com/)

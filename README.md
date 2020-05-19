@@ -15,3 +15,7 @@ Subset of Risk game written in JS
 ## Documentation
 
 - Documentation is available [here](docs/README.md)
+
+## Slides
+
+- Slides are available [here](https://sfsu-csc-667-fall-2018.github.io/fall-2019-term-project-risk-game-667/)
